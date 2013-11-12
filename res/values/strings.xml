@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- iApprove project name -->
     <string name="app_name">IApprove</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
 
 </resources>
