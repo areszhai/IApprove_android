@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".tab7tabcontent.TodoListTabContentActivity" >
+
+    <FrameLayout
+        android:id="@+id/tdl_taskSearchEditText_parentFrameLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/middle_gray"
+        android:padding="10dp" >
+
+        <EditText
+            android:id="@+id/tdl_taskSearch_editText"
+            android:layout_width="fill_parent"
+            android:layout_height="34dp"
+            android:background="@drawable/round_search_edittext_bg"
+            android:drawableLeft="@drawable/ic_action_search"
+            android:ellipsize="end"
+            android:hint="@string/tdl_taskSearch_editText_hint"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textSize="16sp" >
+
+            <requestFocus />
+        </EditText>
+    </FrameLayout>
+
+    <ListView
+        android:id="@+id/tdl_task_listView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/tdl_taskSearchEditText_parentFrameLayout" >
+    </ListView>
+
+</RelativeLayout>

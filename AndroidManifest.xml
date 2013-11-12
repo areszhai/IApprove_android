@@ -24,6 +24,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".tab7tabcontent.IApproveTabActivity"
+            android:label="@string/title_activity_iapprove_tab"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name=".tab7tabcontent.TodoListTabContentActivity"
+            android:label="@string/title_activity_todo_list_tab_content"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".tab7tabcontent.AddressbookTabContentActivity"
+            android:label="@string/title_activity_addressbook_tab_content"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".tab7tabcontent.HistoryRecordTabContentActivity"
+            android:label="@string/title_activity_history_record_tab_content"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".tab7tabcontent.SettingsTabContentActivity"
+            android:label="@string/title_activity_settings_tab_content"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

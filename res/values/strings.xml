@@ -4,4 +4,29 @@
     <!-- iApprove project name -->
     <string name="app_name">IApprove</string>
 
+    <!-- iApprove tab activity -->
+    <string name="title_activity_iapprove_tab">IApproveTabActivity</string>
+
+    <!-- to-do list tab content activity -->
+    <string name="title_activity_todo_list_tab_content">TodoListTabContentActivity</string>
+    <string name="todoList_tab_tag">the to-do list tab</string>
+    <string name="todoList_tab7nav_title">To-do</string>
+    <string name="tdl_taskSearch_editText_hint">Search</string>
+
+    <!-- address book tab content activity -->
+    <string name="title_activity_addressbook_tab_content">AddressbookTabContentActivity</string>
+    <string name="addressbook_tab_tag">addressbook tab</string>
+    <string name="addressbook_tab7nav_title">Addressbook</string>
+    <string name="ab_contactSearch_editText_hint">Search contact with name phonetics</string>
+
+    <!-- history record tab content activity -->
+    <string name="title_activity_history_record_tab_content">HistoryRecordTabContentActivity</string>
+    <string name="historyRecord_tab_tag">approved and my applcation tab</string>
+    <string name="historyRecord_tab7nav_title">Record</string>
+
+    <!-- settings tab content activity -->
+    <string name="title_activity_settings_tab_content">SettingsTabContentActivity</string>
+    <string name="settings_tab_tag">settings tab</string>
+    <string name="settings_tab7nav_title">Settings</string>
+
 </resources>

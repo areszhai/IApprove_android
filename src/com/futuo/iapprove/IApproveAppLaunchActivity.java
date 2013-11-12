@@ -3,6 +3,7 @@ package com.futuo.iapprove;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
+import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity;
 import com.richitec.commontoolkit.activityextension.AppLaunchActivity;
 
 public class IApproveAppLaunchActivity extends AppLaunchActivity {
@@ -15,8 +16,14 @@ public class IApproveAppLaunchActivity extends AppLaunchActivity {
 
 	@Override
 	public Intent intentActivity() {
-		// TODO Auto-generated method stub
-		return null;
+		// define default target intent activity, approve tab activity
+		Intent _targetIntentActivity = new Intent(this,
+				IApproveTabActivity.class);
+
+		//
+
+		// go to target activity
+		return _targetIntentActivity;
 	}
 
 	@Override
