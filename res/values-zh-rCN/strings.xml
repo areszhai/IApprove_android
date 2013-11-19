@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- iApprove project name -->
+    <string name="app_name">IApprove</string>
+
+    <!-- iApprove tab activity -->
+    <!-- to-do list tab content activity -->
+    <string name="todoList_tab7nav_title">未审批</string>
+    <string name="tdl_taskSearch_editText_hint">搜索</string>
+
+    <!-- address book tab content activity -->
+    <string name="addressbook_tab7nav_title">通讯录</string>
+    <string name="ab_contactSearch_editText_hint">按名字或拼音搜索联系人</string>
+
+    <!-- history record tab content activity -->
+    <string name="historyRecord_tab_title">记录</string>
+    <string name="hr_myApplication_segment_radioButton_title">我的申请</string>
+    <string name="hr_checked_segment_radioButton_title">已审批</string>
+
+    <!-- settings tab content activity -->
+    <string name="settings_tab7nav_title">设置</string>
+
+</resources>

@@ -32,7 +32,12 @@
         android:id="@+id/tdl_task_listView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/tdl_taskSearchEditText_parentFrameLayout" >
+        android:layout_below="@+id/tdl_taskSearchEditText_parentFrameLayout"
+        android:cacheColorHint="@android:color/transparent"
+        android:fadingEdge="none"
+        android:headerDividersEnabled="false"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none" >
     </ListView>
 
 </RelativeLayout>

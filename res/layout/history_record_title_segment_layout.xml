@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent" >
+
+    <RadioGroup
+        android:id="@+id/hr_historyRecord_titleSegment_radioGroup"
+        android:layout_width="160dp"
+        android:layout_height="32dp"
+        android:background="@drawable/history_record_title_segment_bg"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/hr_myApplication_segment_radioButton"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/my_application_segment_radiobtn_bg"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="@string/hr_myApplication_segment_radioButton_title"
+            android:textColor="@android:color/white" />
+
+        <RadioButton
+            android:id="@+id/hr_checked_segment_radioButton"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/checked_segment_radiobtn_bg"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/hr_checked_segment_radioButton_title"
+            android:textColor="@android:color/white" />
+    </RadioGroup>
+
+</FrameLayout>

@@ -2,6 +2,7 @@
 <resources>
 
     <!-- pure color -->
+    <color name="dark_gray">#4d4e4e</color>
     <color name="middle_gray">#aaaaab</color>
 
 </resources>
