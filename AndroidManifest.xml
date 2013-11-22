@@ -25,6 +25,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".settings.AccountSetting4FirstActivity"
+            android:label="@string/title_activity_account_setting_for_first"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".tab7tabcontent.IApproveTabActivity"
             android:label="@string/title_activity_iapprove_tab"
             android:screenOrientation="portrait"

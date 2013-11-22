@@ -3,6 +3,7 @@ package com.futuo.iapprove;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
+import com.futuo.iapprove.settings.AccountSetting4FirstActivity;
 import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity;
 import com.richitec.commontoolkit.activityextension.AppLaunchActivity;
 
@@ -20,7 +21,9 @@ public class IApproveAppLaunchActivity extends AppLaunchActivity {
 		Intent _targetIntentActivity = new Intent(this,
 				IApproveTabActivity.class);
 
-		//
+		// test by ares
+		// go to account setting activity
+		_targetIntentActivity = new Intent(this, AccountSetting4FirstActivity.class);
 
 		// go to target activity
 		return _targetIntentActivity;

@@ -2,7 +2,12 @@
 <resources>
 
     <!-- iApprove project name -->
-    <string name="app_name">IApprove</string>
+    <string name="app_name">审批</string>
+
+    <!-- account setting for first activity -->
+    <string name="as4f_applicationDescription">移动改变工作</string>
+    <string name="as4f_accountRegister_button_title">注册</string>
+    <string name="as4f_accountLogin_button_title">登录</string>
 
     <!-- iApprove tab activity -->
     <!-- to-do list tab content activity -->
