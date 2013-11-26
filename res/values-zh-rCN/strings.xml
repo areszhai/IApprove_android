@@ -9,6 +9,21 @@
     <string name="as4f_accountRegister_button_title">注册</string>
     <string name="as4f_accountLogin_button_title">登录</string>
 
+    <!-- account register activity -->
+
+
+    <!-- account login activity -->
+    <string name="account_login_nav_title_text">登录审批</string>
+    <string name="al_confirmLogin_button_title">登录</string>
+    <string name="al_userLoginPhone_label">账号</string>
+    <string name="al_userLoginPhone_editText_hint">手机号码</string>
+    <string name="al_userLoginPwd_label">密码</string>
+    <string name="al_userLoginPwd_editText_hint">密码</string>
+    <string name="al_forgetPwd_button_title">忘记密码？</string>
+
+    <!-- account retrieve password activity -->
+
+
     <!-- iApprove tab activity -->
     <!-- to-do list tab content activity -->
     <string name="todoList_tab7nav_title">未审批</string>

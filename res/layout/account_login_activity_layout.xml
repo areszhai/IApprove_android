@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:iapprove="http://schemas.android.com/apk/res/com.futuo.iapprove"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".account.AccountLoginActivity" >
+
+    <LinearLayout
+        android:id="@+id/al_loginForm_linearLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/account_login_form_bg"
+        android:orientation="vertical" >
+
+        <com.futuo.iapprove.customwidget.AccountLoginFormItem
+            android:id="@+id/al_userLoginPhone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            iapprove:inputEditTextHint="@string/al_userLoginPhone_editText_hint"
+            iapprove:inputEditTextType="phone"
+            iapprove:label="@string/al_userLoginPhone_label" >
+        </com.futuo.iapprove.customwidget.AccountLoginFormItem>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1.5dp"
+            android:background="@color/light_middle_gray" />
+
+        <com.futuo.iapprove.customwidget.AccountLoginFormItem
+            android:id="@+id/al_userLoginPwd"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            iapprove:inputEditTextHint="@string/al_userLoginPwd_editText_hint"
+            iapprove:inputEditTextType="textPassword"
+            iapprove:label="@string/al_userLoginPwd_label" >
+        </com.futuo.iapprove.customwidget.AccountLoginFormItem>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/al_forgetPwd_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/al_loginForm_linearLayout"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="8dp"
+        android:background="@null"
+        android:text="@string/al_forgetPwd_button_title"
+        android:textColor="@drawable/forget_pwd_button_title_textcolor"
+        android:textSize="16sp" />
+
+</RelativeLayout>

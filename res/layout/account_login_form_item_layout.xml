@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:paddingBottom="5dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="6dp"
+    android:paddingTop="5dp" >
+
+    <TextView
+        android:id="@+id/alfi_label_textView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/alfi_input_editText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@null"
+        android:ellipsize="end"
+        android:inputType="text"
+        android:paddingBottom="7dp"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
+        android:paddingTop="7dp"
+        android:textSize="16sp" >
+
+        <requestFocus />
+    </EditText>
+
+</LinearLayout>

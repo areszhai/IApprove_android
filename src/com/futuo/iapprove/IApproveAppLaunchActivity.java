@@ -3,7 +3,7 @@ package com.futuo.iapprove;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
-import com.futuo.iapprove.settings.AccountSetting4FirstActivity;
+import com.futuo.iapprove.account.AccountSetting4FirstActivity;
 import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity;
 import com.richitec.commontoolkit.activityextension.AppLaunchActivity;
 

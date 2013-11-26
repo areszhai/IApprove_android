@@ -11,6 +11,22 @@
     <string name="as4f_accountRegister_button_title">Register</string>
     <string name="as4f_accountLogin_button_title">Login</string>
 
+    <!-- account register activity -->
+    <string name="title_activity_account_register" translatable="false">AccountRegisterActivity</string>
+
+    <!-- account login activity -->
+    <string name="title_activity_account_login" translatable="false">AccountLoginActivity</string>
+    <string name="account_login_nav_title_text">Login Approve</string>
+    <string name="al_confirmLogin_button_title">Login</string>
+    <string name="al_userLoginPhone_label">Account</string>
+    <string name="al_userLoginPhone_editText_hint">phone number</string>
+    <string name="al_userLoginPwd_label">Password</string>
+    <string name="al_userLoginPwd_editText_hint">password</string>
+    <string name="al_forgetPwd_button_title">Forget pwd?</string>
+
+    <!-- account retrieve password activity -->
+    <string name="title_activity_account_retrieve_pwd" translatable="false">AccountRetrievePwdActivity</string>
+
     <!-- iApprove tab activity -->
     <string name="title_activity_iapprove_tab" translatable="false">IApproveTabActivity</string>
 

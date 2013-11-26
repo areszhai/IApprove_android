@@ -8,6 +8,8 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name="com.richitec.commontoolkit.CTApplication"
         android:allowBackup="true"
@@ -25,8 +27,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".settings.AccountSetting4FirstActivity"
+            android:name=".account.AccountSetting4FirstActivity"
             android:label="@string/title_activity_account_setting_for_first"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".account.AccountRegisterActivity"
+            android:label="@string/title_activity_account_register"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".account.AccountLoginActivity"
+            android:label="@string/title_activity_account_retrieve_pwd"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".account.AccountRetrievePwdActivity"
+            android:label="@string/title_activity_account_login"
             android:screenOrientation="portrait" >
         </activity>
         <activity

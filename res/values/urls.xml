@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- approve remote background server url -->
+    <!-- <string name="server_url" translatable="false">http://sync.walkwork.net/TouchRemoting_IF_Super</string> -->
+    <string name="server_url" translatable="false">http://192.168.1.117:8080/TouchRemoting_IF_Super</string>
+
+    <!-- account -->
+    <!-- account login -->
+    <string name="account_login_url">/enterpries/userLoginMobile</string>
+
+</resources>

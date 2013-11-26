@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- common -->
+    <string name="rbgServer_commonReqParam_action">action</string>
+
+    <!-- account -->
+    <!-- account login -->
+    <string name="rbgServer_accountLoginReqParam_action">LoginValidationPass</string>
+    <string name="rbgServer_accountLoginReqParam_phone">logname</string>
+    <string name="rbgServer_accountLoginReqParam_password">logpass</string>
+
+</resources>
