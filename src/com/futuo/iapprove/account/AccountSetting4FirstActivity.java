@@ -3,6 +3,7 @@ package com.futuo.iapprove.account;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Button;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.AccountLoginActivity.AccountLoginExtraData;
+import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity;
 import com.richitec.commontoolkit.activityextension.NavigationActivity;
 
 public class AccountSetting4FirstActivity extends NavigationActivity {
@@ -44,12 +46,41 @@ public class AccountSetting4FirstActivity extends NavigationActivity {
 		return true;
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		// check result code
+		switch (resultCode) {
+		case RESULT_OK:
+			// check request code
+			switch (requestCode) {
+			case AccountSetting4FirstRequestCode.ACCOUNT_LOGIN_REQCODE:
+				// finish account setting for first activity
+				finish();
+
+				// go to approve tab activity
+				startActivity(new Intent(this, IApproveTabActivity.class));
+				break;
+
+			case AccountSetting4FirstRequestCode.ACCOUNT_REGISTER_REQCODE:
+				//
+				break;
+			}
+			break;
+
+		default:
+			// nothing to do
+			break;
+		}
+	}
+
 	// inner class
 	// account setting for first request code
 	static class AccountSetting4FirstRequestCode {
 		// account register and login request code
-		private static final Integer ACCOUNT_REGISTER_REQCODE = 100;
-		private static final Integer ACCOUNT_LOGIN_REQCODE = 101;
+		private static final int ACCOUNT_REGISTER_REQCODE = 100;
+		private static final int ACCOUNT_LOGIN_REQCODE = 101;
 	}
 
 	// account register button on click listener

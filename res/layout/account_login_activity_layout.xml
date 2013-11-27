@@ -51,7 +51,7 @@
         android:layout_marginTop="8dp"
         android:background="@null"
         android:text="@string/al_forgetPwd_button_title"
-        android:textColor="@drawable/forget_pwd_button_title_textcolor"
+        android:textColor="@color/forget_pwd_button_title_textcolor"
         android:textSize="16sp" />
 
 </RelativeLayout>

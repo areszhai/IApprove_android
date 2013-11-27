@@ -23,6 +23,7 @@
     <string name="al_userLoginPwd_label">Password</string>
     <string name="al_userLoginPwd_editText_hint">password</string>
     <string name="al_forgetPwd_button_title">Forget pwd?</string>
+    <string name="al_loginAsyncHttpReq_progDlg_message">Logining, please wait&#8230;</string>
 
     <!-- account retrieve password activity -->
     <string name="title_activity_account_retrieve_pwd" translatable="false">AccountRetrievePwdActivity</string>

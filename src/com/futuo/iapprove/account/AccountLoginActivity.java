@@ -6,14 +6,18 @@ import java.util.Map;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.customwidget.AccountLoginFormItem;
@@ -38,6 +42,12 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 	// account login user phone and password item
 	private AccountLoginFormItem _mAccountLoginUserPhoneItem;
 	private AccountLoginFormItem _mAccountLoginUserPwdItem;
+
+	// input method manager
+	private InputMethodManager _mInputMethodManager;
+
+	// account login asynchronous post http request progress dialog
+	private ProgressDialog _mAccountLoginAsyncHttpReqProgDlg;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +104,43 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 				.setOnClickListener(new ForgetPwdBtnOnClickListener());
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		// set account login user phone item as focus
+		_mAccountLoginUserPhoneItem.setAsFocus();
+	}
+
+	// set soft input visibility
+	private void setSoftInputVisibility(boolean visible) {
+		// check and initialize input method manager
+		if (null == _mInputMethodManager) {
+			_mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		}
+
+		// check visible
+		if (visible) {
+			// show soft input
+			_mInputMethodManager.toggleSoftInputFromWindow(
+					_mConfirmLoginBarButtonItem.getWindowToken(), 0,
+					InputMethodManager.HIDE_NOT_ALWAYS);
+		} else {
+			// hide soft input
+			_mInputMethodManager.hideSoftInputFromWindow(
+					_mConfirmLoginBarButtonItem.getWindowToken(), 0);
+		}
+	}
+
+	// close account login asynchronous post http request process dialog
+	private void closeAccountLoginAsyncHttpReqProgDlg() {
+		// check and dismiss account login asynchronous post http request
+		// process dialog
+		if (null != _mAccountLoginAsyncHttpReqProgDlg) {
+			_mAccountLoginAsyncHttpReqProgDlg.dismiss();
+		}
+	}
+
 	// inner class
 	// account login extra data constant
 	public static final class AccountLoginExtraData {
@@ -113,7 +160,7 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 
 			// set text color
 			setTextColor(getResources().getColorStateList(
-					R.drawable.confirm_login_button_title_textcolor));
+					R.color.confirm_login_button_title_textcolor));
 
 			// set text size
 			setTextSize(15.0f);
@@ -169,6 +216,15 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 		@Override
 		public void onClick(View v) {
 			// account login
+			// hide soft input
+			setSoftInputVisibility(false);
+
+			// show account login asynchronous post http request process dialog
+			_mAccountLoginAsyncHttpReqProgDlg = ProgressDialog.show(
+					AccountLoginActivity.this, null,
+					getString(R.string.al_loginAsyncHttpReq_progDlg_message),
+					true);
+
 			// get account login user phone and password
 			String _userLoginPhone = _mAccountLoginUserPhoneItem
 					.getInputEditText();
@@ -211,22 +267,115 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onFinished(HttpRequest request, HttpResponse response) {
-			// get http response entity string json data
-			JSONArray _respJsonData = JSONUtils.toJSONArray(HttpUtils
-					.getHttpResponseEntityString(response));
+			// close account login asynchronous post http request process dialog
+			closeAccountLoginAsyncHttpReqProgDlg();
+
+			// get http response entity string
+			String _respEntityString = HttpUtils
+					.getHttpResponseEntityString(response);
 
 			Log.d(LOG_TAG,
-					"Send account login post http request successful, response json data = "
-							+ _respJsonData);
+					"Send account login post http request successful, response entity string = "
+							+ _respEntityString);
 
-			//
+			// get and check http response entity string error json data
+			JSONObject _respJsonData = JSONUtils
+					.toJSONObject(_respEntityString);
+
+			if (null == _respJsonData) {
+				// get and check http response entity string error json data
+				// again
+				JSONArray _respJsonDataArray = JSONUtils
+						.toJSONArray(_respEntityString);
+
+				if (null != _respJsonDataArray) {
+					Log.d(LOG_TAG, "Account login successful");
+
+					//
+
+					// pop account login activity with result
+					popActivityWithResult(RESULT_OK, null);
+				} else {
+					// show soft input
+					setSoftInputVisibility(true);
+
+					Log.e(LOG_TAG,
+							"Account login failed, response entity unrecognized");
+
+					Toast.makeText(AccountLoginActivity.this,
+							R.string.toast_requestResp_unrecognized,
+							Toast.LENGTH_SHORT).show();
+				}
+			} else {
+				// show soft input
+				setSoftInputVisibility(true);
+
+				// get and check error message
+				String _errorMsg = JSONUtils.getStringFromJSONObject(
+						_respJsonData,
+						getResources().getString(
+								R.string.rbgServer_commonReqResp_error));
+
+				if (null != _errorMsg) {
+					Log.e(LOG_TAG,
+							"Account login failed, response error message = "
+									+ _errorMsg);
+
+					Toast.makeText(AccountLoginActivity.this, _errorMsg,
+							Toast.LENGTH_SHORT).show();
+				} else {
+					Log.e(LOG_TAG,
+							"Account login failed, response error message unrecognized");
+
+					Toast.makeText(AccountLoginActivity.this,
+							R.string.toast_requestResp_unrecognized,
+							Toast.LENGTH_SHORT).show();
+				}
+			}
 		}
 
 		@Override
 		public void onFailed(HttpRequest request, HttpResponse response) {
+			// close account login asynchronous post http request process dialog
+			closeAccountLoginAsyncHttpReqProgDlg();
+
+			// show soft input
+			setSoftInputVisibility(true);
+
 			Log.e(LOG_TAG, "Send account login post http request failed");
 
-			//
+			Toast.makeText(AccountLoginActivity.this,
+					R.string.toast_request_exception, Toast.LENGTH_SHORT)
+					.show();
+		}
+
+		@Override
+		public void onTimeout(HttpRequest request) {
+			// close account login asynchronous post http request process dialog
+			closeAccountLoginAsyncHttpReqProgDlg();
+
+			// show soft input
+			setSoftInputVisibility(true);
+
+			Log.e(LOG_TAG, "Send account login post http request timeout");
+
+			Toast.makeText(AccountLoginActivity.this,
+					R.string.toast_request_timeout, Toast.LENGTH_SHORT).show();
+		}
+
+		@Override
+		public void onUnknownHost(HttpRequest request) {
+			// close account login asynchronous post http request process dialog
+			closeAccountLoginAsyncHttpReqProgDlg();
+
+			// show soft input
+			setSoftInputVisibility(true);
+
+			Log.e(LOG_TAG, "Your network not reachability");
+
+			Toast.makeText(AccountLoginActivity.this,
+					R.string.toast_network_notReachability, Toast.LENGTH_SHORT)
+					.show();
 		}
 
 	}

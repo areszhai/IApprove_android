@@ -3,6 +3,7 @@
 
     <!-- common -->
     <string name="rbgServer_commonReqParam_action">action</string>
+    <string name="rbgServer_commonReqResp_error">error</string>
 
     <!-- account -->
     <!-- account login -->

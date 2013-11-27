@@ -38,12 +38,12 @@
         </activity>
         <activity
             android:name=".account.AccountLoginActivity"
-            android:label="@string/title_activity_account_retrieve_pwd"
+            android:label="@string/title_activity_account_login"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".account.AccountRetrievePwdActivity"
-            android:label="@string/title_activity_account_login"
+            android:label="@string/title_activity_account_retrieve_pwd"
             android:screenOrientation="portrait" >
         </activity>
         <activity

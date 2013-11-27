@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- common -->
+    <string name="toast_network_notReachability">您的网络不可达，请保持网络畅通！</string>
+    <string name="toast_request_timeout">网络不是很给力，请稍候重试！</string>
+    <string name="toast_request_exception">连接远程服务器异常，请尽快联系管理员！</string>
+    <string name="toast_requestResp_unrecognized">远程服务器返回异常，请尽快联系管理员！</string>
+
 </resources>

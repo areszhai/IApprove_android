@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- common -->
+    <string name="toast_network_notReachability">Your network not reachability, please check the network connection!</string>
+    <string name="toast_request_timeout">Network not gelivable, please retry again later!</string>
+    <string name="toast_request_exception">Connect to remote background server exception, please contact with admin soon!</string>
+    <string name="toast_requestResp_unrecognized">Remote background server response exception, please contact with admin soon!</string>
+
 </resources>

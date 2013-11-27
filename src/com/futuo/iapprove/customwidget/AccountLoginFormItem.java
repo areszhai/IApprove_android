@@ -1,5 +1,8 @@
 package com.futuo.iapprove.customwidget;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.Editable;
@@ -8,6 +11,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -141,6 +145,25 @@ public class AccountLoginFormItem extends LinearLayout {
 			Log.e(LOG_TAG,
 					"Account login form item input editText text changed watcher is null");
 		}
+	}
+
+	// set as focus
+	public void setAsFocus() {
+		// set input editText focusable
+		_mInputEditText.setFocusable(true);
+		_mInputEditText.setFocusableInTouchMode(true);
+		_mInputEditText.requestFocus();
+
+		// show soft input after 250 milliseconds
+		new Timer().schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				((InputMethodManager) _mInputEditText.getContext()
+						.getSystemService(Context.INPUT_METHOD_SERVICE))
+						.showSoftInput(_mInputEditText, 0);
+			}
+		}, 250);
 	}
 
 	// inner class

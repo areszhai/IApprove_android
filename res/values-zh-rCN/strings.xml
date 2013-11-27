@@ -20,6 +20,7 @@
     <string name="al_userLoginPwd_label">密码</string>
     <string name="al_userLoginPwd_editText_hint">密码</string>
     <string name="al_forgetPwd_button_title">忘记密码？</string>
+    <string name="al_loginAsyncHttpReq_progDlg_message">正在登录，请稍后&#8230;</string>
 
     <!-- account retrieve password activity -->
 
