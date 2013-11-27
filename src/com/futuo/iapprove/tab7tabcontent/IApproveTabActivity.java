@@ -41,6 +41,7 @@ public class IApproveTabActivity extends TabActivity {
 		// set content view
 		setContentView(R.layout.iapprove_tab_activity_layout);
 
+		// set subViews
 		// get tabHost
 		_mTabHost = getTabHost();
 
@@ -62,7 +63,7 @@ public class IApproveTabActivity extends TabActivity {
 				// content class
 				Class<?> _contentCls = (Class<?>) TAB_WIDGETITEMS7CONTENTCLS[i][3];
 
-				Log.d(LOG_TAG, "tab spec tag = " + _tag
+				Log.d(LOG_TAG, "IApprove tab spec tag = " + _tag
 						+ ", indicator label resource = " + _labelRes
 						+ ", icon resource = " + _iconRes
 						+ " and content class = " + _contentCls);
@@ -78,7 +79,7 @@ public class IApproveTabActivity extends TabActivity {
 				_mTabHost.addTab(_tabSpec);
 			} catch (Exception e) {
 				Log.e(LOG_TAG,
-						"new tab spec error, exception message = "
+						"New tab spec error, exception message = "
 								+ e.getMessage());
 
 				e.printStackTrace();

@@ -1,6 +1,8 @@
 package com.futuo.iapprove.account;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpRequest;
@@ -20,10 +22,16 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.futuo.iapprove.R;
+import com.futuo.iapprove.account.user.IAUserExtension;
+import com.futuo.iapprove.account.user.IAUserLocalStorageAttributes;
+import com.futuo.iapprove.account.user.UserCompanyBean;
 import com.futuo.iapprove.customwidget.AccountLoginFormItem;
 import com.futuo.iapprove.customwidget.AccountLoginFormItem.AccountLoginFormItemInputEditTextTextWatcher;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
 import com.richitec.commontoolkit.customcomponent.BarButtonItem;
+import com.richitec.commontoolkit.user.UserBean;
+import com.richitec.commontoolkit.user.UserManager;
+import com.richitec.commontoolkit.utils.DataStorageUtils;
 import com.richitec.commontoolkit.utils.HttpUtils;
 import com.richitec.commontoolkit.utils.HttpUtils.HttpRequestType;
 import com.richitec.commontoolkit.utils.HttpUtils.OnHttpRequestListener;
@@ -291,7 +299,72 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 				if (null != _respJsonDataArray) {
 					Log.d(LOG_TAG, "Account login successful");
 
-					//
+					// get account login user phone and password base64 encode
+					// string
+					String _accountLoginUserPhone = _mAccountLoginUserPhoneItem
+							.getInputEditText();
+					String _accountLoginUserPwdBase64Encode = StringUtils
+							.base64Encode(_mAccountLoginUserPwdItem
+									.getInputEditText());
+
+					// get user last login company id from local storage as
+					// default
+					Long _userLastLoginCompanyId = DataStorageUtils
+							.getLong(IAUserLocalStorageAttributes.USER_LASTLOGINCOMPANYID
+									.name());
+
+					// generate account login user bean with username and
+					// userkey
+					UserBean _loginUserBean = new UserBean(
+							_accountLoginUserPhone, null,
+							_accountLoginUserPwdBase64Encode);
+
+					// define user login company id and user company list
+					Long _userLoginCompanyId = null;
+					List<UserCompanyBean> _userCompanyList = new ArrayList<UserCompanyBean>();
+
+					for (int i = 0; i < _respJsonDataArray.length(); i++) {
+						// get user company bean
+						UserCompanyBean _userCompanyBean = new UserCompanyBean(
+								JSONUtils.getJSONObjectFromJSONArray(
+										_respJsonDataArray, i));
+
+						// set the first company id as user login company id
+						if (0 == i) {
+							_userLoginCompanyId = _userCompanyBean.getId();
+						}
+
+						// add user company bean to user company list
+						_userCompanyList.add(_userCompanyBean);
+
+						// check user last login company id and compare with
+						// user company bean id
+						if (null != _userLastLoginCompanyId
+								&& _userLastLoginCompanyId == _userCompanyBean
+										.getId()) {
+							_userLoginCompanyId = _userLastLoginCompanyId;
+						}
+					}
+
+					// set user login company id and companies to approve user
+					// extension
+					if (null != _userLoginCompanyId) {
+						IAUserExtension.setUserLoginCompanyId(_loginUserBean,
+								_userLoginCompanyId);
+					}
+					IAUserExtension.setUserCompanies(_loginUserBean,
+							_userCompanyList);
+
+					// add account login user bean to user manager
+					UserManager.getInstance().setUser(_loginUserBean);
+
+					// save account login user name and key to local storage
+					DataStorageUtils.putObject(
+							IAUserLocalStorageAttributes.USER_LOGINNAME.name(),
+							_accountLoginUserPhone);
+					DataStorageUtils.putObject(
+							IAUserLocalStorageAttributes.USER_LOGINKEY.name(),
+							_accountLoginUserPwdBase64Encode);
 
 					// pop account login activity with result
 					popActivityWithResult(RESULT_OK, null);

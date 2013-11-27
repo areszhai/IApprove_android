@@ -14,6 +14,7 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 		// set content view
 		setContentView(R.layout.addressbook_tab_content_activity_layout);
 
+		// set subViews
 		// set title
 		setTitle(R.string.addressbook_tab7nav_title);
 

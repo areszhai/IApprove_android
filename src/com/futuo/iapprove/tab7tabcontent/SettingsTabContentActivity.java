@@ -14,6 +14,7 @@ public class SettingsTabContentActivity extends IApproveTabContentActivity {
 		// set content view
 		setContentView(R.layout.settings_tab_content_activity_layout);
 
+		// set subViews
 		// set title
 		setTitle(R.string.settings_tab7nav_title);
 

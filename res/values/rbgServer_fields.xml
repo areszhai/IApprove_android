@@ -10,5 +10,8 @@
     <string name="rbgServer_accountLoginReqParam_action">LoginValidationPass</string>
     <string name="rbgServer_accountLoginReqParam_phone">logname</string>
     <string name="rbgServer_accountLoginReqParam_password">logpass</string>
+    <string name="rbgServer_accountLoginReqResp_companies_companyId">number</string>
+    <string name="rbgServer_accountLoginReqResp_companies_companyName">abbreviation</string>
+    <string name="rbgServer_accountLoginReqResp_companies_employeeName">name</string>
 
 </resources>

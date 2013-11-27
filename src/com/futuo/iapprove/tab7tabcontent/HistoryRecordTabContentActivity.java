@@ -20,6 +20,7 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 		// set content view
 		setContentView(R.layout.history_record_tab_content_activity_layout);
 
+		// set subViews
 		// set history record title segment as title
 		setTitle(generateHistoryRecordTitleSegment(this), null);
 
