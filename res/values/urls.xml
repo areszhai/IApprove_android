@@ -8,6 +8,10 @@
 
     <!-- account -->
     <!-- account login -->
-    <string name="account_login_url">/enterpries/userLoginMobile</string>
+    <string name="account_login_url" translatable="false">/enterpries/userLoginMobile</string>
+
+    <!-- iApprove -->
+    <!-- to-do list -->
+    <string name="get_todoList_url" translatable="false">/enterpries/processInfoMobile</string>
 
 </resources>

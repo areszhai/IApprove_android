@@ -1,6 +1,8 @@
 package com.futuo.iapprove.account.user;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.util.Log;
 
@@ -11,31 +13,71 @@ public class IAUserExtension {
 	private static final String LOG_TAG = IAUserExtension.class
 			.getCanonicalName();
 
-	// get approve user login company id
-	public static Long getUserLoginCompanyId(UserBean user) {
+	// approve user enterprise map, key is enterprise id and value is enterprise
+	// name
+	private static Map<Long, String> _mUserEnterpriseMap;
+
+	// get approve user login enterprise id
+	public static Long getUserLoginEnterpriseId(UserBean user) {
 		return (Long) getUserExtAttr(user,
-				IAUserExtensionAttributes.USER_LOGINCOMPANYID);
+				IAUserExtensionAttributes.USER_LOGINENTERPRISEID);
 	}
 
-	// set approve user login company id
-	public static void setUserLoginCompanyId(UserBean user,
-			Long userLoginCompanyId) {
-		setUserExtAttr(user, IAUserExtensionAttributes.USER_LOGINCOMPANYID,
-				userLoginCompanyId);
+	// set approve user login enterprise id
+	public static void setUserLoginEnterpriseId(UserBean user,
+			Long userLoginEnterpriseId) {
+		setUserExtAttr(user, IAUserExtensionAttributes.USER_LOGINENTERPRISEID,
+				userLoginEnterpriseId);
 	}
 
-	// get approve user company list
+	// get approve user enterprise list
 	@SuppressWarnings("unchecked")
-	public static List<UserCompanyBean> getUserCompanies(UserBean user) {
-		return (List<UserCompanyBean>) getUserExtAttr(user,
-				IAUserExtensionAttributes.USER_COMPANIES);
+	public static List<UserEnterpriseBean> getUserEnterprises(UserBean user) {
+		return (List<UserEnterpriseBean>) getUserExtAttr(user,
+				IAUserExtensionAttributes.USER_ENTERPRISES);
 	}
 
-	// set approve user company list
-	public static void setUserCompanies(UserBean user,
-			List<UserCompanyBean> userCompanies) {
-		setUserExtAttr(user, IAUserExtensionAttributes.USER_COMPANIES,
-				userCompanies);
+	// set approve user enterprise list
+	public static void setUserEnterprises(UserBean user,
+			List<UserEnterpriseBean> userEnterprises) {
+		// init approve user enterprise map
+		_mUserEnterpriseMap = new LinkedHashMap<Long, String>();
+
+		for (UserEnterpriseBean userEnterprise : userEnterprises) {
+			_mUserEnterpriseMap.put(userEnterprise.getId(),
+					userEnterprise.getName());
+		}
+
+		setUserExtAttr(user, IAUserExtensionAttributes.USER_ENTERPRISES,
+				userEnterprises);
+	}
+
+	// get approve user login enterprise index
+	public static final Integer getUserLoginEnterpriseIndex(
+			Long userLoginEnterpriseId) {
+		Integer _userLoginEnterpriseIndex = null;
+
+		// get user enterprise id array
+		Long[] _userEnterpriseIds = _mUserEnterpriseMap.keySet().toArray(
+				new Long[] {});
+
+		for (int i = 0; i < _userEnterpriseIds.length; i++) {
+			// compare user login enterprise id with each user enterprise id
+			if (userLoginEnterpriseId.longValue() == _userEnterpriseIds[i]
+					.longValue()) {
+				_userLoginEnterpriseIndex = i;
+
+				// break immediately
+				break;
+			}
+		}
+
+		return _userLoginEnterpriseIndex;
+	}
+
+	// get approve user enterprise name array
+	public static final String[] getUserEnterpriseNames() {
+		return _mUserEnterpriseMap.values().toArray(new String[] {});
 	}
 
 	// get approve user extension attribute with key
@@ -74,8 +116,8 @@ public class IAUserExtension {
 	// approve user extension attributes
 	static enum IAUserExtensionAttributes {
 
-		// user login company id and company list
-		USER_LOGINCOMPANYID, USER_COMPANIES
+		// user login enterprise id and enterprise list
+		USER_LOGINENTERPRISEID, USER_ENTERPRISES
 
 	}
 

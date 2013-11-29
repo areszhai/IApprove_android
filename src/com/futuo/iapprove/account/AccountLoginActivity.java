@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
 import com.futuo.iapprove.account.user.IAUserLocalStorageAttributes;
-import com.futuo.iapprove.account.user.UserCompanyBean;
+import com.futuo.iapprove.account.user.UserEnterpriseBean;
 import com.futuo.iapprove.customwidget.AccountLoginFormItem;
 import com.futuo.iapprove.customwidget.AccountLoginFormItem.AccountLoginFormItemInputEditTextTextWatcher;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
@@ -307,10 +307,10 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 							.base64Encode(_mAccountLoginUserPwdItem
 									.getInputEditText());
 
-					// get user last login company id from local storage as
+					// get user last login enterprise id from local storage as
 					// default
-					Long _userLastLoginCompanyId = DataStorageUtils
-							.getLong(IAUserLocalStorageAttributes.USER_LASTLOGINCOMPANYID
+					Long _userLastLoginEnterpriseId = DataStorageUtils
+							.getLong(IAUserLocalStorageAttributes.USER_LASTLOGINENTERPRISEID
 									.name());
 
 					// generate account login user bean with username and
@@ -319,41 +319,49 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 							_accountLoginUserPhone, null,
 							_accountLoginUserPwdBase64Encode);
 
-					// define user login company id and user company list
-					Long _userLoginCompanyId = null;
-					List<UserCompanyBean> _userCompanyList = new ArrayList<UserCompanyBean>();
+					// define user login enterprise id and user enterprise list
+					Long _userLoginEnterpriseId = null;
+					List<UserEnterpriseBean> _userEnterpriseList = new ArrayList<UserEnterpriseBean>();
 
 					for (int i = 0; i < _respJsonDataArray.length(); i++) {
-						// get user company bean
-						UserCompanyBean _userCompanyBean = new UserCompanyBean(
+						// get user enterprise bean
+						UserEnterpriseBean _userEnterpriseBean = new UserEnterpriseBean(
 								JSONUtils.getJSONObjectFromJSONArray(
 										_respJsonDataArray, i));
 
-						// set the first company id as user login company id
+						// set the first enterprise id as user login enterprise
+						// id
 						if (0 == i) {
-							_userLoginCompanyId = _userCompanyBean.getId();
+							_userLoginEnterpriseId = _userEnterpriseBean
+									.getId();
 						}
 
-						// add user company bean to user company list
-						_userCompanyList.add(_userCompanyBean);
+						// add user enterprise bean to user enterprise list
+						_userEnterpriseList.add(_userEnterpriseBean);
 
-						// check user last login company id and compare with
-						// user company bean id
-						if (null != _userLastLoginCompanyId
-								&& _userLastLoginCompanyId == _userCompanyBean
-										.getId()) {
-							_userLoginCompanyId = _userLastLoginCompanyId;
+						// check user last login enterprise id and compare with
+						// user enterprise bean id
+						if (null != _userLastLoginEnterpriseId
+								&& _userLastLoginEnterpriseId.longValue() == _userEnterpriseBean
+										.getId().longValue()) {
+							_userLoginEnterpriseId = _userLastLoginEnterpriseId;
 						}
 					}
 
-					// set user login company id and companies to approve user
-					// extension
-					if (null != _userLoginCompanyId) {
-						IAUserExtension.setUserLoginCompanyId(_loginUserBean,
-								_userLoginCompanyId);
+					// set user login enterprise id and enterprises to approve
+					// user extension
+					if (null != _userLoginEnterpriseId) {
+						IAUserExtension.setUserLoginEnterpriseId(
+								_loginUserBean, _userLoginEnterpriseId);
+
+						// save user login enterprise id to local storage
+						DataStorageUtils
+								.putObject(
+										IAUserLocalStorageAttributes.USER_LASTLOGINENTERPRISEID
+												.name(), _userLoginEnterpriseId);
 					}
-					IAUserExtension.setUserCompanies(_loginUserBean,
-							_userCompanyList);
+					IAUserExtension.setUserEnterprises(_loginUserBean,
+							_userEnterpriseList);
 
 					// add account login user bean to user manager
 					UserManager.getInstance().setUser(_loginUserBean);

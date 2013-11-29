@@ -12,26 +12,26 @@
         android:orientation="horizontal" >
 
         <RadioButton
-            android:id="@+id/hr_myApplication_segment_radioButton"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="@drawable/my_application_segment_radiobtn_bg"
-            android:button="@null"
-            android:checked="true"
-            android:gravity="center"
-            android:text="@string/hr_myApplication_segment_radioButton_title"
-            android:textColor="@android:color/white" />
-
-        <RadioButton
             android:id="@+id/hr_checked_segment_radioButton"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:background="@drawable/checked_segment_radiobtn_bg"
             android:button="@null"
+            android:checked="true"
             android:gravity="center"
             android:text="@string/hr_checked_segment_radioButton_title"
+            android:textColor="@android:color/white" />
+
+        <RadioButton
+            android:id="@+id/hr_myApplication_segment_radioButton"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/my_application_segment_radiobtn_bg"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/hr_myApplication_segment_radioButton_title"
             android:textColor="@android:color/white" />
     </RadioGroup>
 

@@ -11,67 +11,67 @@ import com.futuo.iapprove.R;
 import com.richitec.commontoolkit.CTApplication;
 import com.richitec.commontoolkit.utils.JSONUtils;
 
-public class UserCompanyBean implements Serializable {
+public class UserEnterpriseBean implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7049603672369228031L;
 
-	private static final String LOG_TAG = UserCompanyBean.class
+	private static final String LOG_TAG = UserEnterpriseBean.class
 			.getCanonicalName();
 
-	// company id, name and employee name
+	// enterprise id, name and employee name
 	private Long id;
 	private String name;
 	private String employeeName;
 
 	// Constructor
-	public UserCompanyBean() {
+	public UserEnterpriseBean() {
 		super();
 
 		// nothing to do
 	}
 
-	public UserCompanyBean(JSONObject userCompanyJSONObejct) {
+	public UserEnterpriseBean(JSONObject userEnterpriseJSONObejct) {
 		super();
 
-		// check user company json object
-		if (null != userCompanyJSONObejct) {
+		// check user enterprise json object
+		if (null != userEnterpriseJSONObejct) {
 			// get application context
 			Context _appContext = CTApplication.getContext();
 
-			// set user company bean attributes
+			// set user enterprise bean attributes
 			// id
 			id = JSONUtils
 					.getLongFromJSONObject(
-							userCompanyJSONObejct,
+							userEnterpriseJSONObejct,
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_accountLoginReqResp_companies_companyId));
+											R.string.rbgServer_accountLoginReqResp_enterprises_enterpriseId));
 
 			// name
 			name = JSONUtils
 					.getStringFromJSONObject(
-							userCompanyJSONObejct,
+							userEnterpriseJSONObejct,
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_accountLoginReqResp_companies_companyName));
+											R.string.rbgServer_accountLoginReqResp_enterprises_enterpriseName));
 
 			// employee name
 			employeeName = JSONUtils
 					.getStringFromJSONObject(
-							userCompanyJSONObejct,
+							userEnterpriseJSONObejct,
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_accountLoginReqResp_companies_employeeName));
+											R.string.rbgServer_accountLoginReqResp_enterprises_employeeName));
 		} else {
 			Log.e(LOG_TAG,
-					"Constructor user company bean with json object error, json object = "
-							+ userCompanyJSONObejct);
+					"Constructor user enterprise bean with json object error, json object = "
+							+ userEnterpriseJSONObejct);
 		}
 	}
 
@@ -104,8 +104,8 @@ public class UserCompanyBean implements Serializable {
 		// define description
 		StringBuilder _description = new StringBuilder();
 
-		// append company id, name and employee name
-		_description.append("Company id = ").append(id).append(", ")
+		// append enterprise id, name and employee name
+		_description.append("Enterprise id = ").append(id).append(", ")
 				.append("name = ").append(name).append(" and ")
 				.append("employee name = ").append(employeeName);
 

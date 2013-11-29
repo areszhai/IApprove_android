@@ -2,16 +2,40 @@
 <resources>
 
     <!-- common -->
-    <string name="rbgServer_commonReqParam_action">action</string>
-    <string name="rbgServer_commonReqResp_error">error</string>
+    <string name="rbgServer_commonReqParam_action" translatable="false">action</string>
+    <string name="rbgServer_commonReqResp_error" translatable="false">error</string>
+
+    <!-- user signature -->
+    <string name="rbgServer_userSigReqParam_userName" translatable="false">logname</string>
+    <string name="rbgServer_userSigReqParam_userKey" translatable="false">logpassword</string>
 
     <!-- account -->
     <!-- account login -->
-    <string name="rbgServer_accountLoginReqParam_action">LoginValidationPass</string>
-    <string name="rbgServer_accountLoginReqParam_phone">logname</string>
-    <string name="rbgServer_accountLoginReqParam_password">logpass</string>
-    <string name="rbgServer_accountLoginReqResp_companies_companyId">number</string>
-    <string name="rbgServer_accountLoginReqResp_companies_companyName">abbreviation</string>
-    <string name="rbgServer_accountLoginReqResp_companies_employeeName">name</string>
+    <string name="rbgServer_accountLoginReqParam_action" translatable="false">LoginValidationPass</string>
+    <string name="rbgServer_accountLoginReqParam_phone" translatable="false">logname</string>
+    <string name="rbgServer_accountLoginReqParam_password" translatable="false">logpass</string>
+    <string name="rbgServer_accountLoginReqResp_enterprises_enterpriseId" translatable="false">number</string>
+    <string name="rbgServer_accountLoginReqResp_enterprises_enterpriseName" translatable="false">abbreviation</string>
+    <string name="rbgServer_accountLoginReqResp_enterprises_employeeName" translatable="false">name</string>
+
+    <!-- iApprove -->
+    <!-- iApprove list common -->
+    <string name="rbgServer_getIApproveListReqParam_enterpriseId" translatable="false">enterpriseid</string>
+    <string name="rbgServer_getIApproveListReqParam_state" translatable="false">state</string>
+    <string name="rbgServer_getIApproveListReqParam_pageNum" translatable="false">strpage</string>
+    <string name="rbgServer_getIApproveListReqResp_list" translatable="false">processinfoMobileList</string>
+    <string name="rbgServer_getIApproveListReqResp_hasNext" translatable="false">hasNext</string>
+
+    <!-- to-do list -->
+    <string name="rbgServer_getTodoListReqParam_action" translatable="false">getProcessInfo</string>
+    <string name="rbgServer_getTodoListReqParam_state" translatable="false">1</string>
+
+    <!-- checked list -->
+    <string name="rbgServer_getCheckedListReqParam_action" translatable="false">getProcessInfo</string>
+    <string name="rbgServer_getCheckedListReqParam_state" translatable="false">2</string>
+
+    <!-- my application list -->
+    <string name="rbgServer_getMyApplicationListReqParam_action" translatable="false">getMyProcessInfo</string>
+    <string name="rbgServer_getMyApplicationListReqParam_state" translatable="false">1</string>
 
 </resources>

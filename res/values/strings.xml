@@ -34,8 +34,10 @@
     <!-- to-do list tab content activity -->
     <string name="title_activity_todo_list_tab_content" translatable="false">TodoListTabContentActivity</string>
     <string name="todoList_tab_tag" translatable="false">the to-do list tab</string>
-    <string name="todoList_tab7nav_title">To-do</string>
+    <string name="todoList_tab_title">To-do</string>
     <string name="tdl_taskSearch_editText_hint">Search</string>
+    <string name="tdl_userEnterpriseChange_progDlg_message">Enterprise changing, please wait&#8230;</string>
+    <string name="tdlt_fetchingData_label">Fetching&#8230;</string>
 
     <!-- address book tab content activity -->
     <string name="title_activity_addressbook_tab_content" translatable="false">AddressbookTabContentActivity</string>

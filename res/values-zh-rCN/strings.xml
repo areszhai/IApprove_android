@@ -27,8 +27,10 @@
 
     <!-- iApprove tab activity -->
     <!-- to-do list tab content activity -->
-    <string name="todoList_tab7nav_title">未审批</string>
+    <string name="todoList_tab_title">未审批</string>
     <string name="tdl_taskSearch_editText_hint">搜索</string>
+    <string name="tdl_userEnterpriseChange_progDlg_message">企业切换中，请稍后&#8230;</string>
+    <string name="tdlt_fetchingData_label">读取中&#8230;</string>
 
     <!-- address book tab content activity -->
     <string name="addressbook_tab7nav_title">通讯录</string>

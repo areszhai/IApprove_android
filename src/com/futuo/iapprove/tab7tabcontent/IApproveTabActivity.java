@@ -19,7 +19,7 @@ public class IApproveTabActivity extends TabActivity {
 	// tab widget item and content class array, the to-do list, addressbook,
 	// history record and settings
 	private final Object[][] TAB_WIDGETITEMS7CONTENTCLS = new Object[][] {
-			{ R.string.todoList_tab_tag, R.string.todoList_tab7nav_title,
+			{ R.string.todoList_tab_tag, R.string.todoList_tab_title,
 					R.drawable.todo_tab_icon, TodoListTabContentActivity.class },
 			{ R.string.addressbook_tab_tag, R.string.addressbook_tab7nav_title,
 					R.drawable.addressbook_tab_icon,

@@ -56,12 +56,12 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 			// check checked id
 			switch (checkedId) {
 			case R.id.hr_checked_segment_radioButton:
-				Log.d("2", "checked segment be checked");
+				Log.d("1", "checked segment be checked");
 				break;
 
 			case R.id.hr_myApplication_segment_radioButton:
 			default:
-				Log.d("1", "my application segment be checked");
+				Log.d("2", "my application segment be checked");
 				break;
 			}
 		}
