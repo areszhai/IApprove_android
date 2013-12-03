@@ -31,6 +31,9 @@
     <!-- iApprove tab activity -->
     <string name="title_activity_iapprove_tab" translatable="false">IApproveTabActivity</string>
 
+    <!-- iApprove list common -->
+    <string name="iapprove_listView_item_detailInfo_imageView_contentDescription" translatable="false">the iApprove listView item detail info imageView</string>
+
     <!-- to-do list tab content activity -->
     <string name="title_activity_todo_list_tab_content" translatable="false">TodoListTabContentActivity</string>
     <string name="todoList_tab_tag" translatable="false">the to-do list tab</string>

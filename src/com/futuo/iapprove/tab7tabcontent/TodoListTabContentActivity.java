@@ -1,9 +1,12 @@
 package com.futuo.iapprove.tab7tabcontent;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -31,6 +34,7 @@ import com.richitec.commontoolkit.utils.HttpUtils;
 import com.richitec.commontoolkit.utils.HttpUtils.HttpRequestType;
 import com.richitec.commontoolkit.utils.HttpUtils.OnHttpRequestListener;
 import com.richitec.commontoolkit.utils.HttpUtils.PostRequestFormat;
+import com.richitec.commontoolkit.utils.JSONUtils;
 import com.richitec.commontoolkit.utils.StringUtils;
 
 public class TodoListTabContentActivity extends IApproveTabContentActivity {
@@ -135,7 +139,8 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 				+ getResources().getString(R.string.get_todoList_url),
 				PostRequestFormat.URLENCODED, _getTodoListPostHttpReqParam,
 				null, HttpRequestType.ASYNCHRONOUS,
-				new GetTodoListPostHttpRequestListener());
+				new GetTodoListPostHttpRequestListener(
+						GetTodoListType.GET_FIRST));
 	}
 
 	// close user enterprise to-do list change process dialog
@@ -258,17 +263,69 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 	}
 
+	// to-do task adapter
+	class TodoTaskAdapter extends IApproveTaskAdapter {
+
+		// to-do task adapter keys
+		public static final String TASKINFO7APPLICANT_KEY = "task info and applicant key";
+		public static final String TASKSUBMITTIMESTAMP_KEY = "task submit timestamp key";
+		public static final String TASKAPPROVEADVICES_KEY = "task approve advices key";
+
+		public TodoTaskAdapter(Context context, List<Map<String, ?>> data,
+				int itemsLayoutResId, String[] dataKeys,
+				int[] itemsComponentResIds) {
+			super(context, data, itemsLayoutResId, dataKeys,
+					itemsComponentResIds);
+		}
+
+	}
+
+	// get to-do list type
+	enum GetTodoListType {
+
+		// get first and append more
+		GET_FIRST, APPEND_MORE
+
+	}
+
 	// get to-do list post http request listener
 	class GetTodoListPostHttpRequestListener extends OnHttpRequestListener {
 
+		// get to-do list type
+		private GetTodoListType _mGetTodoListType;
+
+		public GetTodoListPostHttpRequestListener(GetTodoListType type) {
+			super();
+
+			// save get to-do list type
+			_mGetTodoListType = type;
+		}
+
+		// done get to-do list
+		private void doneGetTodoList() {
+			// check get to-do list type
+			switch (_mGetTodoListType) {
+			case GET_FIRST:
+				// close user enterprise change process dialog
+				closeUserEnterpriseTodoListChangeProgDlg();
+
+				// finish data fetching
+				_mDataFetching = false;
+
+				// update title
+				setTitle(_mTitleView.generateTitleView());
+				break;
+
+			case APPEND_MORE:
+				//
+				break;
+			}
+		}
+
 		@Override
 		public void onFinished(HttpRequest request, HttpResponse response) {
-			// close user enterprise change process dialog
-			closeUserEnterpriseTodoListChangeProgDlg();
-
-			_mDataFetching = false;
-			// update title
-			setTitle(_mTitleView.generateTitleView());
+			// done get to-do list
+			doneGetTodoList();
 
 			// get http response entity string
 			String _respEntityString = HttpUtils
@@ -278,17 +335,62 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 					"Send get to-do list post http request successful, response entity string = "
 							+ _respEntityString);
 
-			//
+			// get and check http response entity string error json data
+			JSONObject _respJsonData = JSONUtils
+					.toJSONObject(_respEntityString);
+
+			if (null != _respJsonData) {
+				// get and check error message
+				String _errorMsg = JSONUtils.getStringFromJSONObject(
+						_respJsonData,
+						getResources().getString(
+								R.string.rbgServer_commonReqResp_error));
+
+				if (null != _errorMsg) {
+					Log.e(LOG_TAG,
+							"Get to-do list failed, response error message = "
+									+ _errorMsg);
+
+					Toast.makeText(TodoListTabContentActivity.this, _errorMsg,
+							Toast.LENGTH_SHORT).show();
+				} else {
+					// get and check to-do list
+					JSONArray _todoListJsonArray = JSONUtils
+							.getJSONArrayFromJSONObject(
+									_respJsonData,
+									getResources()
+											.getString(
+													R.string.rbgServer_getIApproveListReqResp_list));
+
+					if (null != _todoListJsonArray) {
+						Log.d(LOG_TAG, "Get to-do list successful");
+
+						Log.d(LOG_TAG, "to-do list = " + _todoListJsonArray);
+
+						//
+					} else {
+						Log.e(LOG_TAG,
+								"Get to-do list failed, response entity unrecognized");
+
+						Toast.makeText(TodoListTabContentActivity.this,
+								R.string.toast_requestResp_unrecognized,
+								Toast.LENGTH_SHORT).show();
+					}
+				}
+			} else {
+				Log.e(LOG_TAG,
+						"Get to-do list failed, response entity unrecognized");
+
+				Toast.makeText(TodoListTabContentActivity.this,
+						R.string.toast_requestResp_unrecognized,
+						Toast.LENGTH_SHORT).show();
+			}
 		}
 
 		@Override
 		public void onFailed(HttpRequest request, HttpResponse response) {
-			// close user enterprise change process dialog
-			closeUserEnterpriseTodoListChangeProgDlg();
-
-			_mDataFetching = false;
-			// update title
-			setTitle(_mTitleView.generateTitleView());
+			// done get to-do list
+			doneGetTodoList();
 
 			Log.e(LOG_TAG, "Send get to-do list post http request failed");
 

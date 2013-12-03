@@ -140,15 +140,6 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 		}
 	}
 
-	// close account login asynchronous post http request process dialog
-	private void closeAccountLoginAsyncHttpReqProgDlg() {
-		// check and dismiss account login asynchronous post http request
-		// process dialog
-		if (null != _mAccountLoginAsyncHttpReqProgDlg) {
-			_mAccountLoginAsyncHttpReqProgDlg.dismiss();
-		}
-	}
-
 	// inner class
 	// account login extra data constant
 	public static final class AccountLoginExtraData {
@@ -273,10 +264,19 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 	// account login post http request listener
 	class AccountLoginPostHttpRequestListener extends OnHttpRequestListener {
 
+		// done account login
+		private void doneAccountLogin() {
+			// check and dismiss account login asynchronous post http request
+			// process dialog
+			if (null != _mAccountLoginAsyncHttpReqProgDlg) {
+				_mAccountLoginAsyncHttpReqProgDlg.dismiss();
+			}
+		}
+
 		@Override
 		public void onFinished(HttpRequest request, HttpResponse response) {
-			// close account login asynchronous post http request process dialog
-			closeAccountLoginAsyncHttpReqProgDlg();
+			// done account login
+			doneAccountLogin();
 
 			// get http response entity string
 			String _respEntityString = HttpUtils
@@ -417,8 +417,8 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onFailed(HttpRequest request, HttpResponse response) {
-			// close account login asynchronous post http request process dialog
-			closeAccountLoginAsyncHttpReqProgDlg();
+			// done account login
+			doneAccountLogin();
 
 			// show soft input
 			setSoftInputVisibility(true);
@@ -432,8 +432,8 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onTimeout(HttpRequest request) {
-			// close account login asynchronous post http request process dialog
-			closeAccountLoginAsyncHttpReqProgDlg();
+			// done account login
+			doneAccountLogin();
 
 			// show soft input
 			setSoftInputVisibility(true);
@@ -446,8 +446,8 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onUnknownHost(HttpRequest request) {
-			// close account login asynchronous post http request process dialog
-			closeAccountLoginAsyncHttpReqProgDlg();
+			// done account login
+			doneAccountLogin();
 
 			// show soft input
 			setSoftInputVisibility(true);
