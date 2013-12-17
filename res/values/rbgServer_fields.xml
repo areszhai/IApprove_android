@@ -19,8 +19,10 @@
     <string name="rbgServer_accountLoginReqResp_enterprises_employeeName" translatable="false">name</string>
 
     <!-- iApprove -->
+    <!-- iApprove common -->
+    <string name="rbgServer_getIApproveReqParam_enterpriseId" translatable="false">enterpriseid</string>
+
     <!-- iApprove list common -->
-    <string name="rbgServer_getIApproveListReqParam_enterpriseId" translatable="false">enterpriseid</string>
     <string name="rbgServer_getIApproveListReqParam_state" translatable="false">state</string>
     <string name="rbgServer_getIApproveListReqParam_pageNum" translatable="false">strpage</string>
     <string name="rbgServer_getIApproveListReqResp_list" translatable="false">processinfoMobileList</string>
@@ -37,5 +39,19 @@
     <!-- my application list -->
     <string name="rbgServer_getMyApplicationListReqParam_action" translatable="false">getMyProcessInfo</string>
     <string name="rbgServer_getMyApplicationListReqParam_state" translatable="false">1</string>
+
+    <!-- address book -->
+    <string name="rbgServer_getEnterpriseABReqParam_action" translatable="false">UserAllInfo_l</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employees_id" translatable="false">userid</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employees_name" translatable="false">name</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employees_avatarUrl" translatable="false">headurl</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employees_sex" translatable="false">sex</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employees_nickname" translatable="false">nickname</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employees_birthday" translatable="false">birthtime</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employees_department" translatable="false">department</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employees_mobilePhone" translatable="false">mobilephone</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employees_officePhone" translatable="false">officephone</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employees_email" translatable="false">email</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employees_note" translatable="false">remark</string>
 
 </resources>

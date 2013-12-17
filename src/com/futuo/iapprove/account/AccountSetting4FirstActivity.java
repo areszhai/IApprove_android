@@ -78,9 +78,11 @@ public class AccountSetting4FirstActivity extends NavigationActivity {
 	// inner class
 	// account setting for first request code
 	static class AccountSetting4FirstRequestCode {
+
 		// account register and login request code
 		private static final int ACCOUNT_REGISTER_REQCODE = 100;
 		private static final int ACCOUNT_LOGIN_REQCODE = 101;
+
 	}
 
 	// account register button on click listener

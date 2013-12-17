@@ -1,0 +1,1 @@
+CREATE TABLE "ia_employee_contactinfo" ("_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, "employeeRowId" INTEGER NOT NULL REFERENCES "ia_enterprise_addressbook" ("_id") ON DELETE CASCADE ON UPDATE CASCADE, "type" INTEGER NOT NULL, "info" VARCHAR(40))

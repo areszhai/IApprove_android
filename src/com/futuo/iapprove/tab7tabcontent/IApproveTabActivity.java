@@ -8,6 +8,7 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
 import com.futuo.iapprove.R;
+import com.futuo.iapprove.service.CoreService;
 import com.richitec.commontoolkit.customcomponent.CTTabSpecIndicator;
 
 @SuppressWarnings("deprecation")
@@ -63,11 +64,6 @@ public class IApproveTabActivity extends TabActivity {
 				// content class
 				Class<?> _contentCls = (Class<?>) TAB_WIDGETITEMS7CONTENTCLS[i][3];
 
-				Log.d(LOG_TAG, "IApprove tab spec tag = " + _tag
-						+ ", indicator label resource = " + _labelRes
-						+ ", icon resource = " + _iconRes
-						+ " and content class = " + _contentCls);
-
 				// new tab spec and add to tab host
 				TabSpec _tabSpec = _mTabHost
 						.newTabSpec(_tag)
@@ -85,6 +81,17 @@ public class IApproveTabActivity extends TabActivity {
 				e.printStackTrace();
 			}
 		}
+
+		// start core service
+		startService(new Intent(this, CoreService.class));
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		// stop core service
+		stopService(new Intent(this, CoreService.class));
 	}
 
 }

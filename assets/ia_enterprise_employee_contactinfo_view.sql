@@ -1,0 +1,1 @@
+CREATE VIEW "ia_enterprise_employee_contactinfo_view" AS select eab.*,max(case when eci.type=0 then eci.info end) as mobilePhone,max(case when eci.type=1 then eci.info end) as officePhone,max(case when eci.type=10 then eci.info end) as email from ia_enterprise_addressbook as eab left join ia_employee_contactinfo as eci on eab._id=eci.employeeRowId group by eab._id

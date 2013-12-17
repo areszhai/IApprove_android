@@ -47,6 +47,7 @@
     <string name="addressbook_tab_tag" translatable="false">addressbook tab</string>
     <string name="addressbook_tab7nav_title">Addressbook</string>
     <string name="ab_contactSearch_editText_hint">Search contact with name phonetics</string>
+    <string name="abc_avatar_imageView_contentDescription" translatable="false">the address book contact avatar imageView</string>
 
     <!-- history record tab content activity -->
     <string name="title_activity_history_record_tab_content" translatable="false">HistoryRecordTabContentActivity</string>

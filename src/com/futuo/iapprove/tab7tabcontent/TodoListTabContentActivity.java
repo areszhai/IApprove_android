@@ -26,6 +26,7 @@ import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
 import com.futuo.iapprove.account.user.IAUserLocalStorageAttributes;
 import com.futuo.iapprove.customwidget.IApproveTabContentActivity;
+import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.utils.HttpRequestParamUtils;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
@@ -87,6 +88,26 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 		}
 	}
 
+	@Override
+	protected boolean bindCoreServiceWhenOnResume() {
+		// binder core service when on resume
+		return true;
+	}
+
+	@Override
+	protected void onCoreServiceConnected(CoreService coreService) {
+		super.onCoreServiceConnected(coreService);
+
+		//
+	}
+
+	@Override
+	protected void onCoreServiceDisconnected(CoreService coreService) {
+		super.onCoreServiceDisconnected(coreService);
+
+		//
+	}
+
 	// refresh to-do list with changed user enterprise flag
 	private void refreshTodoList(Boolean changeUserEnterprise) {
 		// to-do list data fetching
@@ -117,13 +138,11 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 						R.string.rbgServer_commonReqParam_action),
 				getResources().getString(
 						R.string.rbgServer_getTodoListReqParam_action));
-		_getTodoListPostHttpReqParam
-				.put(getResources()
-						.getString(
-								R.string.rbgServer_getIApproveListReqParam_enterpriseId),
-						StringUtils.base64Encode(IAUserExtension
-								.getUserLoginEnterpriseId(_mLoginUser)
-								.toString()));
+		_getTodoListPostHttpReqParam.put(
+				getResources().getString(
+						R.string.rbgServer_getIApproveReqParam_enterpriseId),
+				StringUtils.base64Encode(IAUserExtension
+						.getUserLoginEnterpriseId(_mLoginUser).toString()));
 		_getTodoListPostHttpReqParam.put(
 				getResources().getString(
 						R.string.rbgServer_getIApproveListReqParam_state),

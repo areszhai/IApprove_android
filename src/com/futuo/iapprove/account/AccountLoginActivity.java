@@ -143,8 +143,10 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 	// inner class
 	// account login extra data constant
 	public static final class AccountLoginExtraData {
+
 		// account login user phone
 		public static final String ACCOUNT_LOGIN_USER_PHONE = "account_login_user_phone";
+
 	}
 
 	// account confirm login bar button item

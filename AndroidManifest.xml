@@ -72,6 +72,12 @@
             android:label="@string/title_activity_settings_tab_content"
             android:screenOrientation="portrait" >
         </activity>
+
+        <service android:name=".service.CoreService" />
+
+        <provider
+            android:name=".provider.EnterpriseABContentProvider"
+            android:authorities="com.futuo.iapprove.provider.EnterpriseABContentProvider" />
     </application>
 
 </manifest>
