@@ -134,7 +134,7 @@ public class ABContactPhoneBean implements Serializable {
 			try {
 				// get and check mobile phone value
 				Long _mobilePhoneValue = Long.parseLong(cursor.getString(cursor
-						.getColumnIndex(Employee.MOBILEPHONE)));
+						.getColumnIndex(Employee.MOBILE_PHONE)));
 				if (null != _mobilePhoneValue) {
 					_contactPhones.add(new ABContactPhoneBean(
 							ABContactPhoneType.MOBILE, _mobilePhoneValue));
@@ -151,7 +151,7 @@ public class ABContactPhoneBean implements Serializable {
 			try {
 				// get and check office phone value
 				Long _officePhoneValue = Long.parseLong(cursor.getString(cursor
-						.getColumnIndex(Employee.OFFICEPHONE)));
+						.getColumnIndex(Employee.OFFICE_PHONE)));
 				if (null != _officePhoneValue) {
 					_contactPhones.add(new ABContactPhoneBean(
 							ABContactPhoneType.OFFICE, _officePhoneValue));

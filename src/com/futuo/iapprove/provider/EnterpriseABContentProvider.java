@@ -373,8 +373,8 @@ public class EnterpriseABContentProvider extends ContentProvider {
 
 			for (String contentValuesKey : values.keySet()) {
 				// check values
-				if (Employee.MOBILEPHONE.equalsIgnoreCase(contentValuesKey)
-						|| Employee.OFFICEPHONE
+				if (Employee.MOBILE_PHONE.equalsIgnoreCase(contentValuesKey)
+						|| Employee.OFFICE_PHONE
 								.equalsIgnoreCase(contentValuesKey)
 						|| Employee.EMAIL.equalsIgnoreCase(contentValuesKey)) {
 					// define employee contact info content values
@@ -383,12 +383,13 @@ public class EnterpriseABContentProvider extends ContentProvider {
 					// generate employee contact info content values
 					// put employee contact info type into employee contact info
 					// content values
-					if (Employee.MOBILEPHONE.equalsIgnoreCase(contentValuesKey)) {
+					if (Employee.MOBILE_PHONE
+							.equalsIgnoreCase(contentValuesKey)) {
 						// mobile phone
 						_employeeContactInfoContentValues.put(
 								EmployeeContactInfo.TYPE,
 								EmployeeContactInfo.MOBILEPHONE_TYPE);
-					} else if (Employee.OFFICEPHONE
+					} else if (Employee.OFFICE_PHONE
 							.equalsIgnoreCase(contentValuesKey)) {
 						// office phone
 						_employeeContactInfoContentValues.put(
@@ -469,11 +470,12 @@ public class EnterpriseABContentProvider extends ContentProvider {
 			public static final String NICKNAME = "nickname";
 			public static final String BIRTHDAY = "birthday";
 			public static final String DEPARTMENT = "department";
+			public static final String APPROVE_NUMBER = "approveNumber";
 			public static final String NOTE = "note";
 			public static final String FREQUENCY = "frequency";
 
-			public static final String MOBILEPHONE = "mobilePhone";
-			public static final String OFFICEPHONE = "officePhone";
+			public static final String MOBILE_PHONE = "mobilePhone";
+			public static final String OFFICE_PHONE = "officePhone";
 			public static final String EMAIL = "email";
 
 			// content uri

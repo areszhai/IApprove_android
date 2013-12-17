@@ -21,7 +21,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.futuo.iapprove.R;
-import com.futuo.iapprove.addressbook.AddressbookContactBean;
+import com.futuo.iapprove.addressbook.ABContactBean;
 import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees.Employee;
 import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyType;
 import com.futuo.iapprove.utils.HttpRequestParamUtils;
@@ -245,16 +245,15 @@ public class CoreService extends Service {
 
 		// get local storage enterprise address book contacts user id as key and
 		// bean as value map
-		private Map<Long, AddressbookContactBean> getLocalStorageEABContactsUserIdAndBeanMap(
+		private Map<Long, ABContactBean> getLocalStorageEABContactsUserIdAndBeanMap(
 				Cursor cursor) {
-			Map<Long, AddressbookContactBean> _localStorageEABContactsUserIdAndBeanMap = new HashMap<Long, AddressbookContactBean>();
+			Map<Long, ABContactBean> _localStorageEABContactsUserIdAndBeanMap = new HashMap<Long, ABContactBean>();
 
 			// set all local storage enterprise address book contact for
 			// deleting
 			while (cursor.moveToNext()) {
 				// get for deleting address book contact
-				AddressbookContactBean _4deletingABContact = new AddressbookContactBean(
-						cursor);
+				ABContactBean _4deletingABContact = new ABContactBean(cursor);
 
 				// set it for deleting
 				_4deletingABContact
@@ -315,7 +314,7 @@ public class CoreService extends Service {
 
 						// get local storage enterprise address book contacts
 						// user id as key and bean as value map
-						Map<Long, AddressbookContactBean> _localStorageEABContactsUserIdAndBeanMap = getLocalStorageEABContactsUserIdAndBeanMap(_mContentResolver
+						Map<Long, ABContactBean> _localStorageEABContactsUserIdAndBeanMap = getLocalStorageEABContactsUserIdAndBeanMap(_mContentResolver
 								.query(ContentUris.withAppendedId(
 										Employee.ENTERPRISE_CONTENT_URI,
 										_mEnterpriseId), null, null, null, null));
@@ -325,7 +324,7 @@ public class CoreService extends Service {
 
 						for (int i = 0; i < _enterpriseABJsonArray.length(); i++) {
 							// get enterprise each employee
-							AddressbookContactBean _employee = new AddressbookContactBean(
+							ABContactBean _employee = new ABContactBean(
 									JSONUtils.getJSONObjectFromJSONArray(
 											_enterpriseABJsonArray, i));
 
@@ -346,13 +345,15 @@ public class CoreService extends Service {
 									_employee.getBirthday());
 							_employeeContentValues.put(Employee.DEPARTMENT,
 									_employee.getDepartment());
+							_employeeContentValues.put(Employee.APPROVE_NUMBER,
+									_employee.getApproveNumber());
 							_employeeContentValues.put(Employee.NOTE,
 									_employee.getNote());
 
 							// mobile, office phone and email
-							_employeeContentValues.put(Employee.MOBILEPHONE,
+							_employeeContentValues.put(Employee.MOBILE_PHONE,
 									_employee.getMobilePhoneNumber());
-							_employeeContentValues.put(Employee.OFFICEPHONE,
+							_employeeContentValues.put(Employee.OFFICE_PHONE,
 									_employee.getOfficePhoneNumber());
 							_employeeContentValues.put(Employee.EMAIL,
 									_employee.getEmail());
@@ -376,7 +377,7 @@ public class CoreService extends Service {
 										_employeeContentValues);
 							} else {
 								// get for updating address book contact
-								AddressbookContactBean _4updatingABContact = _localStorageEABContactsUserIdAndBeanMap
+								ABContactBean _4updatingABContact = _localStorageEABContactsUserIdAndBeanMap
 										.get(_employee.getUserId());
 
 								// update local storage enterprise address book
@@ -412,7 +413,7 @@ public class CoreService extends Service {
 						for (Long _localStorageEABContactUseId : _localStorageEABContactsUserIdAndBeanMap
 								.keySet()) {
 							// get the for deleting address book contact
-							AddressbookContactBean _4deletingABContact = _localStorageEABContactsUserIdAndBeanMap
+							ABContactBean _4deletingABContact = _localStorageEABContactsUserIdAndBeanMap
 									.get(_localStorageEABContactUseId);
 
 							// check its data dirty type

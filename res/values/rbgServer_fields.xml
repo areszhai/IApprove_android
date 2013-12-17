@@ -49,6 +49,7 @@
     <string name="rbgServer_getEnterpriseABReqResp_employees_nickname" translatable="false">nickname</string>
     <string name="rbgServer_getEnterpriseABReqResp_employees_birthday" translatable="false">birthtime</string>
     <string name="rbgServer_getEnterpriseABReqResp_employees_department" translatable="false">department</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employees_approveNumber" translatable="false">logname</string>
     <string name="rbgServer_getEnterpriseABReqResp_employees_mobilePhone" translatable="false">mobilephone</string>
     <string name="rbgServer_getEnterpriseABReqResp_employees_officePhone" translatable="false">officephone</string>
     <string name="rbgServer_getEnterpriseABReqResp_employees_email" translatable="false">email</string>

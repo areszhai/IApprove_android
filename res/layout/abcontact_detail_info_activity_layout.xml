@@ -1,7 +1,113 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="18dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:paddingTop="18dp"
+    android:scrollbars="none"
     tools:context=".tab7tabcontent.addressbook.ABContactDetailInfoActivity" >
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="80dp" >
+
+            <ImageView
+                android:id="@+id/abcdi_avatar_imageView"
+                android:layout_width="80dp"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/abcdi_avatar_imageView_contentDescription"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_default_large_avatar" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@id/abcdi_avatar_imageView"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="9" >
+
+                    <TextView
+                        android:id="@+id/abcdi_employeeName_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:gravity="center_vertical"
+                        android:maxWidth="160dp"
+                        android:shadowColor="@android:color/white"
+                        android:shadowDx="0"
+                        android:shadowDy="1"
+                        android:shadowRadius="1"
+                        android:textSize="22sp" />
+
+                    <ImageView
+                        android:id="@+id/abcdi_sex_imageView"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/abcdi_employeeName_textView"
+                        android:contentDescription="@string/abcdi_sex_imageView_contentDescription" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/abcdi_approveNumber_textView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="10"
+                    android:gravity="center_vertical"
+                    android:shadowColor="@android:color/white"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/abcdi_nickname_textView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="10"
+                    android:gravity="center_vertical"
+                    android:shadowColor="@android:color/white"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:textColor="@color/gray" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            android:visibility="gone" >
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/abcdi_new_approveApplication_button"
+            android:layout_width="fill_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/new_approveapplication_button_bg"
+            android:shadowColor="@android:color/black"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:text="@string/abcdi_new_approveApplication_button_title"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</ScrollView>

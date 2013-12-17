@@ -53,6 +53,18 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
+            android:name=".tab7tabcontent.form.EnterpriseFormListActivity"
+            android:label="@string/title_activity_enterprise_form_list"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name=".tab7tabcontent.form.EnterpriseFormDetailInfoActivity"
+            android:label="@string/title_activity_enterprise_form_detail_info"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
             android:name=".tab7tabcontent.TodoListTabContentActivity"
             android:label="@string/title_activity_todo_list_tab_content"
             android:screenOrientation="portrait" >

@@ -26,10 +26,12 @@ import android.widget.TextView;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
-import com.futuo.iapprove.addressbook.AddressbookContactBean;
+import com.futuo.iapprove.addressbook.ABContactBean;
 import com.futuo.iapprove.customwidget.IApproveTabContentActivity;
 import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees.Employee;
 import com.futuo.iapprove.service.CoreService;
+import com.futuo.iapprove.tab7tabcontent.addressbook.ABContactDetailInfoActivity;
+import com.futuo.iapprove.tab7tabcontent.addressbook.ABContactDetailInfoActivity.ABContactDetailInfoExtraData;
 import com.richitec.commontoolkit.customadapter.CTListCursorAdapter;
 import com.richitec.commontoolkit.user.UserManager;
 
@@ -145,7 +147,7 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 			// check the cursor
 			if (null != cursor) {
 				// get address book contact bean and append to data list
-				data.add(new AddressbookContactBean(cursor));
+				data.add(new ABContactBean(cursor));
 			} else {
 				Log.e(LOG_TAG,
 						"Query user login enterprise address book all contacts error, cursor = "
@@ -163,17 +165,18 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 			// check data object and convert to address book contact object
 			try {
 				// convert data object to address book contact
-				AddressbookContactBean _abcontactObject = (AddressbookContactBean) dataObject;
+				ABContactBean _abcontactObject = (ABContactBean) dataObject;
 
 				// check data key and get data value for it
 				if (ABCONTACT_AVATAR.equalsIgnoreCase(dataKey)) {
 					// avatar
-					// get avatar data stream
-					InputStream _avatarDataStream = new ByteArrayInputStream(
-							_abcontactObject.getAvatar());
+					// get and check avatar data
+					byte[] _avatarData = _abcontactObject.getAvatar();
+					if (null != _avatarData) {
+						// get avatar data stream
+						InputStream _avatarDataStream = new ByteArrayInputStream(
+								_avatarData);
 
-					// check avatar data stream
-					if (null != _avatarDataStream) {
 						_dataValue = BitmapFactory
 								.decodeStream(_avatarDataStream);
 
@@ -253,10 +256,25 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 		@Override
 		public void onItemClick(AdapterView<?> abcontactListView,
 				View abcItemContentView, int position, long id) {
-			Log.d("@@", "Click contact info = "
-					+ _mABContactListCursorAdapter.getDataList().get(position));
+			// get and check clicked contact
+			ABContactBean _clickedContact = (ABContactBean) _mABContactListCursorAdapter
+					.getDataList().get(position);
+			if (null != _clickedContact) {
+				// define address book contact detail info extra data map
+				Map<String, ABContactBean> _extraMap = new HashMap<String, ABContactBean>();
 
-			//
+				// put address book contact bean to extra data map as param
+				_extraMap
+						.put(ABContactDetailInfoExtraData.ABCONTACT_DETAILINFO_CONTACT,
+								_clickedContact);
+
+				// go to address book contact detail info activity with extra
+				// data map
+				pushActivity(ABContactDetailInfoActivity.class, _extraMap);
+			} else {
+				// go to address book contact detail info activity
+				pushActivity(ABContactDetailInfoActivity.class);
+			}
 		}
 
 	}

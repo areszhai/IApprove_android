@@ -20,19 +20,18 @@ import com.futuo.iapprove.utils.DateStringUtils;
 import com.richitec.commontoolkit.CTApplication;
 import com.richitec.commontoolkit.utils.JSONUtils;
 
-public class AddressbookContactBean implements
-		Comparable<AddressbookContactBean>, Serializable {
+public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2767872627416788634L;
 
-	private static final String LOG_TAG = AddressbookContactBean.class
+	private static final String LOG_TAG = ABContactBean.class
 			.getCanonicalName();
 
 	// row id, user id, avater, avatar url, employee name, sex, nickname,
-	// birthday, department, phones, email, note and frequency
+	// birthday, department, approve number, phones, email, note and frequency
 	private Long rowId;
 	private Long userId;
 	private byte[] avatar;
@@ -42,6 +41,7 @@ public class AddressbookContactBean implements
 	private String nickname;
 	private Long birthday;
 	private String department;
+	private Long approveNumber;
 	private List<ABContactPhoneBean> phones;
 	private String email;
 	private String note;
@@ -51,7 +51,7 @@ public class AddressbookContactBean implements
 	private LocalStorageDataDirtyType lsDataDirtyType;
 
 	// constructor
-	public AddressbookContactBean() {
+	public ABContactBean() {
 		super();
 
 		// set default sex, birthday and frequency
@@ -67,7 +67,7 @@ public class AddressbookContactBean implements
 	}
 
 	// constructor with JSON object
-	public AddressbookContactBean(JSONObject contactJSONObject) {
+	public ABContactBean(JSONObject contactJSONObject) {
 		this();
 
 		// check address book contact JSON object
@@ -169,6 +169,28 @@ public class AddressbookContactBean implements
 									.getString(
 											R.string.rbgServer_getEnterpriseABReqResp_employees_department));
 
+			// approve number
+			try {
+				// get and check approve number value
+				Long _approveNumberValue = Long
+						.parseLong(JSONUtils
+								.getStringFromJSONObject(
+										contactJSONObject,
+										_appContext
+												.getResources()
+												.getString(
+														R.string.rbgServer_getEnterpriseABReqResp_employees_approveNumber)));
+				if (null != _approveNumberValue) {
+					approveNumber = _approveNumberValue;
+				}
+			} catch (NumberFormatException e) {
+				Log.e(LOG_TAG,
+						"Get employee approve number error, exception message = "
+								+ e.getMessage());
+
+				e.printStackTrace();
+			}
+
 			// phones
 			// get and check phones value
 			List<ABContactPhoneBean> _phonesValue = ABContactPhoneBean
@@ -202,7 +224,7 @@ public class AddressbookContactBean implements
 	}
 
 	// constructor with cursor
-	public AddressbookContactBean(Cursor cursor) {
+	public ABContactBean(Cursor cursor) {
 		this();
 
 		// check the cursor
@@ -242,6 +264,10 @@ public class AddressbookContactBean implements
 			// department
 			department = cursor.getString(cursor
 					.getColumnIndex(Employee.DEPARTMENT));
+
+			// approve number
+			approveNumber = cursor.getLong(cursor
+					.getColumnIndex(Employee.APPROVE_NUMBER));
 
 			// phones
 			// get and check phones value
@@ -339,6 +365,14 @@ public class AddressbookContactBean implements
 		this.department = department;
 	}
 
+	public Long getApproveNumber() {
+		return approveNumber;
+	}
+
+	public void setApproveNumber(Long approveNumber) {
+		this.approveNumber = approveNumber;
+	}
+
 	public List<ABContactPhoneBean> getPhones() {
 		return phones;
 	}
@@ -427,7 +461,7 @@ public class AddressbookContactBean implements
 	}
 
 	@Override
-	public int compareTo(AddressbookContactBean another) {
+	public int compareTo(ABContactBean another) {
 		int _result = -1;
 
 		// check avatar url, employee name, sex, nickname, birthday, department,
@@ -489,6 +523,7 @@ public class AddressbookContactBean implements
 				.append(new SimpleDateFormat("", Locale.getDefault())
 						.format(new Date(birthday))).append(", ")
 				.append("department = ").append(department).append(", ")
+				.append("approve number = ").append(approveNumber).append(", ")
 				.append("phones list = ").append(phones).append(", ")
 				.append("email = ").append(email).append(", ")
 				.append("note = ").append(note).append(" and ")

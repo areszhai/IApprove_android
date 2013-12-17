@@ -26,6 +26,9 @@
 
 
     <!-- iApprove tab activity -->
+    <!-- enterprise form list activity -->
+    <string name="enterprise_formList_nav_title_format">%s 表单选择</string>
+
     <!-- to-do list tab content activity -->
     <string name="todoList_tab_title">未审批</string>
     <string name="tdl_taskSearch_editText_hint">搜索</string>
@@ -35,6 +38,16 @@
     <!-- address book tab content activity -->
     <string name="addressbook_tab7nav_title">通讯录</string>
     <string name="ab_contactSearch_editText_hint">按名字或拼音搜索联系人</string>
+
+    <!-- address book contact detail info activity -->
+    <string name="abcontact_detailInfo_nav_title">详细信息</string>
+    <string name="abcdi_approveNumber_text_format">审批号码：%d</string>
+    <string name="abcdi_nickname_text_format">备注名：%s</string>
+    <string name="abcdi_birthday_text_format" formatted="false">生日：%tm-%td</string>
+    <string name="abcdi_department_text_format">部门：%s</string>
+    <string name="abcdi_phone_text_format" formatted="false">%s：%d</string>
+    <string name="abcdi_email_text_format">邮件：%s</string>
+    <string name="abcdi_new_approveApplication_button_title">申请审批</string>
 
     <!-- history record tab content activity -->
     <string name="historyRecord_tab_title">记录</string>
