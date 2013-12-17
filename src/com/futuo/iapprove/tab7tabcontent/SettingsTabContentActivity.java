@@ -7,9 +7,6 @@ import com.futuo.iapprove.customwidget.IApproveTabContentActivity;
 
 public class SettingsTabContentActivity extends IApproveTabContentActivity {
 
-	private static final String LOG_TAG = SettingsTabContentActivity.class
-			.getCanonicalName();
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

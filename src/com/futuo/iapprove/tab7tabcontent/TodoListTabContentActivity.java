@@ -27,6 +27,7 @@ import com.futuo.iapprove.account.user.IAUserExtension;
 import com.futuo.iapprove.account.user.IAUserLocalStorageAttributes;
 import com.futuo.iapprove.customwidget.IApproveTabContentActivity;
 import com.futuo.iapprove.service.CoreService;
+import com.futuo.iapprove.tab7tabcontent.task.IApproveTaskAdapter;
 import com.futuo.iapprove.utils.HttpRequestParamUtils;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;

@@ -237,7 +237,7 @@ public class EnterpriseABContentProvider extends ContentProvider {
 		}
 
 		Log.d(LOG_TAG, "Update enterprise address book with selection = "
-				+ selection);
+				+ _employeeSelection);
 
 		// begin transaction
 		_lswDB.beginTransaction();
@@ -284,7 +284,7 @@ public class EnterpriseABContentProvider extends ContentProvider {
 
 				Log.d(LOG_TAG,
 						"Update enterprise address book contact info with selection = "
-								+ selection);
+								+ _employeeContactInfoSelection);
 
 				// update employee contact info from employee contact info table
 				// with projection, selection and order

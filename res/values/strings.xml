@@ -42,6 +42,9 @@
     <string name="tdl_userEnterpriseChange_progDlg_message">Enterprise changing, please wait&#8230;</string>
     <string name="tdlt_fetchingData_label">Fetching&#8230;</string>
 
+    <!-- to-do task detail info activity -->
+    <string name="title_activity_todo_task_detail_info" translatable="false">TodoTaskDetailInfoActivity</string>
+
     <!-- address book tab content activity -->
     <string name="title_activity_addressbook_tab_content" translatable="false">AddressbookTabContentActivity</string>
     <string name="addressbook_tab_tag" translatable="false">addressbook tab</string>
@@ -49,12 +52,18 @@
     <string name="ab_contactSearch_editText_hint">Search contact with name phonetics</string>
     <string name="abc_avatar_imageView_contentDescription" translatable="false">the address book contact avatar imageView</string>
 
+    <!-- address book contact detail info activity -->
+    <string name="title_activity_abcontact_detail_info" translatable="false">ABContactDetailInfoActivity</string>
+
     <!-- history record tab content activity -->
     <string name="title_activity_history_record_tab_content" translatable="false">HistoryRecordTabContentActivity</string>
     <string name="historyRecord_tab_tag" translatable="false">approved and my applcation tab</string>
     <string name="historyRecord_tab_title">Record</string>
     <string name="hr_myApplication_segment_radioButton_title">My Application</string>
     <string name="hr_checked_segment_radioButton_title">Checked</string>
+
+    <!-- history record task detail info activity -->
+    <string name="title_activity_history_record_task_detail_info" translatable="false">HistoryRecordTaskDetailInfoActivity</string>
 
     <!-- settings tab content activity -->
     <string name="title_activity_settings_tab_content" translatable="false">SettingsTabContentActivity</string>
