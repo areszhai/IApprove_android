@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".tab7tabcontent.newapproveapplication.form.EnterpriseFormListActivity" >
+    tools:context=".tab7tabcontent.newapproveapplication.form.EnterpriseFormTypeListActivity" >
 
     <ListView
-        android:id="@+id/ef_listView"
+        android:id="@+id/eft_listView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:cacheColorHint="@android:color/transparent"

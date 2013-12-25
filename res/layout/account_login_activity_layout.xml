@@ -13,7 +13,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/account_login_form_bg"
+        android:background="@drawable/common_form_bg"
         android:orientation="vertical" >
 
         <com.futuo.iapprove.customwidget.AccountLoginFormItem
@@ -26,10 +26,9 @@
             iapprove:label="@string/al_userLoginPhone_label" >
         </com.futuo.iapprove.customwidget.AccountLoginFormItem>
 
-        <View
+        <com.futuo.iapprove.customwidget.CommonFormSeparator
             android:layout_width="fill_parent"
-            android:layout_height="1.5dp"
-            android:background="@color/light_middle_gray" />
+            android:layout_height="1.5dp" />
 
         <com.futuo.iapprove.customwidget.AccountLoginFormItem
             android:id="@+id/al_userLoginPwd"

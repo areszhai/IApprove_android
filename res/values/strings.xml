@@ -31,12 +31,12 @@
     <!-- iApprove tab activity -->
     <string name="title_activity_iapprove_tab" translatable="false">IApproveTabActivity</string>
 
+    <!-- enterprise form type list activity -->
+    <string name="title_activity_enterprise_form_type_list" translatable="false">EnterpriseFormTypeListActivity</string>
+    <string name="enterprise_formTypeList_nav_title_format">%s form select</string>
+
     <!-- enterprise form list activity -->
     <string name="title_activity_enterprise_form_list" translatable="false">EnterpriseFormListActivity</string>
-    <string name="enterprise_formList_nav_title_format">%s form select</string>
-
-    <!-- enterprise form detail info activity -->
-    <string name="title_activity_enterprise_form_detail_info" translatable="false">EnterpriseFormDetailInfoActivity</string>
 
     <!-- iApprove list common -->
     <string name="iapprove_listView_item_detailInfo_imageView_contentDescription" translatable="false">the iApprove listView item detail info imageView</string>
@@ -64,7 +64,7 @@
     <string name="abcontact_detailInfo_nav_title">Detail Info</string>
     <string name="abcdi_avatar_imageView_contentDescription" translatable="false">the address book contact avatar imageView</string>
     <string name="abcdi_sex_imageView_contentDescription" translatable="false">the address book contact sex imageView</string>
-    <string name="abcdi_approveNumber_text_format">Approve number: %d</string>
+    <string name="abcdi_approveNumber_text_format">Approve ID: %d</string>
     <string name="abcdi_nickname_text_format">Alias: %s</string>
     <string name="abcdi_birthday_text_format" formatted="false">Birthday: %tm-%td</string>
     <string name="abcdi_department_text_format">Department: %s</string>

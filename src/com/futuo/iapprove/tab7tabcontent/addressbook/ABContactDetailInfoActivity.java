@@ -16,9 +16,10 @@ import android.widget.TextView;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.addressbook.ABContactBean;
+import com.futuo.iapprove.addressbook.ABContactSex;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
-import com.futuo.iapprove.tab7tabcontent.form.EnterpriseFormDetailInfoActivity.NewApproveApplicationExtraData;
-import com.futuo.iapprove.tab7tabcontent.form.EnterpriseFormListActivity;
+import com.futuo.iapprove.tab7tabcontent.newapproveapplication.form.EnterpriseFormListActivity.NewApproveApplicationExtraData;
+import com.futuo.iapprove.tab7tabcontent.newapproveapplication.form.EnterpriseFormTypeListActivity;
 
 public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 
@@ -79,8 +80,16 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 				.setText(_mABContactBean.getEmployeeName());
 
 		// sex
-		((ImageView) findViewById(R.id.abcdi_sex_imageView))
-				.setImageDrawable(_mABContactBean.getSex().getIcon());
+		// get and check sex value
+		ABContactSex _sexValue = _mABContactBean.getSex();
+		if (null != _sexValue) {
+			// set sex
+			((ImageView) findViewById(R.id.abcdi_sex_imageView))
+					.setImageDrawable(_mABContactBean.getSex().getIcon());
+		} else {
+			Log.e(LOG_TAG, "Address book contact = " + _mABContactBean
+					+ " whoise sex = " + _mABContactBean.getSex());
+		}
 
 		// approve number
 		((TextView) findViewById(R.id.abcdi_approveNumber_textView))
@@ -122,7 +131,7 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 			// goto enterprise form list activity
 			// define the target intent
 			Intent _targetIntent = new Intent(ABContactDetailInfoActivity.this,
-					EnterpriseFormListActivity.class);
+					EnterpriseFormTypeListActivity.class);
 
 			// put the contact bean to extra data map as param
 			_targetIntent

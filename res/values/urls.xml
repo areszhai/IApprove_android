@@ -17,4 +17,9 @@
     <!-- address book -->
     <string name="get_enterpriseAB_url" translatable="false">/enterpries/userMobile</string>
 
+    <!-- enterprise form -->
+    <string name="get_enterpriseFormType_url" translatable="false">/enterpries/manageMobile</string>
+    <string name="get_enterpriseForm_url" translatable="false">/enterpries/manageMobile</string>
+    <string name="get_enterpriseFormInfo_url" translatable="false">/enterpries/fieldMobile</string>
+
 </resources>

@@ -5,14 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.futuo.iapprove.addressbook.ABContactPhoneType;
@@ -20,34 +17,21 @@ import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees.Employe
 import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees.EmployeeContactInfo;
 import com.richitec.commontoolkit.utils.CommonUtils;
 
-public class EnterpriseABContentProvider extends ContentProvider {
+public class EnterpriseABContentProvider extends LocalStorageContentProvider {
 
 	private static final String LOG_TAG = EnterpriseABContentProvider.class
 			.getCanonicalName();
-
-	// uri matcher
-	private static final UriMatcher URI_MATCHER = new UriMatcher(
-			UriMatcher.NO_MATCH);
 
 	// register custom uri for uri matcher
 	static {
 		URI_MATCHER.addURI(Employees.AUTHORITY, "employees",
 				EnterpriseABTableAccessType.EMPLOYEES);
+		URI_MATCHER.addURI(Employees.AUTHORITY, "employee",
+				EnterpriseABTableAccessType.EMPLOYEE);
 		URI_MATCHER.addURI(Employees.AUTHORITY, "employee/#",
-				EnterpriseABTableAccessType.EMPLOYEES_ID);
+				EnterpriseABTableAccessType.EMPLOYEE_ID);
 		URI_MATCHER.addURI(Employees.AUTHORITY, "enterprise/#",
-				EnterpriseABTableAccessType.EMPLOYEES_ENTERPRISEID);
-	}
-
-	// local storage database helper
-	private LocalStorageDBHelper _mLocalStorageDBHelper;
-
-	@Override
-	public boolean onCreate() {
-		// get local storage database helper
-		_mLocalStorageDBHelper = new LocalStorageDBHelper(this.getContext(), 1);
-
-		return true;
+				EnterpriseABTableAccessType.EMPLOYEE_ENTERPRISEID);
 	}
 
 	@Override
@@ -60,8 +44,9 @@ public class EnterpriseABContentProvider extends ContentProvider {
 			_contentType = Employee.EMPLOYEES_CONTENT_TYPE;
 			break;
 
-		case EnterpriseABTableAccessType.EMPLOYEES_ID:
-		case EnterpriseABTableAccessType.EMPLOYEES_ENTERPRISEID:
+		case EnterpriseABTableAccessType.EMPLOYEE:
+		case EnterpriseABTableAccessType.EMPLOYEE_ID:
+		case EnterpriseABTableAccessType.EMPLOYEE_ENTERPRISEID:
 			_contentType = Employee.EMPLOYEE_CONTENT_TYPE;
 			break;
 
@@ -79,6 +64,28 @@ public class EnterpriseABContentProvider extends ContentProvider {
 		// get local storage database writable instance
 		SQLiteDatabase _lswDB = _mLocalStorageDBHelper.getWritableDatabase();
 
+		// define insert table name
+		String _insertTableName = null;
+
+		// check uri
+		switch (URI_MATCHER.match(uri)) {
+		case EnterpriseABTableAccessType.EMPLOYEES:
+		case EnterpriseABTableAccessType.EMPLOYEE_ID:
+		case EnterpriseABTableAccessType.EMPLOYEE_ENTERPRISEID:
+			// nothing to do
+			break;
+
+		case EnterpriseABTableAccessType.EMPLOYEE:
+			// set enterprise address book table as insert table
+			_insertTableName = Employees.EMPLOYEES_TABLE;
+			break;
+
+		default:
+			throw new UnknownCPContentUriException(uri);
+		}
+
+		Log.d(LOG_TAG, "Insert enterprise address book with values = " + values);
+
 		// begin transaction
 		_lswDB.beginTransaction();
 
@@ -92,7 +99,7 @@ public class EnterpriseABContentProvider extends ContentProvider {
 
 			// insert got enterprise employee into enterprise address book table
 			// and return new insert row id
-			long _newInsertRowId = _lswDB.insert(Employees.EMPLOYEES_TABLE,
+			long _newInsertRowId = _lswDB.insert(_insertTableName,
 					Employee._ID, _employeeContentValues);
 
 			// check the insert process result
@@ -160,20 +167,22 @@ public class EnterpriseABContentProvider extends ContentProvider {
 		// check uri
 		switch (URI_MATCHER.match(uri)) {
 		case EnterpriseABTableAccessType.EMPLOYEES:
+		case EnterpriseABTableAccessType.EMPLOYEE:
 			// nothing to do
 			break;
 
-		case EnterpriseABTableAccessType.EMPLOYEES_ID:
-		case EnterpriseABTableAccessType.EMPLOYEES_ENTERPRISEID:
+		case EnterpriseABTableAccessType.EMPLOYEE_ID:
+		case EnterpriseABTableAccessType.EMPLOYEE_ENTERPRISEID:
 			// get query employee id or enterprise id and generate where
 			// condition
-			String _where = EnterpriseABTableAccessType.EMPLOYEES_ID == URI_MATCHER
-					.match(uri) ? Employee._ID : Employee.ENTERPRISE_ID + "="
+			String _where = (EnterpriseABTableAccessType.EMPLOYEE_ID == URI_MATCHER
+					.match(uri) ? Employee._ID : Employee.ENTERPRISE_ID)
+					+ "="
 					+ ContentUris.parseId(uri);
 
 			// check and update selection
 			if (null != selection && !"".equalsIgnoreCase(selection)) {
-				selection += _where;
+				selection += Employee._AND_SELECTION + _where;
 			} else {
 				selection = _where;
 			}
@@ -214,19 +223,21 @@ public class EnterpriseABContentProvider extends ContentProvider {
 		// check uri
 		switch (URI_MATCHER.match(uri)) {
 		case EnterpriseABTableAccessType.EMPLOYEES:
+		case EnterpriseABTableAccessType.EMPLOYEE:
 			// nothing to do
 			break;
 
-		case EnterpriseABTableAccessType.EMPLOYEES_ID:
-		case EnterpriseABTableAccessType.EMPLOYEES_ENTERPRISEID:
+		case EnterpriseABTableAccessType.EMPLOYEE_ID:
+		case EnterpriseABTableAccessType.EMPLOYEE_ENTERPRISEID:
 			// get employee id or enterprise id and generate where condition
-			String _where = EnterpriseABTableAccessType.EMPLOYEES_ID == URI_MATCHER
-					.match(uri) ? Employee._ID : Employee.ENTERPRISE_ID + "="
+			String _where = (EnterpriseABTableAccessType.EMPLOYEE_ID == URI_MATCHER
+					.match(uri) ? Employee._ID : Employee.ENTERPRISE_ID)
+					+ "="
 					+ ContentUris.parseId(uri);
 
 			// check and update selection
 			if (null != selection && !"".equalsIgnoreCase(selection)) {
-				_employeeSelection += _where;
+				_employeeSelection += Employee._AND_SELECTION + _where;
 			} else {
 				_employeeSelection = _where;
 			}
@@ -237,7 +248,7 @@ public class EnterpriseABContentProvider extends ContentProvider {
 		}
 
 		Log.d(LOG_TAG, "Update enterprise address book with selection = "
-				+ _employeeSelection);
+				+ _employeeSelection + " and update values = " + values);
 
 		// begin transaction
 		_lswDB.beginTransaction();
@@ -258,18 +269,20 @@ public class EnterpriseABContentProvider extends ContentProvider {
 			// check uri again
 			switch (URI_MATCHER.match(uri)) {
 			case EnterpriseABTableAccessType.EMPLOYEES:
-			case EnterpriseABTableAccessType.EMPLOYEES_ENTERPRISEID:
+			case EnterpriseABTableAccessType.EMPLOYEE:
+			case EnterpriseABTableAccessType.EMPLOYEE_ENTERPRISEID:
 				// nothing to do
 				break;
 
-			case EnterpriseABTableAccessType.EMPLOYEES_ID:
+			case EnterpriseABTableAccessType.EMPLOYEE_ID:
 				// get employee id and generate where condition
-				String _where = EmployeeContactInfo.EMPLOYEE_ROWID
+				String _where = EmployeeContactInfo.EMPLOYEE_ROWID + "="
 						+ ContentUris.parseId(uri);
 
 				// check and update selection
 				if (null != selection && !"".equalsIgnoreCase(selection)) {
-					_employeeContactInfoSelection += _where;
+					_employeeContactInfoSelection += EmployeeContactInfo._AND_SELECTION
+							+ _where;
 				} else {
 					_employeeContactInfoSelection = _where;
 				}
@@ -322,19 +335,21 @@ public class EnterpriseABContentProvider extends ContentProvider {
 		// check uri
 		switch (URI_MATCHER.match(uri)) {
 		case EnterpriseABTableAccessType.EMPLOYEES:
+		case EnterpriseABTableAccessType.EMPLOYEE:
 			// nothing to do
 			break;
 
-		case EnterpriseABTableAccessType.EMPLOYEES_ID:
-		case EnterpriseABTableAccessType.EMPLOYEES_ENTERPRISEID:
+		case EnterpriseABTableAccessType.EMPLOYEE_ID:
+		case EnterpriseABTableAccessType.EMPLOYEE_ENTERPRISEID:
 			// get employee id or enterprise id and generate where condition
-			String _where = EnterpriseABTableAccessType.EMPLOYEES_ID == URI_MATCHER
-					.match(uri) ? Employee._ID : Employee.ENTERPRISE_ID + "="
+			String _where = (EnterpriseABTableAccessType.EMPLOYEE_ID == URI_MATCHER
+					.match(uri) ? Employee._ID : Employee.ENTERPRISE_ID)
+					+ "="
 					+ ContentUris.parseId(uri);
 
 			// check and update selection
 			if (null != selection && !"".equalsIgnoreCase(selection)) {
-				selection += _where;
+				selection += Employee._AND_SELECTION + _where;
 			} else {
 				selection = _where;
 			}
@@ -437,9 +452,10 @@ public class EnterpriseABContentProvider extends ContentProvider {
 	static class EnterpriseABTableAccessType {
 
 		// enterprise address book table access type
-		private static final int EMPLOYEES = 10;
-		private static final int EMPLOYEES_ID = 11;
-		private static final int EMPLOYEES_ENTERPRISEID = 12;
+		private static final int EMPLOYEES = 20;
+		private static final int EMPLOYEE = 21;
+		private static final int EMPLOYEE_ID = 22;
+		private static final int EMPLOYEE_ENTERPRISEID = 23;
 
 	}
 
@@ -447,7 +463,7 @@ public class EnterpriseABContentProvider extends ContentProvider {
 	public static final class Employees {
 
 		// enterprise address book content provider authority
-		public static final String AUTHORITY = EnterpriseABContentProvider.class
+		private static final String AUTHORITY = EnterpriseABContentProvider.class
 				.getCanonicalName();
 
 		// enterprise address book and employee contact info table name
@@ -459,7 +475,7 @@ public class EnterpriseABContentProvider extends ContentProvider {
 
 		// inner class
 		// enterprise address book employee
-		public static final class Employee implements BaseColumns {
+		public static final class Employee implements SimpleBaseColumns {
 
 			// enterprise address book content provider process data columns
 			public static final String USER_ID = "userId";
@@ -497,7 +513,7 @@ public class EnterpriseABContentProvider extends ContentProvider {
 		}
 
 		// employee contact info
-		static final class EmployeeContactInfo implements BaseColumns {
+		static final class EmployeeContactInfo implements SimpleBaseColumns {
 
 			// employee contact info data columns
 			public static final String EMPLOYEE_ROWID = "employeeRowId";

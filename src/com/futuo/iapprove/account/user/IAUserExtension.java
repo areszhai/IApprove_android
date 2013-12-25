@@ -4,8 +4,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Intent;
 import android.util.Log;
 
+import com.futuo.iapprove.receiver.UserEnterpriseBroadcastReceiver;
+import com.richitec.commontoolkit.CTApplication;
 import com.richitec.commontoolkit.user.UserBean;
 
 public class IAUserExtension {
@@ -28,6 +31,19 @@ public class IAUserExtension {
 			Long userLoginEnterpriseId) {
 		setUserExtAttr(user, IAUserExtensionAttributes.USER_LOGINENTERPRISEID,
 				userLoginEnterpriseId);
+
+		// send user enterprise changed broadcast
+		// define user enterprise changed broadcast intent
+		Intent _userEnterpriseChangedBroadcastIntent = new Intent(
+				UserEnterpriseBroadcastReceiver.A_ENTERPRISECHANGE);
+
+		// set user enterprise changed message
+		_userEnterpriseChangedBroadcastIntent.putExtra(
+				UserEnterpriseBroadcastReceiver.EK_ENTERPRISECHANGED, true);
+
+		// send normal broadcast
+		CTApplication.getContext().sendBroadcast(
+				_userEnterpriseChangedBroadcastIntent);
 	}
 
 	// get approve user enterprise list

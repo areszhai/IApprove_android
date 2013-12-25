@@ -8,6 +8,7 @@ import java.util.Map;
 
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,6 +30,7 @@ import com.futuo.iapprove.account.user.IAUserExtension;
 import com.futuo.iapprove.addressbook.ABContactBean;
 import com.futuo.iapprove.customwidget.IApproveTabContentActivity;
 import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees.Employee;
+import com.futuo.iapprove.receiver.UserEnterpriseBroadcastReceiver;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.tab7tabcontent.addressbook.ABContactDetailInfoActivity;
 import com.futuo.iapprove.tab7tabcontent.addressbook.ABContactDetailInfoActivity.ABContactDetailInfoExtraData;
@@ -39,6 +41,9 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 
 	// address book contact list cursor adapter
 	private ABContactListCursorAdapter _mABContactListCursorAdapter;
+
+	// user enterprise broadcast receiver
+	private ABTUserEnterpriseBroadcastReceiver _mUserEnterpriseBroadcastReceiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,18 +83,12 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 		// set address book contact list on item click listener
 		_addressbookContactListView
 				.setOnItemClickListener(new ABContactListOnItemClickListener());
-	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		// change enterprise address book query cursor
-		_mABContactListCursorAdapter.changeCursor(getContentResolver().query(
-				ContentUris.withAppendedId(Employee.ENTERPRISE_CONTENT_URI,
-						IAUserExtension.getUserLoginEnterpriseId(UserManager
-								.getInstance().getUser())), null, null, null,
-				null));
+		// register user enterprise broadcast receiver
+		registerReceiver(
+				_mUserEnterpriseBroadcastReceiver = new ABTUserEnterpriseBroadcastReceiver(),
+				new IntentFilter(
+						UserEnterpriseBroadcastReceiver.A_ENTERPRISECHANGE));
 	}
 
 	@Override
@@ -103,8 +102,7 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 		super.onCoreServiceConnected(coreService);
 
 		// start get user login enterprise address book
-		coreService.startGetEnterpriseAddressbook(IAUserExtension
-				.getUserLoginEnterpriseId(UserManager.getInstance().getUser()));
+		coreService.startGetEnterpriseAddressbook();
 	}
 
 	@Override
@@ -113,6 +111,18 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 
 		// stop get user login enterprise address book
 		coreService.stopGetEnterpriseAddressbook();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		// release user enterprise broadcast receiver
+		if (null != _mUserEnterpriseBroadcastReceiver) {
+			unregisterReceiver(_mUserEnterpriseBroadcastReceiver);
+
+			_mUserEnterpriseBroadcastReceiver = null;
+		}
 	}
 
 	// inner class
@@ -138,8 +148,14 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 			// auto requery
 			super.onContentChanged();
 
-			Log.d(LOG_TAG,
-					"Address book contact list cursor adapter on content changed, auto requery");
+			// need to change enterprise address book query cursor change
+			// enterprise address book query cursor
+			_mABContactListCursorAdapter.changeCursor(getContentResolver()
+					.query(ContentUris.withAppendedId(
+							Employee.ENTERPRISE_CONTENT_URI, IAUserExtension
+									.getUserLoginEnterpriseId(UserManager
+											.getInstance().getUser())), null,
+							null, null, null));
 		}
 
 		@Override
@@ -275,6 +291,22 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 				// go to address book contact detail info activity
 				pushActivity(ABContactDetailInfoActivity.class);
 			}
+		}
+
+	}
+
+	// address book tab user enterprise broadcast receiver
+	class ABTUserEnterpriseBroadcastReceiver extends
+			UserEnterpriseBroadcastReceiver {
+
+		@Override
+		public void onEnterpriseChange(Long newEnterpriseId) {
+			// need to change enterprise address book query cursor
+			// change enterprise address book query cursor
+			_mABContactListCursorAdapter.changeCursor(getContentResolver()
+					.query(ContentUris.withAppendedId(
+							Employee.ENTERPRISE_CONTENT_URI, newEnterpriseId),
+							null, null, null, null));
 		}
 
 	}

@@ -49,7 +49,7 @@ public class UserEnterpriseBean implements Serializable {
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_accountLoginReqResp_enterprises_enterpriseId));
+											R.string.rbgServer_accountLoginReqResp_enterprise_id));
 
 			// name
 			name = JSONUtils
@@ -58,7 +58,7 @@ public class UserEnterpriseBean implements Serializable {
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_accountLoginReqResp_enterprises_enterpriseName));
+											R.string.rbgServer_accountLoginReqResp_enterprise_name));
 
 			// employee name
 			employeeName = JSONUtils
@@ -67,7 +67,7 @@ public class UserEnterpriseBean implements Serializable {
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_accountLoginReqResp_enterprises_employeeName));
+											R.string.rbgServer_accountLoginReqResp_enterprise_employeeName));
 		} else {
 			Log.e(LOG_TAG,
 					"Constructor user enterprise bean with json object error, json object = "

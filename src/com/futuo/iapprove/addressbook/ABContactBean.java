@@ -30,10 +30,12 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 	private static final String LOG_TAG = ABContactBean.class
 			.getCanonicalName();
 
-	// row id, user id, avater, avatar url, employee name, sex, nickname,
-	// birthday, department, approve number, phones, email, note and frequency
+	// row id, user id, enterprise id, avater, avatar url, employee name, sex,
+	// nickname, birthday, department, approve number, phones, email, note and
+	// frequency
 	private Long rowId;
 	private Long userId;
+	private Long enterpriseId;
 	private byte[] avatar;
 	private String avatarUrl;
 	private String employeeName;
@@ -54,8 +56,7 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 	public ABContactBean() {
 		super();
 
-		// set default sex, birthday and frequency
-		sex = ABContactSex.MALE;
+		// set default birthday and frequency
 		birthday = 0L;
 		frequency = 0L;
 
@@ -78,18 +79,14 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 			// set address book contact attributes
 			// user id
 			try {
-				// get and check user id value
-				Long _userIdValue = Long
+				userId = Long
 						.parseLong(JSONUtils
 								.getStringFromJSONObject(
 										contactJSONObject,
 										_appContext
 												.getResources()
 												.getString(
-														R.string.rbgServer_getEnterpriseABReqResp_employees_id)));
-				if (null != _userIdValue) {
-					userId = _userIdValue;
-				}
+														R.string.rbgServer_getEnterpriseABReqResp_employee_id)));
 			} catch (NumberFormatException e) {
 				Log.e(LOG_TAG,
 						"Get employee user id error, exception message = "
@@ -105,7 +102,7 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_getEnterpriseABReqResp_employees_avatarUrl));
+											R.string.rbgServer_getEnterpriseABReqResp_employee_avatarUrl));
 
 			// employee name
 			employeeName = JSONUtils
@@ -114,22 +111,18 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_getEnterpriseABReqResp_employees_name));
+											R.string.rbgServer_getEnterpriseABReqResp_employee_name));
 
 			// sex
 			try {
-				// get and check sex value
-				Integer _sexValue = Integer
-						.parseInt(JSONUtils
+				sex = ABContactSex
+						.getSex(Integer.parseInt(JSONUtils
 								.getStringFromJSONObject(
 										contactJSONObject,
 										_appContext
 												.getResources()
 												.getString(
-														R.string.rbgServer_getEnterpriseABReqResp_employees_sex)));
-				if (null != _sexValue) {
-					sex = ABContactSex.getSex(_sexValue);
-				}
+														R.string.rbgServer_getEnterpriseABReqResp_employee_sex))));
 			} catch (NumberFormatException e) {
 				Log.e(LOG_TAG, "Get employee sex error, exception message = "
 						+ e.getMessage());
@@ -144,7 +137,7 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_getEnterpriseABReqResp_employees_nickname));
+											R.string.rbgServer_getEnterpriseABReqResp_employee_nickname));
 
 			// birthday
 			// get and check birthday value
@@ -155,7 +148,7 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 									_appContext
 											.getResources()
 											.getString(
-													R.string.rbgServer_getEnterpriseABReqResp_employees_birthday)));
+													R.string.rbgServer_getEnterpriseABReqResp_employee_birthday)));
 			if (null != _birthdayValue) {
 				birthday = _birthdayValue.getTime();
 			}
@@ -167,22 +160,18 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_getEnterpriseABReqResp_employees_department));
+											R.string.rbgServer_getEnterpriseABReqResp_employee_department));
 
 			// approve number
 			try {
-				// get and check approve number value
-				Long _approveNumberValue = Long
+				approveNumber = Long
 						.parseLong(JSONUtils
 								.getStringFromJSONObject(
 										contactJSONObject,
 										_appContext
 												.getResources()
 												.getString(
-														R.string.rbgServer_getEnterpriseABReqResp_employees_approveNumber)));
-				if (null != _approveNumberValue) {
-					approveNumber = _approveNumberValue;
-				}
+														R.string.rbgServer_getEnterpriseABReqResp_employee_approveNumber)));
 			} catch (NumberFormatException e) {
 				Log.e(LOG_TAG,
 						"Get employee approve number error, exception message = "
@@ -206,7 +195,7 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_getEnterpriseABReqResp_employees_email));
+											R.string.rbgServer_getEnterpriseABReqResp_employee_email));
 
 			// note
 			note = JSONUtils
@@ -215,7 +204,7 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_getEnterpriseABReqResp_employees_note));
+											R.string.rbgServer_getEnterpriseABReqResp_employee_note));
 		} else {
 			Log.e(LOG_TAG,
 					"New address book contact with JSON object error, contact JSON object = "
@@ -236,30 +225,34 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 			// user id
 			userId = cursor.getLong(cursor.getColumnIndex(Employee.USER_ID));
 
+			// enterprise id
+			enterpriseId = cursor.getLong(cursor
+					.getColumnIndex(Employee.ENTERPRISE_ID));
+
 			// avatar
 			avatar = cursor.getBlob(cursor.getColumnIndex(Employee.AVATAR));
 
 			// employee name
-			// get and check employee name value
-			String _employeeNameValue = cursor.getString(cursor
+			employeeName = cursor.getString(cursor
 					.getColumnIndex(Employee.NAME));
-			if (null != _employeeNameValue
-					&& !"".equalsIgnoreCase(_employeeNameValue)) {
-				employeeName = _employeeNameValue;
-			} else {
-				employeeName = "";
-			}
 
 			// sex
-			sex = ABContactSex.getSex(cursor.getInt(cursor
-					.getColumnIndex(Employee.SEX)));
+			// get and check sex column index
+			int _sexColumnIndex = cursor.getColumnIndex(Employee.SEX);
+			if (!cursor.isNull(_sexColumnIndex)) {
+				sex = ABContactSex.getSex(cursor.getInt(_sexColumnIndex));
+			}
 
 			// nickname
 			nickname = cursor.getString(cursor
 					.getColumnIndex(Employee.NICKNAME));
 
 			// birthday
-			birthday = cursor.getLong(cursor.getColumnIndex(Employee.BIRTHDAY));
+			// get and check birthday column index
+			int _birthdayColumnIndex = cursor.getColumnIndex(Employee.BIRTHDAY);
+			if (!cursor.isNull(_birthdayColumnIndex)) {
+				birthday = cursor.getLong(_birthdayColumnIndex);
+			}
 
 			// department
 			department = cursor.getString(cursor
@@ -307,6 +300,14 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public Long getEnterpriseId() {
+		return enterpriseId;
+	}
+
+	public void setEnterpriseId(Long enterpriseId) {
+		this.enterpriseId = enterpriseId;
 	}
 
 	public byte[] getAvatar() {
@@ -469,25 +470,54 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 		if ((null == employeeName && null == another.employeeName)
 				|| (null != employeeName && null != another.employeeName && employeeName
 						.equalsIgnoreCase(another.employeeName))) {
-			if ((null == getMobilePhoneNumber() && null == another
-					.getMobilePhoneNumber())
-					|| (null != getMobilePhoneNumber()
-							&& null != another.getMobilePhoneNumber() && getMobilePhoneNumber()
-							.longValue() == another.getMobilePhoneNumber()
-							.longValue())) {
-				if ((null == getOfficePhoneNumber() && null == another
-						.getOfficePhoneNumber())
-						|| (null != getOfficePhoneNumber()
-								&& null != another.getOfficePhoneNumber() && getOfficePhoneNumber()
-								.longValue() == another.getOfficePhoneNumber()
+			if ((null == sex && null == another.sex)
+					|| (null != sex && null != another.sex && sex == another.sex)) {
+				if ((null == getMobilePhoneNumber() && null == another
+						.getMobilePhoneNumber())
+						|| (null != getMobilePhoneNumber()
+								&& null != another.getMobilePhoneNumber() && getMobilePhoneNumber()
+								.longValue() == another.getMobilePhoneNumber()
 								.longValue())) {
-					if ((null == email && null == another.email)
-							|| (null != email && null != another.email && email
-									.equalsIgnoreCase(another.email))) {
-						_result = 0;
+					if ((null == getOfficePhoneNumber() && null == another
+							.getOfficePhoneNumber())
+							|| (null != getOfficePhoneNumber()
+									&& null != another.getOfficePhoneNumber() && getOfficePhoneNumber()
+									.longValue() == another
+									.getOfficePhoneNumber().longValue())) {
+						if ((null == email && null == another.email)
+								|| (null != email && null != another.email && email
+										.equalsIgnoreCase(another.email))) {
+							_result = 0;
+						} else {
+							Log.d(LOG_TAG,
+									"Address book contact email not equals, self email = "
+											+ email + " and another email = "
+											+ another.email);
+						}
+					} else {
+						Log.d(LOG_TAG,
+								"Address book contact office phone not equals, self office phone = "
+										+ getOfficePhoneNumber()
+										+ " and another office phone = "
+										+ another.getOfficePhoneNumber());
 					}
+				} else {
+					Log.d(LOG_TAG,
+							"Address book contact mobile phone not equals, self mobile phone = "
+									+ getMobilePhoneNumber()
+									+ " and another mobile phone = "
+									+ another.getMobilePhoneNumber());
 				}
+			} else {
+				Log.d(LOG_TAG,
+						"Address book contact sex not equals, self sex = "
+								+ sex + " and another sex = " + another.sex);
 			}
+		} else {
+			Log.d(LOG_TAG,
+					"Address book contact employee name not equals, self employee name = "
+							+ employeeName + " and another employee name = "
+							+ another.employeeName);
 		}
 
 		return _result;
@@ -506,6 +536,9 @@ public class ABContactBean implements Comparable<ABContactBean>, Serializable {
 				.append(", ")
 				.append("user id = ")
 				.append(userId)
+				.append(", ")
+				.append("enterprise id = ")
+				.append(enterpriseId)
 				.append(", ")
 				.append("avatar url = ")
 				.append(avatarUrl)

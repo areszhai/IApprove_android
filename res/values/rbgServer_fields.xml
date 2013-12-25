@@ -14,13 +14,14 @@
     <string name="rbgServer_accountLoginReqParam_action" translatable="false">LoginValidationPass</string>
     <string name="rbgServer_accountLoginReqParam_phone" translatable="false">logname</string>
     <string name="rbgServer_accountLoginReqParam_password" translatable="false">logpass</string>
-    <string name="rbgServer_accountLoginReqResp_enterprises_enterpriseId" translatable="false">number</string>
-    <string name="rbgServer_accountLoginReqResp_enterprises_enterpriseName" translatable="false">abbreviation</string>
-    <string name="rbgServer_accountLoginReqResp_enterprises_employeeName" translatable="false">name</string>
+    <string name="rbgServer_accountLoginReqResp_enterprise_id" translatable="false">number</string>
+    <string name="rbgServer_accountLoginReqResp_enterprise_name" translatable="false">abbreviation</string>
+    <string name="rbgServer_accountLoginReqResp_enterprise_employeeName" translatable="false">name</string>
 
     <!-- iApprove -->
     <!-- iApprove common -->
     <string name="rbgServer_getIApproveReqParam_enterpriseId" translatable="false">enterpriseid</string>
+    <string name="rbgServer_getIApproveReqParam_state" translatable="false">state</string>
 
     <!-- iApprove list common -->
     <string name="rbgServer_getIApproveListReqParam_state" translatable="false">state</string>
@@ -42,17 +43,57 @@
 
     <!-- address book -->
     <string name="rbgServer_getEnterpriseABReqParam_action" translatable="false">UserAllInfo_l</string>
-    <string name="rbgServer_getEnterpriseABReqResp_employees_id" translatable="false">userid</string>
-    <string name="rbgServer_getEnterpriseABReqResp_employees_name" translatable="false">name</string>
-    <string name="rbgServer_getEnterpriseABReqResp_employees_avatarUrl" translatable="false">headurl</string>
-    <string name="rbgServer_getEnterpriseABReqResp_employees_sex" translatable="false">sex</string>
-    <string name="rbgServer_getEnterpriseABReqResp_employees_nickname" translatable="false">nickname</string>
-    <string name="rbgServer_getEnterpriseABReqResp_employees_birthday" translatable="false">birthtime</string>
-    <string name="rbgServer_getEnterpriseABReqResp_employees_department" translatable="false">department</string>
-    <string name="rbgServer_getEnterpriseABReqResp_employees_approveNumber" translatable="false">logname</string>
-    <string name="rbgServer_getEnterpriseABReqResp_employees_mobilePhone" translatable="false">mobilephone</string>
-    <string name="rbgServer_getEnterpriseABReqResp_employees_officePhone" translatable="false">officephone</string>
-    <string name="rbgServer_getEnterpriseABReqResp_employees_email" translatable="false">email</string>
-    <string name="rbgServer_getEnterpriseABReqResp_employees_note" translatable="false">remark</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_id" translatable="false">userid</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_name" translatable="false">name</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_avatarUrl" translatable="false">headurl</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_sex" translatable="false">sex</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_nickname" translatable="false">nickname</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_birthday" translatable="false">birthtime</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_department" translatable="false">department</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_approveNumber" translatable="false">logname</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_mobilePhone" translatable="false">mobilephone</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_officePhone" translatable="false">officephone</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_email" translatable="false">email</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_note" translatable="false">remark</string>
+
+    <!-- enterprise form -->
+    <!-- enterprise form type -->
+    <string name="rbgServer_getEnterpriseFormTypeReqParam_action" translatable="false">MealManage_l</string>
+    <string name="rbgServer_getEnterpriseFormTypeReqParam_state" translatable="false">1</string>
+    <string name="rbgServer_getEnterpriseFormTypeReqResp_formType_id" translatable="false">id</string>
+    <string name="rbgServer_getEnterpriseFormTypeReqResp_formType_name" translatable="false">name</string>
+
+    <!-- enterprise form -->
+    <string name="rbgServer_getEnterpriseFormReqParam_action" translatable="false">MealList_l</string>
+    <string name="rbgServer_getEnterpriseFormReqParam_formTypeId" translatable="false">mealid</string>
+    <string name="rbgServer_getEnterpriseFormReqResp_form_id" translatable="false">id</string>
+    <string name="rbgServer_getEnterpriseFormReqResp_form_name" translatable="false">name</string>
+
+    <!-- enterprise form info -->
+    <string name="rbgServer_getEnterpriseFormInfoReqParam_action" translatable="false">Field_l</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqParam_formId" translatable="false">manageid</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_itemList" translatable="false">fieldsList</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_id" translatable="false">id</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_name" translatable="false">name</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_physicalName" translatable="false">physicsname</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_type" translatable="false">type</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_textEditTextType" translatable="false">text</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_textEditNumberType" translatable="false">number</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_textAreaType" translatable="false">textarea</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_dateType" translatable="false">date</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_spinnerType" translatable="false">select</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_mustWriteFlag" translatable="false">mustfill</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_mustnotWrite" translatable="false">0</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_mustWrite" translatable="false">2</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_capitalFlag" translatable="false">capital</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_notCapital" translatable="false">0</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_capital" translatable="false">1</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_selectorContentList" translatable="false">tFormsetFieldparameterList</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_selectorContent_id" translatable="false">id</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_selectorContent_info" translatable="false">name</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_formulaList" translatable="false">formulasList</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_formula_id" translatable="false">id</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_formula_formId" translatable="false">manageid</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_formula_formula" translatable="false">formula</string>
 
 </resources>

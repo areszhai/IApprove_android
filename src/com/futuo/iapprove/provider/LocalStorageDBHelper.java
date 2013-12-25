@@ -10,6 +10,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees;
+import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems;
+import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormTypes;
+import com.futuo.iapprove.provider.EnterpriseFormContentProvider.Forms;
 
 public class LocalStorageDBHelper extends SQLiteOpenHelper {
 
@@ -41,7 +44,11 @@ public class LocalStorageDBHelper extends SQLiteOpenHelper {
 		// create enterprise employee contact info view
 		db.execSQL(getSqlStatementFromAssets(Employees.ENTERPRISE_EMPLOYEE_CONTACTINFO_VIEW));
 
-		//
+		// create enterprise form type, form and info table
+		db.execSQL(getSqlStatementFromAssets(FormTypes.FORMTYPES_TABLE));
+		db.execSQL(getSqlStatementFromAssets(Forms.FORMS_TABLE));
+		db.execSQL(getSqlStatementFromAssets(FormItems.FORMITEMS_TABLE));
+		db.execSQL(getSqlStatementFromAssets(FormItems.FORMITEM_SELECTORCONTENTS_TABLE));
 	}
 
 	@Override

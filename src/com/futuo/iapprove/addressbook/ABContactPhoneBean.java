@@ -81,7 +81,7 @@ public class ABContactPhoneBean implements Serializable {
 										_appContext
 												.getResources()
 												.getString(
-														R.string.rbgServer_getEnterpriseABReqResp_employees_mobilePhone)));
+														R.string.rbgServer_getEnterpriseABReqResp_employee_mobilePhone)));
 				if (null != _mobilePhoneValue) {
 					_contactPhones.add(new ABContactPhoneBean(
 							ABContactPhoneType.MOBILE, _mobilePhoneValue));
@@ -104,7 +104,7 @@ public class ABContactPhoneBean implements Serializable {
 										_appContext
 												.getResources()
 												.getString(
-														R.string.rbgServer_getEnterpriseABReqResp_employees_officePhone)));
+														R.string.rbgServer_getEnterpriseABReqResp_employee_officePhone)));
 				if (null != _officePhoneValue) {
 					_contactPhones.add(new ABContactPhoneBean(
 							ABContactPhoneType.OFFICE, _officePhoneValue));

@@ -53,14 +53,14 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name=".tab7tabcontent.form.EnterpriseFormListActivity"
-            android:label="@string/title_activity_enterprise_form_list"
+            android:name=".tab7tabcontent.newapproveapplication.form.EnterpriseFormTypeListActivity"
+            android:label="@string/title_activity_enterprise_form_type_list"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name=".tab7tabcontent.form.EnterpriseFormDetailInfoActivity"
-            android:label="@string/title_activity_enterprise_form_detail_info"
+            android:name=".tab7tabcontent.newapproveapplication.form.EnterpriseFormListActivity"
+            android:label="@string/title_activity_enterprise_form_list"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" >
         </activity>
@@ -105,6 +105,10 @@
         <provider
             android:name=".provider.EnterpriseABContentProvider"
             android:authorities="com.futuo.iapprove.provider.EnterpriseABContentProvider"
+            android:exported="false" />
+        <provider
+            android:name=".provider.EnterpriseFormContentProvider"
+            android:authorities="com.futuo.iapprove.provider.EnterpriseFormContentProvider"
             android:exported="false" />
     </application>
 

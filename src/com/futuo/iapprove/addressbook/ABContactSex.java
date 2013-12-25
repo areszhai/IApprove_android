@@ -10,7 +10,7 @@ import com.richitec.commontoolkit.CTApplication;
 public enum ABContactSex {
 
 	// male and female
-	MALE(0), FEMALE(1);
+	CLASSIFIED(0), MALE(1), FEMALE(2);
 
 	private static final String LOG_TAG = ABContactSex.class.getCanonicalName();
 
@@ -25,11 +25,15 @@ public enum ABContactSex {
 
 		// save sex value and initialize icon drawable
 		sexValue = value;
-		sexIconDrawable = null == value
-				|| (null != value && 0 == value.intValue()) ? _appContext
-				.getResources().getDrawable(R.drawable.img_sex_male)
-				: _appContext.getResources().getDrawable(
-						R.drawable.img_sex_female);
+		if (1 == value) {
+			// male icon
+			sexIconDrawable = _appContext.getResources().getDrawable(
+					R.drawable.img_sex_male);
+		} else if (2 == value) {
+			// female icon
+			sexIconDrawable = _appContext.getResources().getDrawable(
+					R.drawable.img_sex_female);
+		}
 	}
 
 	public Integer getValue() {
@@ -42,13 +46,22 @@ public enum ABContactSex {
 
 	// get address book contact sex with value
 	public static final ABContactSex getSex(Integer value) {
-		ABContactSex _sex = MALE;
+		ABContactSex _sex = null;
 
 		// check sex value
 		if (null != value) {
-			if (FEMALE.sexValue == value) {
+			if (CLASSIFIED.sexValue.intValue() == value.intValue()) {
+				// classified
+				_sex = CLASSIFIED;
+			} else if (MALE.sexValue.intValue() == value.intValue()) {
+				// male
+				_sex = MALE;
+			} else if (FEMALE.sexValue.intValue() == value.intValue()) {
 				// female
 				_sex = FEMALE;
+			} else {
+				Log.e(LOG_TAG, "Unrecognized address book contact sex value = "
+						+ value);
 			}
 		} else {
 			Log.e(LOG_TAG, "Can't init address book contact sex with value = "
