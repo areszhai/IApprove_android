@@ -27,7 +27,7 @@
 
     <!-- iApprove tab activity -->
     <!-- enterprise form type list activity -->
-    <string name="enterprise_formTypeList_nav_title_format">%s 表单选择</string>
+    <string name="eft6f_cancel_barButtonItem_title">取消</string>
 
     <!-- to-do list tab content activity -->
     <string name="todoList_tab_title">未审批</string>

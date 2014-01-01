@@ -59,8 +59,18 @@ public class AccountSetting4FirstActivity extends NavigationActivity {
 				// finish account setting for first activity
 				finish();
 
+				// define approve tab intent
+				Intent _approveTabIntent = new Intent(this,
+						IApproveTabActivity.class);
+
+				// check data
+				if (null != data) {
+					// put extras as params
+					_approveTabIntent.putExtras(data.getExtras());
+				}
+
 				// go to approve tab activity
-				startActivity(new Intent(this, IApproveTabActivity.class));
+				startActivity(_approveTabIntent);
 				break;
 
 			case AccountSetting4FirstRequestCode.ACCOUNT_REGISTER_REQCODE:

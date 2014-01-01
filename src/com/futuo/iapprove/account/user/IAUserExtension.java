@@ -1,12 +1,10 @@
 package com.futuo.iapprove.account.user;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.content.Intent;
+import android.database.Cursor;
 import android.util.Log;
 
+import com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider.EnterpriseProfiles.EnterpriseProfile;
 import com.futuo.iapprove.receiver.UserEnterpriseBroadcastReceiver;
 import com.richitec.commontoolkit.CTApplication;
 import com.richitec.commontoolkit.user.UserBean;
@@ -15,10 +13,6 @@ public class IAUserExtension {
 
 	private static final String LOG_TAG = IAUserExtension.class
 			.getCanonicalName();
-
-	// approve user enterprise map, key is enterprise id and value is enterprise
-	// name
-	private static Map<Long, String> _mUserEnterpriseMap;
 
 	// get approve user login enterprise id
 	public static Long getUserLoginEnterpriseId(UserBean user) {
@@ -46,54 +40,70 @@ public class IAUserExtension {
 				_userEnterpriseChangedBroadcastIntent);
 	}
 
-	// get approve user enterprise list
-	@SuppressWarnings("unchecked")
-	public static List<UserEnterpriseBean> getUserEnterprises(UserBean user) {
-		return (List<UserEnterpriseBean>) getUserExtAttr(user,
-				IAUserExtensionAttributes.USER_ENTERPRISES);
-	}
-
-	// set approve user enterprise list
-	public static void setUserEnterprises(UserBean user,
-			List<UserEnterpriseBean> userEnterprises) {
-		// init approve user enterprise map
-		_mUserEnterpriseMap = new LinkedHashMap<Long, String>();
-
-		for (UserEnterpriseBean userEnterprise : userEnterprises) {
-			_mUserEnterpriseMap.put(userEnterprise.getId(),
-					userEnterprise.getName());
-		}
-
-		setUserExtAttr(user, IAUserExtensionAttributes.USER_ENTERPRISES,
-				userEnterprises);
-	}
-
 	// get approve user login enterprise index
-	public static final Integer getUserLoginEnterpriseIndex(
-			Long userLoginEnterpriseId) {
-		Integer _userLoginEnterpriseIndex = null;
+	public static int getUserLoginEnterpriseIndex(UserBean user) {
+		int _userLoginEnterpriseIndex = 0;
 
-		// get user enterprise id array
-		Long[] _userEnterpriseIds = _mUserEnterpriseMap.keySet().toArray(
-				new Long[] {});
+		// get user enterprise cursor
+		Cursor _userEnterpriseCursor = CTApplication
+				.getContext()
+				.getContentResolver()
+				.query(EnterpriseProfile.ENTERPRISEPROFILES_CONTENT_URI,
+						null,
+						EnterpriseProfile.USER_ENTERPRISEPROFILES_WITHLOGINNAME_CONDITION,
+						new String[] { user.getName() }, null);
 
-		for (int i = 0; i < _userEnterpriseIds.length; i++) {
-			// compare user login enterprise id with each user enterprise id
-			if (userLoginEnterpriseId.longValue() == _userEnterpriseIds[i]
-					.longValue()) {
-				_userLoginEnterpriseIndex = i;
-
-				// break immediately
-				break;
+		// check the cursor
+		if (null != _userEnterpriseCursor) {
+			while (_userEnterpriseCursor.moveToNext()) {
+				// get and check user login enterprise id
+				if (IAUserExtension.getUserLoginEnterpriseId(user).longValue() == new UserEnterpriseBean(
+						_userEnterpriseCursor).getEnterpriseId().longValue()) {
+					_userLoginEnterpriseIndex = _userEnterpriseCursor
+							.getPosition();
+				}
 			}
+
+			// close the cursor
+			_userEnterpriseCursor.close();
 		}
 
 		return _userLoginEnterpriseIndex;
 	}
 
-	// get approve user enterprise name array
-	public static final String[] getUserEnterpriseNames() {
-		return _mUserEnterpriseMap.values().toArray(new String[] {});
+	// get approve user login enterprise abbreviation
+	public static String getUserLoginEnterpriseAbbreviation(UserBean user) {
+		String _userLoginEnterpriseAbbreviation = "";
+
+		// get user enterprise cursor
+		Cursor _userEnterpriseCursor = CTApplication
+				.getContext()
+				.getContentResolver()
+				.query(EnterpriseProfile.ENTERPRISEPROFILES_CONTENT_URI,
+						null,
+						EnterpriseProfile.USER_ENTERPRISEPROFILES_WITHLOGINNAME_CONDITION,
+						new String[] { user.getName() }, null);
+
+		// check the cursor
+		if (null != _userEnterpriseCursor) {
+			while (_userEnterpriseCursor.moveToNext()) {
+				// get user login enterprise
+				UserEnterpriseBean _userEnterprise = new UserEnterpriseBean(
+						_userEnterpriseCursor);
+
+				// get and check user login enterprise id
+				if (IAUserExtension.getUserLoginEnterpriseId(user).longValue() == _userEnterprise
+						.getEnterpriseId().longValue()) {
+					_userLoginEnterpriseAbbreviation = _userEnterprise
+							.getEnterpriseAbbreviation();
+				}
+			}
+
+			// close the cursor
+			_userEnterpriseCursor.close();
+		}
+
+		return _userLoginEnterpriseAbbreviation;
 	}
 
 	// get approve user extension attribute with key
@@ -132,8 +142,8 @@ public class IAUserExtension {
 	// approve user extension attributes
 	static enum IAUserExtensionAttributes {
 
-		// user login enterprise id and enterprise list
-		USER_LOGINENTERPRISEID, USER_ENTERPRISES
+		// user login enterprise id
+		USER_LOGINENTERPRISEID
 
 	}
 

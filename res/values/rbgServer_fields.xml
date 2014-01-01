@@ -15,7 +15,7 @@
     <string name="rbgServer_accountLoginReqParam_phone" translatable="false">logname</string>
     <string name="rbgServer_accountLoginReqParam_password" translatable="false">logpass</string>
     <string name="rbgServer_accountLoginReqResp_enterprise_id" translatable="false">number</string>
-    <string name="rbgServer_accountLoginReqResp_enterprise_name" translatable="false">abbreviation</string>
+    <string name="rbgServer_accountLoginReqResp_enterprise_abbreviation" translatable="false">abbreviation</string>
     <string name="rbgServer_accountLoginReqResp_enterprise_employeeName" translatable="false">name</string>
 
     <!-- iApprove -->
@@ -47,6 +47,9 @@
     <string name="rbgServer_getEnterpriseABReqResp_employee_name" translatable="false">name</string>
     <string name="rbgServer_getEnterpriseABReqResp_employee_avatarUrl" translatable="false">headurl</string>
     <string name="rbgServer_getEnterpriseABReqResp_employee_sex" translatable="false">sex</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_classifiedSex" translatable="false">0</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_maleSex" translatable="false">1</string>
+    <string name="rbgServer_getEnterpriseABReqResp_employee_femaleSex" translatable="false">2</string>
     <string name="rbgServer_getEnterpriseABReqResp_employee_nickname" translatable="false">nickname</string>
     <string name="rbgServer_getEnterpriseABReqResp_employee_birthday" translatable="false">birthtime</string>
     <string name="rbgServer_getEnterpriseABReqResp_employee_department" translatable="false">department</string>

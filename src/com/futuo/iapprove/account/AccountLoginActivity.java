@@ -1,8 +1,6 @@
 package com.futuo.iapprove.account;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpRequest;
@@ -24,10 +22,11 @@ import android.widget.Toast;
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
 import com.futuo.iapprove.account.user.IAUserLocalStorageAttributes;
-import com.futuo.iapprove.account.user.UserEnterpriseBean;
+import com.futuo.iapprove.account.user.UserEnterpriseProfileBean;
 import com.futuo.iapprove.customwidget.AccountLoginFormItem;
 import com.futuo.iapprove.customwidget.AccountLoginFormItem.AccountLoginFormItemInputEditTextTextWatcher;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
+import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity.IApproveTabExtraData;
 import com.richitec.commontoolkit.customcomponent.BarButtonItem;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
@@ -309,64 +308,26 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 							.base64Encode(_mAccountLoginUserPwdItem
 									.getInputEditText());
 
-					// get user last login enterprise id from local storage as
-					// default
-					Long _userLastLoginEnterpriseId = DataStorageUtils
-							.getLong(IAUserLocalStorageAttributes.USER_LASTLOGINENTERPRISEID
-									.name());
-
 					// generate account login user bean with username and
 					// userkey
 					UserBean _loginUserBean = new UserBean(
 							_accountLoginUserPhone, null,
 							_accountLoginUserPwdBase64Encode);
 
-					// define user login enterprise id and user enterprise list
-					Long _userLoginEnterpriseId = null;
-					List<UserEnterpriseBean> _userEnterpriseList = new ArrayList<UserEnterpriseBean>();
-
-					for (int i = 0; i < _respJsonDataArray.length(); i++) {
-						// get user enterprise bean
-						UserEnterpriseBean _userEnterpriseBean = new UserEnterpriseBean(
-								JSONUtils.getJSONObjectFromJSONArray(
-										_respJsonDataArray, i));
-
-						// set the first enterprise id as user login enterprise
-						// id
-						if (0 == i) {
-							_userLoginEnterpriseId = _userEnterpriseBean
-									.getId();
-						}
-
-						// add user enterprise bean to user enterprise list
-						_userEnterpriseList.add(_userEnterpriseBean);
-
-						// check user last login enterprise id and compare with
-						// user enterprise bean id
-						if (null != _userLastLoginEnterpriseId
-								&& _userLastLoginEnterpriseId.longValue() == _userEnterpriseBean
-										.getId().longValue()) {
-							_userLoginEnterpriseId = _userLastLoginEnterpriseId;
-						}
-					}
-
-					// set user login enterprise id and enterprises to approve
-					// user extension
-					if (null != _userLoginEnterpriseId) {
-						IAUserExtension.setUserLoginEnterpriseId(
-								_loginUserBean, _userLoginEnterpriseId);
-
-						// save user login enterprise id to local storage
-						DataStorageUtils
-								.putObject(
-										IAUserLocalStorageAttributes.USER_LASTLOGINENTERPRISEID
-												.name(), _userLoginEnterpriseId);
-					}
-					IAUserExtension.setUserEnterprises(_loginUserBean,
-							_userEnterpriseList);
+					// get user last login enterprise id from local storage as
+					// default and put to login user extension
+					Long _userLastLoginEnterpriseId = DataStorageUtils
+							.getLong(IAUserLocalStorageAttributes.USER_LASTLOGINENTERPRISEID
+									.name());
+					IAUserExtension.setUserLoginEnterpriseId(_loginUserBean,
+							_userLastLoginEnterpriseId);
 
 					// add account login user bean to user manager
 					UserManager.getInstance().setUser(_loginUserBean);
+
+					// process user enterprise profile
+					UserEnterpriseProfileBean
+							.processUserEnterpriseProfile(_respJsonDataArray);
 
 					// save account login user name and key to local storage
 					DataStorageUtils.putObject(
@@ -376,8 +337,17 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 							IAUserLocalStorageAttributes.USER_LOGINKEY.name(),
 							_accountLoginUserPwdBase64Encode);
 
+					// define iApprove tab extra data map
+					Map<String, Boolean> _extraMap = new HashMap<String, Boolean>();
+
+					// put not need to get user enterprise profile flag to extra
+					// data map as param
+					_extraMap
+							.put(IApproveTabExtraData.NOT_NEED2GET_USER_ENTERPRISEPROFILE_FLAG,
+									true);
+
 					// pop account login activity with result
-					popActivityWithResult(RESULT_OK, null);
+					popActivityWithResult(RESULT_OK, _extraMap);
 				} else {
 					// show soft input
 					setSoftInputVisibility(true);

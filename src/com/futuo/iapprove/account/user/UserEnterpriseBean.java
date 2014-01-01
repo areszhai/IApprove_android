@@ -5,9 +5,11 @@ import java.io.Serializable;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 
 import com.futuo.iapprove.R;
+import com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider.EnterpriseProfiles.EnterpriseProfile;
 import com.richitec.commontoolkit.CTApplication;
 import com.richitec.commontoolkit.utils.JSONUtils;
 
@@ -16,100 +18,112 @@ public class UserEnterpriseBean implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7049603672369228031L;
+	private static final long serialVersionUID = 7091686271058774997L;
 
 	private static final String LOG_TAG = UserEnterpriseBean.class
 			.getCanonicalName();
 
-	// enterprise id, name and employee name
-	private Long id;
-	private String name;
-	private String employeeName;
+	// user enterprise id and abbreviation
+	private Long enterpriseId;
+	private String enterpriseAbbreviation;
 
-	// Constructor
-	public UserEnterpriseBean() {
+	// constructor with JSON object
+	public UserEnterpriseBean(JSONObject enterpriseJSONObject) {
 		super();
 
-		// nothing to do
-	}
-
-	public UserEnterpriseBean(JSONObject userEnterpriseJSONObejct) {
-		super();
-
-		// check user enterprise json object
-		if (null != userEnterpriseJSONObejct) {
+		// check user enterprise JSON object
+		if (null != enterpriseJSONObject) {
 			// get application context
 			Context _appContext = CTApplication.getContext();
 
-			// set user enterprise bean attributes
-			// id
-			id = JSONUtils
-					.getLongFromJSONObject(
-							userEnterpriseJSONObejct,
-							_appContext
-									.getResources()
-									.getString(
-											R.string.rbgServer_accountLoginReqResp_enterprise_id));
+			// set user enterprise attributes
+			// enterprise id
+			try {
+				enterpriseId = Long
+						.parseLong(JSONUtils
+								.getStringFromJSONObject(
+										enterpriseJSONObject,
+										_appContext
+												.getResources()
+												.getString(
+														R.string.rbgServer_accountLoginReqResp_enterprise_id)));
+			} catch (NumberFormatException e) {
+				Log.e(LOG_TAG,
+						"Get user enterprise id error, exception message = "
+								+ e.getMessage());
 
-			// name
-			name = JSONUtils
-					.getStringFromJSONObject(
-							userEnterpriseJSONObejct,
-							_appContext
-									.getResources()
-									.getString(
-											R.string.rbgServer_accountLoginReqResp_enterprise_name));
+				e.printStackTrace();
+			}
 
-			// employee name
-			employeeName = JSONUtils
+			// enterprise abbreviation
+			enterpriseAbbreviation = JSONUtils
 					.getStringFromJSONObject(
-							userEnterpriseJSONObejct,
+							enterpriseJSONObject,
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_accountLoginReqResp_enterprise_employeeName));
+											R.string.rbgServer_accountLoginReqResp_enterprise_abbreviation));
 		} else {
 			Log.e(LOG_TAG,
-					"Constructor user enterprise bean with json object error, json object = "
-							+ userEnterpriseJSONObejct);
+					"New user enterprise with JSON object error, contact JSON object = "
+							+ enterpriseJSONObject);
 		}
 	}
 
-	public Long getId() {
-		return id;
+	// constructor with cursor
+	public UserEnterpriseBean(Cursor cursor) {
+		super();
+
+		// check the cursor
+		if (null != cursor) {
+			// set user enterprise attributes
+			// enterprise id
+			enterpriseId = cursor.getLong(cursor
+					.getColumnIndex(EnterpriseProfile.ENTERPRISE_ID));
+
+			// enterprise abbreviation
+			enterpriseAbbreviation = cursor.getString(cursor
+					.getColumnIndex(EnterpriseProfile.ENTERPRISE_ABBREVIATION));
+		} else {
+			Log.e(LOG_TAG, "New user enterprise with cursor error, cursor = "
+					+ cursor);
+		}
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public Long getEnterpriseId() {
+		return enterpriseId;
 	}
 
-	public String getName() {
-		return name;
+	public void setEnterpriseId(Long enterpriseId) {
+		this.enterpriseId = enterpriseId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public String getEnterpriseAbbreviation() {
+		return enterpriseAbbreviation;
 	}
 
-	public String getEmployeeName() {
-		return employeeName;
+	public void setEnterpriseAbbreviation(String enterpriseAbbreviation) {
+		this.enterpriseAbbreviation = enterpriseAbbreviation;
 	}
 
-	public void setEmployeeName(String employeeName) {
-		this.employeeName = employeeName;
-	}
+	public int compareTo(UserEnterpriseBean another) {
+		int _result = -1;
 
-	@Override
-	public String toString() {
-		// define description
-		StringBuilder _description = new StringBuilder();
+		// check user enterprise abbreviation
+		if ((null == enterpriseAbbreviation && null == another.enterpriseAbbreviation)
+				|| (null != enterpriseAbbreviation
+						&& null != another.enterpriseAbbreviation && enterpriseAbbreviation
+							.equalsIgnoreCase(another.enterpriseAbbreviation))) {
+			_result = 0;
+		} else {
+			Log.d(LOG_TAG,
+					"User enterprise abbreviation not equals, self abbreviation = "
+							+ enterpriseAbbreviation
+							+ " and another abbreviation = "
+							+ another.enterpriseAbbreviation);
+		}
 
-		// append enterprise id, name and employee name
-		_description.append("Enterprise id = ").append(id).append(", ")
-				.append("name = ").append(name).append(" and ")
-				.append("employee name = ").append(employeeName);
-
-		return _description.toString();
+		return _result;
 	}
 
 }

@@ -23,11 +23,9 @@ public class FormBean implements Comparable<FormBean>, Serializable {
 
 	private static final String LOG_TAG = FormBean.class.getCanonicalName();
 
-	// row id, form id, form type id, enterprise id and name
+	// row id, form id, form type id and name
 	private Long rowId;
 	private Long formId;
-	private Long formTypeId;
-	private Long enterpriseId;
 	private String formName;
 
 	// local storage data dirty type
@@ -96,14 +94,6 @@ public class FormBean implements Comparable<FormBean>, Serializable {
 			// form id
 			formId = cursor.getLong(cursor.getColumnIndex(Form.FORM_ID));
 
-			// form type id
-			formTypeId = cursor
-					.getLong(cursor.getColumnIndex(Form.FORMTYPE_ID));
-
-			// enterprise id
-			enterpriseId = cursor.getLong(cursor
-					.getColumnIndex(Form.ENTERPRISE_ID));
-
 			// form name
 			formName = cursor.getString(cursor.getColumnIndex(Form.NAME));
 		} else {
@@ -125,22 +115,6 @@ public class FormBean implements Comparable<FormBean>, Serializable {
 
 	public void setFormId(Long formId) {
 		this.formId = formId;
-	}
-
-	public Long getFormTypeId() {
-		return formTypeId;
-	}
-
-	public void setFormTypeId(Long formTypeId) {
-		this.formTypeId = formTypeId;
-	}
-
-	public Long getEnterpriseId() {
-		return enterpriseId;
-	}
-
-	public void setEnterpriseId(Long enterpriseId) {
-		this.enterpriseId = enterpriseId;
 	}
 
 	public String getFormName() {
@@ -184,9 +158,7 @@ public class FormBean implements Comparable<FormBean>, Serializable {
 
 		// append enterprise form id and name
 		_description.append("Enterprise form row id = ").append(rowId)
-				.append(", ").append("form id = ").append(formId).append(", ")
-				.append("form type id = ").append(formTypeId).append(", ")
-				.append("enterprise id = ").append(enterpriseId)
+				.append(", ").append("form id = ").append(formId)
 				.append(" and ").append("name = ").append(formName);
 
 		return _description.toString();

@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.futuo.iapprove.addressbook.ABContactPhoneType;
+import com.futuo.iapprove.addressbook.person.PersonConstants;
 import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees.Employee;
 import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees.EmployeeContactInfo;
 import com.richitec.commontoolkit.utils.CommonUtils;
@@ -392,7 +393,7 @@ public class EnterpriseABContentProvider extends LocalStorageContentProvider {
 						|| Employee.OFFICE_PHONE
 								.equalsIgnoreCase(contentValuesKey)
 						|| Employee.EMAIL.equalsIgnoreCase(contentValuesKey)) {
-					// define employee contact info content values
+					// define the employee contact info content values
 					ContentValues _employeeContactInfoContentValues = new ContentValues();
 
 					// generate employee contact info content values
@@ -452,10 +453,10 @@ public class EnterpriseABContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseABTableAccessType {
 
 		// enterprise address book table access type
-		private static final int EMPLOYEES = 20;
-		private static final int EMPLOYEE = 21;
-		private static final int EMPLOYEE_ID = 22;
-		private static final int EMPLOYEE_ENTERPRISEID = 23;
+		private static final int EMPLOYEES = 30;
+		private static final int EMPLOYEE = 31;
+		private static final int EMPLOYEE_ID = 32;
+		private static final int EMPLOYEE_ENTERPRISEID = 33;
 
 	}
 
@@ -479,20 +480,20 @@ public class EnterpriseABContentProvider extends LocalStorageContentProvider {
 
 			// enterprise address book content provider process data columns
 			public static final String USER_ID = "userId";
-			public static final String ENTERPRISE_ID = "enterpriseId";
-			public static final String NAME = "employeeName";
-			public static final String AVATAR = "avatar";
-			public static final String SEX = "sex";
+			public static final String ENTERPRISE_ID = PersonConstants.ENTERPRISE_ID;
+			public static final String NAME = PersonConstants.NAME;
+			public static final String AVATAR = PersonConstants.AVATAR;
+			public static final String SEX = PersonConstants.SEX;
 			public static final String NICKNAME = "nickname";
-			public static final String BIRTHDAY = "birthday";
-			public static final String DEPARTMENT = "department";
-			public static final String APPROVE_NUMBER = "approveNumber";
-			public static final String NOTE = "note";
+			public static final String BIRTHDAY = PersonConstants.BIRTHDAY;
+			public static final String DEPARTMENT = PersonConstants.DEPARTMENT;
+			public static final String APPROVE_NUMBER = PersonConstants.APPROVE_NUMBER;
+			public static final String NOTE = PersonConstants.NOTE;
 			public static final String FREQUENCY = "frequency";
 
-			public static final String MOBILE_PHONE = "mobilePhone";
-			public static final String OFFICE_PHONE = "officePhone";
-			public static final String EMAIL = "email";
+			public static final String MOBILE_PHONE = PersonConstants.MOBILE_PHONE;
+			public static final String OFFICE_PHONE = PersonConstants.OFFICE_PHONE;
+			public static final String EMAIL = PersonConstants.EMAIL;
 
 			// content uri
 			private static final Uri EMPLOYEES_NOTIFICATION_CONTENT_URI = Uri

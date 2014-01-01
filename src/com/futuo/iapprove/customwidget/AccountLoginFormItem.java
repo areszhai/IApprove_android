@@ -24,12 +24,12 @@ public class AccountLoginFormItem extends LinearLayout {
 			.getCanonicalName();
 
 	// account login form item label, input editText hint and type
-	String _mLabel;
-	String _mInputEditTextHint;
-	String _mInputEditTextType;
+	private String _mLabel;
+	private String _mInputEditTextHint;
+	private String _mInputEditTextType;
 
 	// account login form item input editText
-	EditText _mInputEditText;
+	private EditText _mInputEditText;
 
 	public AccountLoginFormItem(Context context, AttributeSet attrs,
 			int defStyle) {

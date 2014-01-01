@@ -65,6 +65,12 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
+            android:name=".tab7tabcontent.newapproveapplication.NewApproveApplicationActivity"
+            android:label="@string/title_activity_new_approve_application"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
             android:name=".tab7tabcontent.TodoListTabContentActivity"
             android:label="@string/title_activity_todo_list_tab_content"
             android:screenOrientation="portrait" >
@@ -102,6 +108,14 @@
 
         <service android:name=".service.CoreService" />
 
+        <provider
+            android:name=".provider.UserEnterpriseProfileContentProvider"
+            android:authorities="com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider"
+            android:exported="false" />
+        <provider
+            android:name=".provider.EnterpriseTodoTaskContentProvider"
+            android:authorities="com.futuo.iapprove.provider.EnterpriseTodoTaskContentProvider"
+            android:exported="false" />
         <provider
             android:name=".provider.EnterpriseABContentProvider"
             android:authorities="com.futuo.iapprove.provider.EnterpriseABContentProvider"

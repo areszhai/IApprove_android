@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.customwidget.IApproveTabContentActivity;
-import com.futuo.iapprove.service.CoreService;
 
 public class SettingsTabContentActivity extends IApproveTabContentActivity {
 
@@ -20,28 +19,6 @@ public class SettingsTabContentActivity extends IApproveTabContentActivity {
 		setTitle(R.string.settings_tab7nav_title);
 
 		//
-	}
-
-	@Override
-	protected boolean bindCoreServiceWhenOnResume() {
-		// binder core service when on resume
-		return true;
-	}
-
-	@Override
-	protected void onCoreServiceConnected(CoreService coreService) {
-		super.onCoreServiceConnected(coreService);
-
-		// start get user login enterprise form
-		coreService.startGetEnterpriseForm();
-	}
-
-	@Override
-	protected void onCoreServiceDisconnected(CoreService coreService) {
-		super.onCoreServiceDisconnected(coreService);
-
-		// stop get user login enterprise form
-		coreService.stopGetEnterpriseForm();
 	}
 
 }

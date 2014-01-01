@@ -272,25 +272,18 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 		@Override
 		public void onItemClick(AdapterView<?> abcontactListView,
 				View abcItemContentView, int position, long id) {
-			// get and check clicked contact
-			ABContactBean _clickedContact = (ABContactBean) _mABContactListCursorAdapter
-					.getDataList().get(position);
-			if (null != _clickedContact) {
-				// define address book contact detail info extra data map
-				Map<String, ABContactBean> _extraMap = new HashMap<String, ABContactBean>();
+			// define address book contact detail info extra data map
+			Map<String, ABContactBean> _extraMap = new HashMap<String, ABContactBean>();
 
-				// put address book contact bean to extra data map as param
-				_extraMap
-						.put(ABContactDetailInfoExtraData.ABCONTACT_DETAILINFO_CONTACT,
-								_clickedContact);
+			// put address book contact bean to extra data map as param
+			_extraMap.put(
+					ABContactDetailInfoExtraData.ABCONTACT_DETAILINFO_CONTACT,
+					(ABContactBean) _mABContactListCursorAdapter.getDataList()
+							.get(position));
 
-				// go to address book contact detail info activity with extra
-				// data map
-				pushActivity(ABContactDetailInfoActivity.class, _extraMap);
-			} else {
-				// go to address book contact detail info activity
-				pushActivity(ABContactDetailInfoActivity.class);
-			}
+			// go to address book contact detail info activity with extra data
+			// map
+			pushActivity(ABContactDetailInfoActivity.class, _extraMap);
 		}
 
 	}

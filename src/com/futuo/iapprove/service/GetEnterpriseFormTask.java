@@ -372,6 +372,9 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 
 							for (int i = 0; i < _enterpriseFormTypeJsonArray
 									.length(); i++) {
+								// clear the form type content values
+								_formTypeContentValues.clear();
+
 								// get enterprise each form type
 								FormTypeBean _formType = new FormTypeBean(
 										JSONUtils
@@ -570,6 +573,9 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 
 							for (int i = 0; i < _enterpriseFormJsonArray
 									.length(); i++) {
+								// clear the form content values
+								_formContentValues.clear();
+
 								// get enterprise each form
 								FormBean _form = new FormBean(JSONUtils
 										.getJSONObjectFromJSONArray(
@@ -740,13 +746,13 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 									_mContentResolver
 											.query(FormItem.FORMITEMS_CONTENT_URI,
 													null,
-													FormItem.ENTERPRISE_FORMITEMS_WITHFORMID7TYPEID_CONDITION,
+													FormItem.ENTERPRISE_FORMITEMS_WITHFORMTYPEID7FORMID_CONDITION,
 													new String[] {
 															_mEnterpriseId
 																	.toString(),
-															_mFormId.toString(),
 															_mFormTypeId
-																	.toString() },
+																	.toString(),
+															_mFormId.toString() },
 													null), FormItemBean.class);
 
 							// define the form item content values
@@ -755,7 +761,8 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 							// get and process form items
 							for (FormItemBean formItem : FormItemBean
 									.getFormItems(_respJsonData)) {
-								// set form item
+								// clear the form item content values
+								_formItemContentValues.clear();
 
 								// generate the form item content values with
 								// item id, name, physical name, type, must
@@ -785,7 +792,7 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 										.getSelectorContentInfos().size(); i++) {
 									_formItemContentValues.put(
 											String.format(
-													FormItem.SELECTORCONTENT_FORMAT,
+													FormItem.SELECTORCONTENT_INFO_FORMAT,
 													i), formItem
 													.getSelectorContentInfos()
 													.get(i));

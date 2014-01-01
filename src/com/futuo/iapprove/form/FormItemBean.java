@@ -18,6 +18,7 @@ import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyTyp
 import com.richitec.commontoolkit.CTApplication;
 import com.richitec.commontoolkit.utils.CommonUtils;
 import com.richitec.commontoolkit.utils.JSONUtils;
+import com.richitec.commontoolkit.utils.StringUtils;
 
 public class FormItemBean implements Comparable<FormItemBean>, Serializable {
 
@@ -181,6 +182,7 @@ public class FormItemBean implements Comparable<FormItemBean>, Serializable {
 				e.printStackTrace();
 			}
 
+			// selector content infos
 			// get and check selector content infos value
 			List<String> _selectorContentInfosValue = FormItemSelectorContentParser
 					.parserFormItemSelectorContentList(formItemJSONObject);
@@ -228,6 +230,15 @@ public class FormItemBean implements Comparable<FormItemBean>, Serializable {
 
 			// form item formula
 			formula = cursor.getString(cursor.getColumnIndex(FormItem.FORMULA));
+
+			// selector content infos
+			// get and check selector contents column index
+			int _selectorContentsColumnIndex = cursor
+					.getColumnIndex(FormItem.SELECTORCONTENTS);
+			if (!cursor.isNull(_selectorContentsColumnIndex)) {
+				selectorContentInfos.addAll(getSelectorContentInfoList(cursor
+						.getString(_selectorContentsColumnIndex)));
+			}
 		} else {
 			Log.e(LOG_TAG, "New form item with cursor error, cursor = "
 					+ cursor);
@@ -338,7 +349,7 @@ public class FormItemBean implements Comparable<FormItemBean>, Serializable {
 								|| (null != formula && null != another.formula && formula
 										.equalsIgnoreCase(another.formula))) {
 							if (CommonUtils.compareList(selectorContentInfos,
-									another.selectorContentInfos)) {
+									another.selectorContentInfos, false)) {
 								_result = 0;
 							} else {
 								Log.d(LOG_TAG,
@@ -400,6 +411,28 @@ public class FormItemBean implements Comparable<FormItemBean>, Serializable {
 				.append(selectorContentInfos);
 
 		return _description.toString();
+	}
+
+	// get form item selector content info list with selector contents string
+	@SuppressWarnings("unchecked")
+	private List<String> getSelectorContentInfoList(String selectorContents) {
+		List<String> _selectorContentInfoList = null;
+
+		// check selector contents string
+		if (null != selectorContents) {
+			// get selector content info array
+			_selectorContentInfoList = (List<String>) CommonUtils
+					.array2List(StringUtils.split(selectorContents,
+							FormItem.SELECTORCONTENT_INFO_SEPARATOR));
+		} else {
+			// set empty as default
+			_selectorContentInfoList = new ArrayList<String>();
+
+			Log.e(LOG_TAG, "Form item = " + this + " selector contents = "
+					+ selectorContents);
+		}
+
+		return _selectorContentInfoList;
 	}
 
 	// get form item bean with JSON object

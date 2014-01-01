@@ -13,6 +13,7 @@ import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormTypes;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.Forms;
+import com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider.EnterpriseProfiles;
 
 public class LocalStorageDBHelper extends SQLiteOpenHelper {
 
@@ -37,6 +38,9 @@ public class LocalStorageDBHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.d(LOG_TAG, "Initialize local storage database");
 
+		// create user enterprise profile table
+		db.execSQL(getSqlStatementFromAssets(EnterpriseProfiles.ENTERPRISE_PROFILES_TABLE));
+
 		// create enterprise address book and employee contact info table
 		db.execSQL(getSqlStatementFromAssets(Employees.EMPLOYEES_TABLE));
 		db.execSQL(getSqlStatementFromAssets(Employees.EMPLOYEE_CONTACTINFOS_TABLE));
@@ -49,6 +53,9 @@ public class LocalStorageDBHelper extends SQLiteOpenHelper {
 		db.execSQL(getSqlStatementFromAssets(Forms.FORMS_TABLE));
 		db.execSQL(getSqlStatementFromAssets(FormItems.FORMITEMS_TABLE));
 		db.execSQL(getSqlStatementFromAssets(FormItems.FORMITEM_SELECTORCONTENTS_TABLE));
+
+		// create enterprise form item selector content view
+		db.execSQL(getSqlStatementFromAssets(FormItems.ENTERPRISE_FORM_ITEM_SELECTORCONTENT_VIEW));
 	}
 
 	@Override

@@ -353,9 +353,9 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 			Log.d(LOG_TAG, "Query enterprise form item with selection = "
 					+ selection);
 
-			// set enterprise form item table as query table and form
-			// notification uri
-			_queryTableName = FormItems.FORMITEMS_TABLE;
+			// set enterprise form item selector content view table as query
+			// table and form item notification uri
+			_queryTableName = FormItems.ENTERPRISE_FORM_ITEM_SELECTORCONTENT_VIEW;
 			_notificationUri = FormItem.FORMITEMS_NOTIFICATION_CONTENT_URI;
 			break;
 
@@ -402,24 +402,32 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 			ContentValues _formItemContentValues = new ContentValues(values);
 			List<ContentValues> _formItemSelectorContentInfoContentValuesList = new ArrayList<ContentValues>();
 
+			// get content values selector content info key prefix
+			String _selectorContentInfoKeyPrefix = FormItemSelectorContent.CONTENTVALUES_INFO_KEY_FORMAT
+					.replace("%d", "");
+
 			for (String contentValuesKey : values.keySet()) {
 				// check values
-				if (contentValuesKey.startsWith(FormItem.SELECTORCONTENT_FORMAT
-						.replace("%d", ""))) {
-					// define form item selector content info content values
-					ContentValues _ormItemSelectorContentInfoContentValues = new ContentValues();
+				if (contentValuesKey.startsWith(_selectorContentInfoKeyPrefix)) {
+					// define the form item selector content info content values
+					ContentValues _formItemSelectorContentInfoContentValues = new ContentValues();
 
 					// generate form item selector content info content values
-					// put form item selector content info into form item
-					// selector content info content values
-					_ormItemSelectorContentInfoContentValues.put(
+					// put form item selector content fake id, info into form
+					// item selector content info content values
+					_formItemSelectorContentInfoContentValues.put(
+							FormItemSelectorContent.SELECTORCONTENT_FAKEID,
+							Integer.parseInt(contentValuesKey
+									.substring(_selectorContentInfoKeyPrefix
+											.length())));
+					_formItemSelectorContentInfoContentValues.put(
 							FormItemSelectorContent.INFO,
 							values.getAsString(contentValuesKey));
 
 					// add form item selector content info content values to
 					// list
 					_formItemSelectorContentInfoContentValuesList
-							.add(_ormItemSelectorContentInfoContentValues);
+							.add(_formItemSelectorContentInfoContentValues);
 
 					// remove the content value from form item content values
 					_formItemContentValues.remove(contentValuesKey);
@@ -445,10 +453,10 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseFormTypeTableAccessType {
 
 		// enterprise form type table access type
-		private static final int FORMTYPES = 30;
-		private static final int FORMTYPE = 31;
-		private static final int FORMTYPE_ID = 32;
-		private static final int FORMTYPE_ENTERPRISEID = 33;
+		private static final int FORMTYPES = 40;
+		private static final int FORMTYPE = 41;
+		private static final int FORMTYPE_ID = 42;
+		private static final int FORMTYPE_ENTERPRISEID = 43;
 
 	}
 
@@ -495,9 +503,9 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseFormTableAccessType {
 
 		// enterprise form table access type
-		private static final int FORMS = 40;
-		private static final int FORM = 41;
-		private static final int FORM_ID = 42;
+		private static final int FORMS = 50;
+		private static final int FORM = 51;
+		private static final int FORM_ID = 52;
 
 	}
 
@@ -546,9 +554,9 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseFormItemTableAccessType {
 
 		// enterprise form item table access type
-		private static final int FORMITEMS = 50;
-		private static final int FORMITEM = 51;
-		private static final int FORMITEM_ID = 52;
+		private static final int FORMITEMS = 60;
+		private static final int FORMITEM = 61;
+		private static final int FORMITEM_ID = 62;
 
 	}
 
@@ -561,6 +569,9 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 		// enterprise form item and its selector content table name
 		public static final String FORMITEMS_TABLE = "ia_form_item";
 		public static final String FORMITEM_SELECTORCONTENTS_TABLE = "ia_form_item_selectorcontent";
+
+		// enterprise form item selector content view
+		public static final String ENTERPRISE_FORM_ITEM_SELECTORCONTENT_VIEW = "ia_enterprise_form_item_selectorcontent_view";
 
 		// inner class
 		// enterprise form item
@@ -578,7 +589,11 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 			public static final String CAPITAL_FLAG = "isCapital";
 			public static final String FORMULA = "formula";
 
-			public static final String SELECTORCONTENT_FORMAT = "selectorContent_%d";
+			public static final String SELECTORCONTENTS = "selectorContents";
+
+			// form item selector content info format and separator
+			public static final String SELECTORCONTENT_INFO_FORMAT = FormItemSelectorContent.CONTENTVALUES_INFO_KEY_FORMAT;
+			public static final String SELECTORCONTENT_INFO_SEPARATOR = FormItemSelectorContent.INFO_SEPARATOR;
 
 			// content uri
 			private static final Uri FORMITEMS_NOTIFICATION_CONTENT_URI = Uri
@@ -594,14 +609,14 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 			private static final String FORMITEM_CONTENT_TYPE = "vnd.android.cursor.item/"
 					+ FormItems.class.getCanonicalName();
 
-			// enterprise form items with form id and its type id condition
-			public static final String ENTERPRISE_FORMITEMS_WITHFORMID7TYPEID_CONDITION = ENTERPRISE_ID
-					+ "=?"
-					+ " and "
-					+ FORM_ID
+			// enterprise form items with form type id and form id condition
+			public static final String ENTERPRISE_FORMITEMS_WITHFORMTYPEID7FORMID_CONDITION = ENTERPRISE_ID
 					+ "=?"
 					+ " and "
 					+ FORMTYPE_ID
+					+ "=?"
+					+ " and "
+					+ FORM_ID
 					+ "=?";
 
 		}
@@ -610,8 +625,15 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 		static final class FormItemSelectorContent implements SimpleBaseColumns {
 
 			// form item selector content data columns
+			public static final String SELECTORCONTENT_FAKEID = "selectorcontentFakeId";
 			public static final String FORMITEM_ROWID = "formItemRowId";
 			public static final String INFO = "info";
+
+			// form item selector content content values info key format
+			public static final String CONTENTVALUES_INFO_KEY_FORMAT = "selectorContent_%d";
+
+			// form item selector content info separator
+			public static final String INFO_SEPARATOR = "~~";
 
 		}
 

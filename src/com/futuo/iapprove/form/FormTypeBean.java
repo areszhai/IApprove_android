@@ -23,10 +23,9 @@ public class FormTypeBean implements Comparable<FormTypeBean>, Serializable {
 
 	private static final String LOG_TAG = FormTypeBean.class.getCanonicalName();
 
-	// row id, type id, enterprise id and name
+	// row id, type id and name
 	private Long rowId;
 	private Long typeId;
-	private Long enterpriseId;
 	private String typeName;
 
 	// local storage data dirty type
@@ -94,10 +93,6 @@ public class FormTypeBean implements Comparable<FormTypeBean>, Serializable {
 			// type id
 			typeId = cursor.getLong(cursor.getColumnIndex(FormType.TYPE_ID));
 
-			// enterprise id
-			enterpriseId = cursor.getLong(cursor
-					.getColumnIndex(FormType.ENTERPRISE_ID));
-
 			// type name
 			typeName = cursor.getString(cursor.getColumnIndex(FormType.NAME));
 		} else {
@@ -120,14 +115,6 @@ public class FormTypeBean implements Comparable<FormTypeBean>, Serializable {
 
 	public void setTypeId(Long typeId) {
 		this.typeId = typeId;
-	}
-
-	public Long getEnterpriseId() {
-		return enterpriseId;
-	}
-
-	public void setEnterpriseId(Long enterpriseId) {
-		this.enterpriseId = enterpriseId;
 	}
 
 	public String getTypeName() {
@@ -171,8 +158,7 @@ public class FormTypeBean implements Comparable<FormTypeBean>, Serializable {
 
 		// append enterprise form type id and name
 		_description.append("Enterprise form type row id = ").append(rowId)
-				.append(", ").append("type id = ").append(typeId).append(", ")
-				.append("enterprise id = ").append(enterpriseId)
+				.append(", ").append("type id = ").append(typeId)
 				.append(" and ").append("name = ").append(typeName);
 
 		return _description.toString();

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="12dp" >
+
+    <TextView
+        android:id="@+id/abcifi_label_textView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:textColor="@color/gray"
+        android:textSize="16sp" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
+
+        <ImageView
+            android:id="@+id/abcifi_detailInfo_imageView"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:contentDescription="@string/abcdi_info_listView_item_detailInfo_imageView_contentDescription"
+            android:src="@drawable/img_abcontact_infoform_item_detailinfo_arrow"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/abcifi_info_textView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/abcifi_detailInfo_imageView"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+</LinearLayout>

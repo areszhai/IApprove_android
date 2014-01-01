@@ -28,7 +28,7 @@
 
         <com.futuo.iapprove.customwidget.CommonFormSeparator
             android:layout_width="fill_parent"
-            android:layout_height="1.5dp" />
+            android:layout_height="wrap_content" />
 
         <com.futuo.iapprove.customwidget.AccountLoginFormItem
             android:id="@+id/al_userLoginPwd"

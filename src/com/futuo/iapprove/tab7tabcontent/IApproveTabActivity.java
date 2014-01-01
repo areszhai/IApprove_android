@@ -1,5 +1,13 @@
 package com.futuo.iapprove.tab7tabcontent;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +16,17 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
 import com.futuo.iapprove.R;
+import com.futuo.iapprove.account.user.UserEnterpriseProfileBean;
 import com.futuo.iapprove.service.CoreService;
 import com.richitec.commontoolkit.customcomponent.CTTabSpecIndicator;
+import com.richitec.commontoolkit.user.UserBean;
+import com.richitec.commontoolkit.user.UserManager;
+import com.richitec.commontoolkit.utils.HttpUtils;
+import com.richitec.commontoolkit.utils.HttpUtils.HttpRequestType;
+import com.richitec.commontoolkit.utils.HttpUtils.OnHttpRequestListener;
+import com.richitec.commontoolkit.utils.HttpUtils.PostRequestFormat;
+import com.richitec.commontoolkit.utils.JSONUtils;
+import com.richitec.commontoolkit.utils.StringUtils;
 
 @SuppressWarnings("deprecation")
 public class IApproveTabActivity extends TabActivity {
@@ -41,6 +58,58 @@ public class IApproveTabActivity extends TabActivity {
 
 		// set content view
 		setContentView(R.layout.iapprove_tab_activity_layout);
+
+		// define need to get user enterprise profile flag
+		Boolean _need2GetUserEnterpriseProfile = true;
+
+		// get the extra data
+		final Bundle _extraData = getIntent().getExtras();
+
+		// check the data
+		if (null != _extraData) {
+			// get not need to get user enterprise profile flag
+			Boolean _notNeed2GetUserEnterpriseProfileFlag = _extraData
+					.getBoolean(IApproveTabExtraData.NOT_NEED2GET_USER_ENTERPRISEPROFILE_FLAG);
+
+			// check account login user phone
+			if (null != _notNeed2GetUserEnterpriseProfileFlag
+					&& true == _notNeed2GetUserEnterpriseProfileFlag) {
+				// not need to get user enterprise profile
+				_need2GetUserEnterpriseProfile = false;
+			}
+		}
+
+		// check if or not need to get user enterprise profile
+		if (_need2GetUserEnterpriseProfile) {
+			// get user enterprise profile
+			// get login user
+			UserBean _loginUser = UserManager.getInstance().getUser();
+
+			// generate get user enterprise profile post http request param
+			Map<String, String> _getUserEnterpriseProfilePostHttpReqParam = new HashMap<String, String>();
+
+			// put get user enterprise profile action, user name and key in
+			_getUserEnterpriseProfilePostHttpReqParam.put(
+					getResources().getString(
+							R.string.rbgServer_commonReqParam_action),
+					getResources().getString(
+							R.string.rbgServer_accountLoginReqParam_action));
+			_getUserEnterpriseProfilePostHttpReqParam.put(getResources()
+					.getString(R.string.rbgServer_accountLoginReqParam_phone),
+					StringUtils.base64Encode(_loginUser.getName()));
+			_getUserEnterpriseProfilePostHttpReqParam.put(
+					getResources().getString(
+							R.string.rbgServer_accountLoginReqParam_password),
+					_loginUser.getUserKey());
+
+			// send get user enterprise profile post http request
+			HttpUtils.postRequest(getResources().getString(R.string.server_url)
+					+ getResources().getString(R.string.account_login_url),
+					PostRequestFormat.URLENCODED,
+					_getUserEnterpriseProfilePostHttpReqParam, null,
+					HttpRequestType.ASYNCHRONOUS,
+					new GetUserEnterpriseProfilePostHttpRequestListener());
+		}
 
 		// set subViews
 		// get tabHost
@@ -92,6 +161,72 @@ public class IApproveTabActivity extends TabActivity {
 
 		// stop core service
 		stopService(new Intent(this, CoreService.class));
+	}
+
+	// inner class
+	// iApprove tab extra data constant
+	public static final class IApproveTabExtraData {
+
+		// not need to get user enterprise profile flag
+		public static final String NOT_NEED2GET_USER_ENTERPRISEPROFILE_FLAG = "not_need_to_get_user_enterpriseprofile_flag";
+
+	}
+
+	// get user enterprise profile post http request listener
+	class GetUserEnterpriseProfilePostHttpRequestListener extends
+			OnHttpRequestListener {
+
+		@Override
+		public void onFinished(HttpRequest request, HttpResponse response) {
+			// get http response entity string
+			String _respEntityString = HttpUtils
+					.getHttpResponseEntityString(response);
+
+			Log.d(LOG_TAG,
+					"Send get user enterprise profile post http request successful, response entity string = "
+							+ _respEntityString);
+
+			// get and check http response entity string error json data
+			JSONObject _respJsonData = JSONUtils
+					.toJSONObject(_respEntityString);
+
+			if (null == _respJsonData) {
+				// get and check http response entity string error json data
+				// again
+				JSONArray _respJsonDataArray = JSONUtils
+						.toJSONArray(_respEntityString);
+
+				if (null != _respJsonDataArray) {
+					Log.d(LOG_TAG, "Get user enterprise profile successful");
+
+					// process user enterprise profile
+					UserEnterpriseProfileBean
+							.processUserEnterpriseProfile(_respJsonDataArray);
+				}
+			} else {
+				// get and check error message
+				String _errorMsg = JSONUtils.getStringFromJSONObject(
+						_respJsonData,
+						getResources().getString(
+								R.string.rbgServer_commonReqResp_error));
+
+				if (null != _errorMsg) {
+					Log.e(LOG_TAG,
+							"Get user enterprise profile failed, response error message = "
+									+ _errorMsg);
+				} else {
+					Log.e(LOG_TAG,
+							"Get user enterprise profile failed, response error message unrecognized");
+				}
+			}
+		}
+
+		@Override
+		public void onFailed(HttpRequest request, HttpResponse response) {
+			Log.e(LOG_TAG,
+					"Send get user enterprise profile post http request failed");
+		}
+
 	}
 
 }

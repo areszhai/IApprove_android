@@ -58,6 +58,19 @@ public class ABContactPhoneBean implements Serializable {
 		this.number = number;
 	}
 
+	@Override
+	public String toString() {
+		// define description
+		StringBuilder _description = new StringBuilder();
+
+		// append enterprise address book contact phone type and number
+		_description.append("Enterprise address book contact phone type = ")
+				.append(type.getPhoneTypeLabel()).append(" and ")
+				.append("number = ").append(number);
+
+		return _description.toString();
+	}
+
 	// get address book contact phone list with JSON object
 	public static List<ABContactPhoneBean> getContactPhones(
 			JSONObject contactJSONObject) {
@@ -166,19 +179,6 @@ public class ABContactPhoneBean implements Serializable {
 		}
 
 		return _contactPhones;
-	}
-
-	@Override
-	public String toString() {
-		// define description
-		StringBuilder _description = new StringBuilder();
-
-		// append enterprise address book contact phone type and number
-		_description.append("Enterprise address book contact phone type = ")
-				.append(type.getPhoneTypeLabel()).append(" and ")
-				.append("number = ").append(number);
-
-		return _description.toString();
 	}
 
 }

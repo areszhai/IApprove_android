@@ -10,22 +10,26 @@ import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
 import com.futuo.iapprove.account.user.IAUserLocalStorageAttributes;
+import com.futuo.iapprove.account.user.UserEnterpriseBean;
 import com.futuo.iapprove.customwidget.IApproveTabContentActivity;
+import com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider.EnterpriseProfiles.EnterpriseProfile;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.tab7tabcontent.task.IApproveTaskAdapter;
 import com.futuo.iapprove.utils.HttpRequestParamUtils;
@@ -179,8 +183,8 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 		private Spinner _mTitleEnterprisesSpinner;
 		private RelativeLayout _mTitleDataFetchingRelativeLayout;
 
-		// title enterprises spinner array adapter
-		private ArrayAdapter<String> _mTitleEnterprisesSpinnerArrayAdapter;
+		// title enterprises spinner cursor adapter
+		private SimpleCursorAdapter _mTitleEnterprisesSpinnerCursorAdapter;
 
 		public TodoListTabContentViewActivityTitleView(Context context) {
 			super(context);
@@ -193,27 +197,35 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 			_mTitleEnterprisesSpinner = (Spinner) findViewById(R.id.tdlt_enterprises_spinner);
 			_mTitleDataFetchingRelativeLayout = (RelativeLayout) findViewById(R.id.tdlt_fetchingData_relativeLayout);
 
-			// init title enterprises spinner array adapter
-			_mTitleEnterprisesSpinnerArrayAdapter = new ArrayAdapter<String>(
+			// init title enterprises spinner cursor adapter
+			_mTitleEnterprisesSpinnerCursorAdapter = new SimpleCursorAdapter(
 					context,
 					R.layout.todo_list_tab_content_activity_title_spinner_item_layout,
-					IAUserExtension.getUserEnterpriseNames());
+					context.getContentResolver()
+							.query(EnterpriseProfile.ENTERPRISEPROFILES_CONTENT_URI,
+									null,
+									EnterpriseProfile.USER_ENTERPRISEPROFILES_WITHLOGINNAME_CONDITION,
+									new String[] { _mLoginUser.getName() },
+									null),
+					new String[] { EnterpriseProfile.ENTERPRISE_ABBREVIATION },
+					new int[] { android.R.id.text1 },
+					CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
 			// set title enterprises spinner drop down view resource
-			_mTitleEnterprisesSpinnerArrayAdapter
+			_mTitleEnterprisesSpinnerCursorAdapter
 					.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 			// set title enterprises spinner adapter
 			_mTitleEnterprisesSpinner
-					.setAdapter(_mTitleEnterprisesSpinnerArrayAdapter);
+					.setAdapter(_mTitleEnterprisesSpinnerCursorAdapter);
 
 			// set title enterprises spinner fake on item selected listener
 			_mTitleEnterprisesSpinner
 					.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 						@Override
-						public void onItemSelected(AdapterView<?> arg0,
-								View arg1, int arg2, long arg3) {
+						public void onItemSelected(AdapterView<?> spinner,
+								View textView, int position, long id) {
 							// set title enterprises spinner real on item
 							// selected listener
 							_mTitleEnterprisesSpinner
@@ -229,8 +241,7 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 			// set default selection
 			_mTitleEnterprisesSpinner.setSelection(IAUserExtension
-					.getUserLoginEnterpriseIndex(IAUserExtension
-							.getUserLoginEnterpriseId(_mLoginUser)));
+					.getUserLoginEnterpriseIndex(_mLoginUser));
 		}
 
 		// generate title view
@@ -259,16 +270,24 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 			@Override
 			public void onItemSelected(AdapterView<?> spinner, View textView,
 					int position, long id) {
-				// get user selected enterprise id
-				Long _selectedEnterpriseId = IAUserExtension
-						.getUserEnterprises(_mLoginUser).get((int) id).getId();
+				// get title enterprise spinner cursor and move to position
+				Cursor _titleEnterprisesSpinnerCursor = _mTitleEnterprisesSpinnerCursorAdapter
+						.getCursor();
+				if (true == _titleEnterprisesSpinnerCursor
+						.moveToPosition(position)) {
+					// get user selected enterprise id
+					Long _selectedEnterpriseId = new UserEnterpriseBean(
+							_titleEnterprisesSpinnerCursor).getEnterpriseId();
 
-				// save user selected enterprise id and save to local storage
-				IAUserExtension.setUserLoginEnterpriseId(_mLoginUser,
-						_selectedEnterpriseId);
-				DataStorageUtils.putObject(
-						IAUserLocalStorageAttributes.USER_LASTLOGINENTERPRISEID
-								.name(), _selectedEnterpriseId);
+					// save user selected enterprise id and save to local
+					// storage
+					IAUserExtension.setUserLoginEnterpriseId(_mLoginUser,
+							_selectedEnterpriseId);
+					DataStorageUtils
+							.putObject(
+									IAUserLocalStorageAttributes.USER_LASTLOGINENTERPRISEID
+											.name(), _selectedEnterpriseId);
+				}
 
 				// refresh to-do list
 				refreshTodoList(true);

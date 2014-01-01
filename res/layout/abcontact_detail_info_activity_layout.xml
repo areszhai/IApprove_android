@@ -88,9 +88,11 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/abcdi_infoForm_linearLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/addressbook_contact_info_form_bg"
             android:orientation="vertical"
             android:visibility="gone" >
         </LinearLayout>
@@ -99,7 +101,7 @@
             android:id="@+id/abcdi_new_approveApplication_button"
             android:layout_width="fill_parent"
             android:layout_height="44dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/new_approveapplication_button_bg"
             android:shadowColor="@android:color/black"
             android:shadowDx="0"

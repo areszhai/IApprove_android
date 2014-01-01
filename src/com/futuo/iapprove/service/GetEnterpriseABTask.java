@@ -197,6 +197,9 @@ public class GetEnterpriseABTask extends CoreServiceTask {
 							ContentValues _employeeContentValues = new ContentValues();
 
 							for (int i = 0; i < _enterpriseABJsonArray.length(); i++) {
+								// clear the employee content values
+								_employeeContentValues.clear();
+
 								// get enterprise each employee
 								ABContactBean _employee = new ABContactBean(
 										JSONUtils.getJSONObjectFromJSONArray(
@@ -204,7 +207,8 @@ public class GetEnterpriseABTask extends CoreServiceTask {
 
 								// generate the employee content values with
 								// employee user id, avatar, name, sex,
-								// nickname, birthday, department and note
+								// nickname, birthday, department, approve
+								// number and note
 								_employeeContentValues.put(Employee.USER_ID,
 										_employee.getUserId());
 								_employeeContentValues.put(Employee.AVATAR,
@@ -229,10 +233,10 @@ public class GetEnterpriseABTask extends CoreServiceTask {
 								// append mobile, office phone and email
 								_employeeContentValues.put(
 										Employee.MOBILE_PHONE,
-										_employee.getMobilePhoneNumber());
+										_employee.getMobilePhone());
 								_employeeContentValues.put(
 										Employee.OFFICE_PHONE,
-										_employee.getOfficePhoneNumber());
+										_employee.getOfficePhone());
 								_employeeContentValues.put(Employee.EMAIL,
 										_employee.getEmail());
 

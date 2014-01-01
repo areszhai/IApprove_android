@@ -5,7 +5,10 @@ import android.graphics.drawable.Drawable;
 
 import com.futuo.iapprove.account.AccountSetting4FirstActivity;
 import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtil;
 import com.richitec.commontoolkit.activityextension.AppLaunchActivity;
+import com.richitec.commontoolkit.user.UserBean;
+import com.richitec.commontoolkit.user.UserManager;
 
 public class IApproveAppLaunchActivity extends AppLaunchActivity {
 
@@ -17,13 +20,24 @@ public class IApproveAppLaunchActivity extends AppLaunchActivity {
 
 	@Override
 	public Intent intentActivity() {
-		// define default target intent activity, approve tab activity
+		// define default target intent activity, account setting activity
 		Intent _targetIntentActivity = new Intent(this,
-				IApproveTabActivity.class);
-
-		// go to account setting activity
-		_targetIntentActivity = new Intent(this,
 				AccountSetting4FirstActivity.class);
+
+		// load login account
+		AppDataSaveRestoreUtil.loadAccount();
+
+		// get login user
+		UserBean _loginUser = UserManager.getInstance().getUser();
+
+		// check user name and user key
+		if (null != _loginUser.getName()
+				&& !"".equalsIgnoreCase(_loginUser.getName())
+				&& null != _loginUser.getUserKey()
+				&& !"".equalsIgnoreCase(_loginUser.getUserKey())) {
+			// go to approve tab activity
+			_targetIntentActivity = new Intent(this, IApproveTabActivity.class);
+		}
 
 		// go to target activity
 		return _targetIntentActivity;
