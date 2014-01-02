@@ -22,6 +22,7 @@ import com.futuo.iapprove.addressbook.ABContactBean;
 import com.futuo.iapprove.addressbook.person.PersonSex;
 import com.futuo.iapprove.customwidget.ABContactInfoFormItem;
 import com.futuo.iapprove.customwidget.CommonFormSeparator;
+import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationGenerator;
 
@@ -56,6 +57,11 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 		// set subViews
 		// set title
 		setTitle(R.string.abcontact_detailInfo_nav_title);
+
+		// set more bar button item as right bar button item
+		setRightBarButtonItem(new IApproveImageBarButtonItem(this,
+				R.drawable.img_morebarbtnitem,
+				new ABContactMoreButtonItemOnClickListener()));
 
 		// avatar
 		// get and check avatar data
@@ -124,7 +130,8 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 			// set birthday
 			addABContactInfoFormItem(
 					ABContactInfoFormItem.generateABContactInfoFormItem(
-							"生日",
+							getResources().getString(
+									R.string.abcdi_birthday_infoFormItem_label),
 							new SimpleDateFormat(
 									ABCONTACT_BIRTHDAY_DATEFORMATSTRING, Locale
 											.getDefault())
@@ -138,7 +145,10 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 		if (null != _departmentValue && !"".equalsIgnoreCase(_departmentValue)) {
 			// set department
 			addABContactInfoFormItem(
-					ABContactInfoFormItem.generateABContactInfoFormItem("部门",
+					ABContactInfoFormItem.generateABContactInfoFormItem(
+							getResources()
+									.getString(
+											R.string.abcdi_department_infoFormItem_label),
 							_departmentValue), _infoFormLinearLayout);
 		}
 
@@ -149,7 +159,12 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 			// set mobile phone
 			// generate mobile phone info form item
 			ABContactInfoFormItem _mobilePhoneInfoFormItem = ABContactInfoFormItem
-					.generateABContactInfoFormItem("移动电话",
+					.generateABContactInfoFormItem(
+							String.format(
+									getResources()
+											.getString(
+													R.string.abcdi_phone_infoFormItem_label_format),
+									_mABContactBean.getMobilePhoneLabel()),
 							_mobilePhoneValue.toString());
 
 			// set on click listener
@@ -168,7 +183,12 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 			// set office phone
 			// generate office phone info form item
 			ABContactInfoFormItem _officePhoneInfoFormItem = ABContactInfoFormItem
-					.generateABContactInfoFormItem("工作电话",
+					.generateABContactInfoFormItem(
+							String.format(
+									getResources()
+											.getString(
+													R.string.abcdi_phone_infoFormItem_label_format),
+									_mABContactBean.getOfficePhoneLabel()),
 							_officePhoneValue.toString());
 
 			// set on click listener
@@ -279,6 +299,19 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 
 		// address book contact detail info contact bean
 		public static final String ABCONTACT_DETAILINFO_CONTACT = "addressbook_contact_detailinfo_contact";
+
+	}
+
+	// address book contact more bar button item on click listener
+	class ABContactMoreButtonItemOnClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View moreBarBtnItem) {
+			Log.d(LOG_TAG, "More bar button item = " + moreBarBtnItem
+					+ " on click listener");
+
+			//
+		}
 
 	}
 

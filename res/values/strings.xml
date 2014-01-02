@@ -62,6 +62,11 @@
     <string name="ab_contactSearch_editText_hint">Search contact with name phonetics</string>
     <string name="abc_avatar_imageView_contentDescription" translatable="false">the address book contact avatar imageView</string>
 
+    <!-- address book contact phone type -->
+    <string name="abc_mobilePhone_type_name">Mobile</string>
+    <string name="abc_officePhone_type_name">Office</string>
+    <string name="abc_othersPhone_type_name">Others</string>
+
     <!-- address book contact detail info activity -->
     <string name="title_activity_abcontact_detail_info" translatable="false">ABContactDetailInfoActivity</string>
     <string name="abcontact_detailInfo_nav_title">Detail Info</string>
@@ -70,10 +75,10 @@
     <string name="abcdi_approveNumber_text_format">Approve ID: %d</string>
     <string name="abcdi_nickname_text_format">Alias: %s</string>
     <string name="abcdi_info_listView_item_detailInfo_imageView_contentDescription" translatable="false">the address book detail info info listView item detail info imageView</string>
-    <string name="abcdi_birthday_text_format" formatted="false">Birthday: %tm-%td</string>
-    <string name="abcdi_department_text_format">Department: %s</string>
-    <string name="abcdi_phone_text_format" formatted="false">%s: %d</string>
-    <string name="abcdi_email_text_format">Email: %s</string>
+    <string name="abcdi_birthday_infoFormItem_label">Birthday</string>
+    <string name="abcdi_department_infoFormItem_label">Department</string>
+    <string name="abcdi_phone_infoFormItem_label_format">%s phone</string>
+    <string name="abcdi_email_infoFormItem_label">Email</string>
     <string name="abcdi_new_approveApplication_button_title">New approve application</string>
 
     <!-- history record tab content activity -->

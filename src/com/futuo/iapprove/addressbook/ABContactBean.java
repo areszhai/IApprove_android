@@ -67,13 +67,18 @@ public class ABContactBean extends PersonBean implements
 			}
 
 			// nickname
-			nickname = JSONUtils
+			// get and check nickname value
+			String _nicknameValue = JSONUtils
 					.getStringFromJSONObject(
 							contactJSONObject,
 							_mAppContext
 									.getResources()
 									.getString(
 											R.string.rbgServer_getEnterpriseABReqResp_employee_nickname));
+			if (null != _nicknameValue
+					&& !"null".equalsIgnoreCase(_nicknameValue)) {
+				nickname = _nicknameValue;
+			}
 
 			// phones
 			// get and check phones value
@@ -115,6 +120,10 @@ public class ABContactBean extends PersonBean implements
 					.getContactPhones(cursor);
 			if (null != _phonesValue) {
 				phones.addAll(_phonesValue);
+
+				// update mobile and office phone
+				mobilePhone = getMobilePhone();
+				officePhone = getOfficePhone();
 			}
 
 			// frequency
@@ -202,6 +211,20 @@ public class ABContactBean extends PersonBean implements
 		return _mobilePhoneNumber;
 	}
 
+	// get mobile phone type label
+	public String getMobilePhoneLabel() {
+		String _mobilePhoneLabel = "";
+
+		// get and check mobile phone
+		ABContactPhoneBean _mobilePhone = getPhone(ABContactPhoneType.MOBILE);
+		if (null != _mobilePhone) {
+			// get mobile phone type label
+			_mobilePhoneLabel = _mobilePhone.getTypeLabel();
+		}
+
+		return _mobilePhoneLabel;
+	}
+
 	@Override
 	public Long getOfficePhone() {
 		Long _officePhoneNumber = officePhone;
@@ -219,9 +242,24 @@ public class ABContactBean extends PersonBean implements
 		return _officePhoneNumber;
 	}
 
+	// get office phone type label
+	public String getOfficePhoneLabel() {
+		String _officePhoneLabel = "";
+
+		// get and check office phone
+		ABContactPhoneBean _officePhone = getPhone(ABContactPhoneType.OFFICE);
+		if (null != _officePhone) {
+			// get office phone type label
+			_officePhoneLabel = _officePhone.getTypeLabel();
+		}
+
+		return _officePhoneLabel;
+	}
+
 	public void setPhones(List<ABContactPhoneBean> phones) {
-		// clear mobile and office phone
-		mobilePhone = officePhone = null;
+		// set mobile and office phone
+		mobilePhone = getPhone(ABContactPhoneType.MOBILE).getNumber();
+		officePhone = getPhone(ABContactPhoneType.OFFICE).getNumber();
 
 		this.phones = phones;
 	}

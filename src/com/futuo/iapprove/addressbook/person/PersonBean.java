@@ -108,13 +108,18 @@ public class PersonBean implements Serializable {
 			}
 
 			// department
-			department = JSONUtils
+			// get and check department value
+			String _departmentValue = JSONUtils
 					.getStringFromJSONObject(
 							personJSONObject,
 							_mAppContext
 									.getResources()
 									.getString(
 											R.string.rbgServer_getEnterpriseABReqResp_employee_department));
+			if (null != _departmentValue
+					&& !"null".equalsIgnoreCase(_departmentValue)) {
+				department = _departmentValue;
+			}
 
 			// approve number
 			try {
@@ -135,13 +140,17 @@ public class PersonBean implements Serializable {
 			}
 
 			// email
-			email = JSONUtils
+			// get and check email value
+			String _emailValue = JSONUtils
 					.getStringFromJSONObject(
 							personJSONObject,
 							_mAppContext
 									.getResources()
 									.getString(
 											R.string.rbgServer_getEnterpriseABReqResp_employee_email));
+			if (null != _emailValue && !"null".equalsIgnoreCase(_emailValue)) {
+				email = _emailValue;
+			}
 
 			// note
 			note = JSONUtils

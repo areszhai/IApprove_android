@@ -39,14 +39,19 @@
     <string name="addressbook_tab7nav_title">通讯录</string>
     <string name="ab_contactSearch_editText_hint">按名字或拼音搜索联系人</string>
 
+    <!-- address book contact phone type -->
+    <string name="abc_mobilePhone_type_name">移动</string>
+    <string name="abc_officePhone_type_name">工作</string>
+    <string name="abc_othersPhone_type_name">其他</string>
+
     <!-- address book contact detail info activity -->
     <string name="abcontact_detailInfo_nav_title">详细信息</string>
     <string name="abcdi_approveNumber_text_format">审批号：%d</string>
     <string name="abcdi_nickname_text_format">备注名：%s</string>
-    <string name="abcdi_birthday_text_format" formatted="false">生日：%tm-%td</string>
-    <string name="abcdi_department_text_format">部门：%s</string>
-    <string name="abcdi_phone_text_format" formatted="false">%s：%d</string>
-    <string name="abcdi_email_text_format">邮件：%s</string>
+    <string name="abcdi_birthday_infoFormItem_label">生日</string>
+    <string name="abcdi_department_infoFormItem_label">部门</string>
+    <string name="abcdi_phone_infoFormItem_label_format">%s电话</string>
+    <string name="abcdi_email_infoFormItem_label">邮件</string>
     <string name="abcdi_new_approveApplication_button_title">申请审批</string>
 
     <!-- history record tab content activity -->

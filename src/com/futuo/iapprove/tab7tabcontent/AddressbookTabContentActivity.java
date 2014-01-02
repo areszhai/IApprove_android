@@ -148,14 +148,14 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 			// auto requery
 			super.onContentChanged();
 
-			// need to change enterprise address book query cursor change
-			// enterprise address book query cursor
-			_mABContactListCursorAdapter.changeCursor(getContentResolver()
-					.query(ContentUris.withAppendedId(
-							Employee.ENTERPRISE_CONTENT_URI, IAUserExtension
-									.getUserLoginEnterpriseId(UserManager
-											.getInstance().getUser())), null,
-							null, null, null));
+//			// need to change enterprise address book query cursor change
+//			// enterprise address book query cursor
+//			_mABContactListCursorAdapter.changeCursor(getContentResolver()
+//					.query(ContentUris.withAppendedId(
+//							Employee.ENTERPRISE_CONTENT_URI, IAUserExtension
+//									.getUserLoginEnterpriseId(UserManager
+//											.getInstance().getUser())), null,
+//							null, null, null));
 		}
 
 		@Override
