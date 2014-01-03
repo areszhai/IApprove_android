@@ -223,6 +223,7 @@ public class NAAFormItemEditorActivity extends IApproveNavigationActivity {
 					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
 							.showSoftInput(_mEditorFormItemEditText, 0);
 				}
+
 			}, 250);
 		}
 	}

@@ -163,6 +163,7 @@ public class AccountLoginFormItem extends LinearLayout {
 						.getSystemService(Context.INPUT_METHOD_SERVICE))
 						.showSoftInput(_mInputEditText, 0);
 			}
+
 		}, 250);
 	}
 

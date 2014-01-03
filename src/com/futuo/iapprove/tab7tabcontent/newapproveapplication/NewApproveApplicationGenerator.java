@@ -56,7 +56,7 @@ public class NewApproveApplicationGenerator {
 		final ContentResolver _contentResolver = _mAppContext
 				.getContentResolver();
 
-		// delayed 0.8 second to querying
+		// delayed 800 millisecond to querying
 		new Handler().postDelayed(new Runnable() {
 
 			@Override
