@@ -7,12 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -196,6 +200,30 @@ public class NAAFormItemEditorActivity extends IApproveNavigationActivity {
 				}
 			}
 			break;
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		// set new approve application form item editor form item text, number,
+		// multiple line textEdit as focus
+		if (null != _mEditorFormItemEditText) {
+			// set input editText focusable
+			_mEditorFormItemEditText.setFocusable(true);
+			_mEditorFormItemEditText.setFocusableInTouchMode(true);
+			_mEditorFormItemEditText.requestFocus();
+
+			// show soft input after 250 milliseconds
+			new Timer().schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+							.showSoftInput(_mEditorFormItemEditText, 0);
+				}
+			}, 250);
 		}
 	}
 
