@@ -74,15 +74,20 @@
     <ListView
         android:id="@+id/naafie_spinner_listView"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="24dp"
+        android:background="@drawable/naa_formitemeditor_spinner_listview_bg"
         android:cacheColorHint="@android:color/transparent"
+        android:divider="@color/light_middle_gray"
+        android:dividerHeight="1.5dp"
         android:fadingEdge="none"
+        android:footerDividersEnabled="false"
         android:headerDividersEnabled="false"
         android:listSelector="@android:color/transparent"
+        android:padding="1.5dp"
         android:scrollbars="none"
         android:visibility="gone" >
     </ListView>

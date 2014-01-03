@@ -242,7 +242,7 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 				// background
 				if (infoFormItem.isClickable()) {
 					infoFormItem
-							.setBackgroundResource(R.drawable.addressbook_contact_info_form_single_item_bg);
+							.setBackgroundResource(R.drawable.common_form_single_item_bg);
 				}
 			} else {
 				// two and more
@@ -255,7 +255,7 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 				// background
 				if (infoFormItem.isClickable()) {
 					infoFormItem
-							.setBackgroundResource(R.drawable.addressbook_contact_info_form_multiplebottom_item_bg);
+							.setBackgroundResource(R.drawable.common_form_multiplebottom_item_bg);
 				}
 
 				for (int i = 0; i < _infoFormItemCount; i++) {
@@ -271,10 +271,10 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 							// first
 							if (0 == i) {
 								_existedInfoFormItem
-										.setBackgroundResource(R.drawable.addressbook_contact_info_form_multipletop_item_bg);
+										.setBackgroundResource(R.drawable.common_form_multipletop_item_bg);
 							} else {
 								_existedInfoFormItem
-										.setBackgroundResource(R.drawable.addressbook_contact_info_form_multiplemiddle_item_bg);
+										.setBackgroundResource(R.drawable.common_form_multiplemiddle_item_bg);
 							}
 						}
 					}

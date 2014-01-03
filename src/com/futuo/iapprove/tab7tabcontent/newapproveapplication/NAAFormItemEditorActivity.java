@@ -16,6 +16,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -172,9 +173,9 @@ public class NAAFormItemEditorActivity extends IApproveNavigationActivity {
 			if (null != _editorFormItemSelectorContentInfos) {
 				// set its adapter
 				_mEditorFormItemSpinnerListView
-						.setAdapter(new ArrayAdapter<String>(
+						.setAdapter(new NAAFormItemEditorFormItemSpinnerArrayAdapter(
 								this,
-								android.R.layout.simple_list_item_single_choice,
+								R.layout.naa_formitemeditor_spinner_item_layout,
 								_editorFormItemSelectorContentInfos));
 
 				// set its on item click listener
@@ -284,6 +285,42 @@ public class NAAFormItemEditorActivity extends IApproveNavigationActivity {
 			_mEditorFormItemDateDisplayTextView.setText(year + "-"
 					+ String.format("%02d", monthOfYear + 1) + "-"
 					+ String.format("%02d", dayOfMonth));
+		}
+
+	}
+
+	// new approve application form item editor form item spinner array adapter
+	class NAAFormItemEditorFormItemSpinnerArrayAdapter extends
+			ArrayAdapter<String> {
+
+		public NAAFormItemEditorFormItemSpinnerArrayAdapter(Context context,
+				int resource, List<String> objects) {
+			super(context, resource, objects);
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// get convert view
+			View _convertView = super.getView(position, convertView, parent);
+
+			// check count, position and set convert view background
+			if (1 == getCount()) {
+				_convertView
+						.setBackgroundResource(R.drawable.naa_formitemeditor_spinnerlistview_single_item_bg);
+			} else if (1 < getCount()) {
+				if (0 == position) {
+					_convertView
+							.setBackgroundResource(R.drawable.naa_formitemeditor_spinnerlistview_multipletop_item_bg);
+				} else if (getCount() - 1 == position) {
+					_convertView
+							.setBackgroundResource(R.drawable.naa_formitemeditor_spinnerlistview_multiplebottom_item_bg);
+				} else {
+					_convertView
+							.setBackgroundResource(R.drawable.naa_formitemeditor_spinnerlistview_multiplemiddle_item_bg);
+				}
+			}
+
+			return _convertView;
 		}
 
 	}

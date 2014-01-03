@@ -92,8 +92,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/addressbook_contact_info_form_bg"
+            android:background="@drawable/common_form_bg"
             android:orientation="vertical"
+            android:padding="1.5dp"
             android:visibility="gone" >
         </LinearLayout>
 
