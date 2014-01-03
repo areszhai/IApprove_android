@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".tab7tabcontent.newapproveapplication.NAAFormItemEditorActivity" >
+
+    <EditText
+        android:id="@+id/naafie_text6number_editText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/common_edittext_bg"
+        android:ellipsize="middle"
+        android:inputType="text"
+        android:maxLength="18"
+        android:singleLine="true"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/naafie_multipleLine_editText"
+        android:layout_width="fill_parent"
+        android:layout_height="164dp"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/common_edittext_bg"
+        android:ellipsize="middle"
+        android:gravity="top|left"
+        android:inputType="textMultiLine"
+        android:maxLength="120"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/naafie_date_relativeLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone" >
+
+        <FrameLayout
+            android:id="@+id/naafie_datePicker_parent_frameLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/light_gray"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp" >
+
+            <DatePicker
+                android:id="@+id/naafie_datePicker"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@id/naafie_datePicker_parent_frameLayout" >
+
+            <TextView
+                android:id="@+id/naafie_dateDisplay_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/naafie_spinner_listView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="24dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
+        android:cacheColorHint="@android:color/transparent"
+        android:fadingEdge="none"
+        android:headerDividersEnabled="false"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none"
+        android:visibility="gone" >
+    </ListView>
+
+</FrameLayout>

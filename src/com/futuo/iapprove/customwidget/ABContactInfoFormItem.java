@@ -1,7 +1,6 @@
 package com.futuo.iapprove.customwidget;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -19,7 +18,7 @@ public class ABContactInfoFormItem extends RelativeLayout {
 	private TextView _mLabelTextView;
 	private TextView _mInfoTextView;
 
-	public ABContactInfoFormItem(Context context) {
+	private ABContactInfoFormItem(Context context) {
 		super(context);
 
 		// inflate address book contact info form item layout
@@ -50,8 +49,8 @@ public class ABContactInfoFormItem extends RelativeLayout {
 						_info);
 
 				// set span
-				_infoSpannableString.setSpan(
-						new ForegroundColorSpan(Color.BLUE), 0,
+				_infoSpannableString.setSpan(new ForegroundColorSpan(
+						getResources().getColor(R.color.light_blue)), 0,
 						_infoSpannableString.length(),
 						Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 

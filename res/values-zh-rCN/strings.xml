@@ -29,6 +29,15 @@
     <!-- enterprise form type list activity -->
     <string name="eft6f_cancel_barButtonItem_title">取消</string>
 
+    <!-- new approve application activity -->
+    <string name="naa_form_info_label">表单信息</string>
+    <string name="naa_form_item_info_notWrite">未填写</string>
+    <string name="naa_submitContact_label_textView_text">接收人：</string>
+    <string name="naa_toggleAudioRecording_button_title">按住 说话</string>
+
+    <!-- new approve application form item editor activity -->
+    <string name="naafie_saveInfo_barButtonItem_title">保存</string>
+
     <!-- to-do list tab content activity -->
     <string name="todoList_tab_title">未审批</string>
     <string name="tdl_taskSearch_editText_hint">搜索</string>

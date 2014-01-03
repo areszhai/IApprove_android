@@ -40,6 +40,17 @@
 
     <!-- new approve application activity -->
     <string name="title_activity_new_approve_application" translatable="false">NewApproveApplicationActivity</string>
+    <string name="naa_form_info_label">Form Info</string>
+    <string name="naa_form_item_info_notWrite">Not write</string>
+    <string name="naa_submitContact_label_textView_text">Recipient:</string>
+    <string name="naa_add_submitContact_imageButton_contentDescription" translatable="false">new approve application add new submit contact imageButton</string>
+    <string name="naa_textAudio_change_imageButton_contentDescription" translatable="false">new approve application the text and audio attachment change imageButton</string>
+    <string name="naa_morePlus_imageButton_contentDescription" translatable="false">new approve application more plus attachment imageButton</string>
+    <string name="naa_toggleAudioRecording_button_title">Toggle audio recording</string>
+
+    <!-- new approve application form item editor activity -->
+    <string name="title_activity_naa_form_item_editor" translatable="false">NAAFormItemEditorActivity</string>
+    <string name="naafie_saveInfo_barButtonItem_title">Save</string>
 
     <!-- iApprove list common -->
     <string name="iapprove_listView_item_detailInfo_imageView_contentDescription" translatable="false">the iApprove listView item detail info imageView</string>

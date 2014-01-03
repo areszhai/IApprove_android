@@ -4,11 +4,15 @@
     <!-- pure color -->
     <color name="light_cyanBlue">#00bfff</color>
     <color name="dark_cyanBlue">#104e8b</color>
-    <color name="ocean_blue">#1c86ee</color>
+    <color name="light_blue">#1c86ee</color>
+    <color name="ocean_blue">#1e90ff</color>
     <color name="dark_gray">#4d4e4e</color>
     <color name="middle_gray">#aaaaab</color>
     <color name="light_ocean_blue">#add1f3</color>
     <color name="light_middle_gray">#bcbcbd</color>
     <color name="light_gray">#d6d6d6</color>
+
+    <!-- transparent color -->
+    <color name="half_red_transparent">#80ff0000</color>
 
 </resources>

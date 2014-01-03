@@ -284,8 +284,6 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 			// add address book contact info form item to info form
 			infoFormLinearLayout.addView(infoFormItem, new LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1));
-
-			//
 		} else {
 			Log.e(LOG_TAG, "Add address book contact info item = "
 					+ infoFormItem + " to info form linearLayout = "
