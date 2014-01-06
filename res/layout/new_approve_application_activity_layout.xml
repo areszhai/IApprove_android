@@ -6,66 +6,157 @@
     tools:context=".tab7tabcontent.newapproveapplication.NewApproveApplicationActivity" >
 
     <RelativeLayout
-        android:id="@+id/naa_bottomToolbar_relativeLayout"
+        android:id="@+id/naa_footer_relativeLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/middle_gray"
-        android:padding="4dp" >
+        android:layout_alignParentBottom="true" >
 
-        <ImageButton
-            android:id="@+id/naa_textAudio_change_imageButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:background="@null"
-            android:contentDescription="@string/naa_textAudio_change_imageButton_contentDescription"
-            android:scaleType="centerCrop"
-            android:src="@android:drawable/btn_star_big_on" />
-
-        <ImageButton
-            android:id="@+id/naa_morePlus_imageButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@null"
-            android:contentDescription="@string/naa_morePlus_imageButton_contentDescription"
-            android:scaleType="centerCrop"
-            android:src="@android:drawable/btn_star_big_off" />
-
-        <FrameLayout
+        <RelativeLayout
+            android:id="@+id/naa_bottomToolbar_relativeLayout"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_toLeftOf="@id/naa_morePlus_imageButton"
-            android:layout_toRightOf="@id/naa_textAudio_change_imageButton" >
+            android:layout_height="54dp"
+            android:background="@drawable/img_naa_bottomtoolbar_bg"
+            android:paddingBottom="4dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:paddingTop="4dp" >
 
-            <EditText
-                android:id="@+id/naa_note_editText"
+            <FrameLayout
+                android:id="@+id/naa_textAudio_inputModeChange_frameLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true" >
+
+                <ImageButton
+                    android:id="@+id/naa_change2textInputMode_imageButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@null"
+                    android:contentDescription="@string/naa_textAudio_inputModeChange_imageButton_contentDescription"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/naa_change2textinput_imgbtn" />
+
+                <ImageButton
+                    android:id="@+id/naa_change2voiceInputMode_imageButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@null"
+                    android:contentDescription="@string/naa_textAudio_inputModeChange_imageButton_contentDescription"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/naa_change2voiceinput_imgbtn"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <ImageButton
+                android:id="@+id/naa_morePlusInput_imageButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/naa_textAudio_inputModeChange_frameLayout"
+                android:background="@null"
+                android:contentDescription="@string/naa_morePlusInput_imageButton_contentDescription"
+                android:scaleType="centerCrop"
+                android:src="@drawable/naa_moreplusinput_imgbtn" />
+
+            <FrameLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:visibility="gone" >
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="2dp"
+                android:layout_toRightOf="@id/naa_morePlusInput_imageButton"
+                android:paddingBottom="2dp"
+                android:paddingTop="2dp" >
 
-                <requestFocus />
-            </EditText>
+                <RelativeLayout
+                    android:id="@+id/naa_note_parent_relativeLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" >
 
-            <Button
-                android:id="@+id/naa_toggleAudioRecording_button"
+                    <Button
+                        android:id="@+id/naa_note_send_button"
+                        android:layout_width="56dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="2dp"
+                        android:background="@drawable/naa_textvoiceinput_btn_bg"
+                        android:enabled="false"
+                        android:text="@string/naa_noteSend_button_title"
+                        android:textColor="@color/naa_note_send_button_title_textcolor"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/naa_note_editText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_toLeftOf="@id/naa_note_send_button"
+                        android:background="@drawable/naa_note_edittext_bg"
+                        android:inputType="text"
+                        android:textSize="16sp" >
+
+                        <requestFocus />
+                    </EditText>
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/naa_toggleAudioRecording_button"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/naa_textvoiceinput_btn_bg"
+                    android:shadowColor="@android:color/white"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:text="@string/naa_toggleAudioRecording_button_title" />
+            </FrameLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/naa_morePlusInput_parent_relativeLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="216dp"
+            android:layout_below="@id/naa_bottomToolbar_relativeLayout"
+            android:background="@drawable/img_naa_moreplus_bg"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:id="@+id/naa_morePlusInput_pageStatus_linearLayout"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/naa_toggleAudioRecording_button_title" />
-        </FrameLayout>
+                android:layout_height="22dp"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <GridView
+                android:id="@+id/naa_morePlusInput_gridView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_above="@id/naa_morePlusInput_pageStatus_linearLayout"
+                android:cacheColorHint="@android:color/transparent"
+                android:fadingEdge="none"
+                android:gravity="center"
+                android:horizontalSpacing="4dp"
+                android:listSelector="@android:color/transparent"
+                android:numColumns="4"
+                android:paddingBottom="8dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="8dp"
+                android:scrollbars="none"
+                android:verticalSpacing="2dp" >
+            </GridView>
+        </RelativeLayout>
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/naa_bottomToolbar_relativeLayout"
+        android:layout_above="@id/naa_footer_relativeLayout"
         android:padding="12dp"
         android:scrollbars="none" >
 
@@ -105,6 +196,45 @@
                     android:layout_marginLeft="20dp"
                     android:gravity="center"
                     android:text="@string/naa_form_info_label"
+                    android:textColor="@color/gray"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/naa_attachmentForm_parent_frameLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:visibility="gone" >
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/common_form_bg" >
+
+                    <LinearLayout
+                        android:id="@+id/naa_attachmentForm_linearLayout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
+                        android:paddingBottom="1.5dp"
+                        android:paddingLeft="1.5dp"
+                        android:paddingRight="1.5dp" >
+                    </LinearLayout>
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:text="@string/naa_attachment_info_label"
                     android:textColor="@color/gray"
                     android:textSize="16sp"
                     android:textStyle="bold" />

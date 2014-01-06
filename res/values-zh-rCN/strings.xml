@@ -31,9 +31,15 @@
 
     <!-- new approve application activity -->
     <string name="naa_form_info_label">表单信息</string>
-    <string name="naa_form_item_info_notWrite">未填写</string>
+    <string name="naa_formItem_info_notWrite">未填写</string>
+    <string name="naa_formItem_infoLabel_capitalFormat">%s（大写）</string>
+    <string name="naa_attachment_info_label">附件信息</string>
     <string name="naa_submitContact_label_textView_text">接收人：</string>
     <string name="naa_toggleAudioRecording_button_title">按住 说话</string>
+    <string name="naa_noteSend_button_title">发送</string>
+    <string name="naa_morePlus_photosInput_label">图片</string>
+    <string name="naa_morePlus_cameraInput_label">拍摄</string>
+    <string name="naa_morePlus_applicationsInput_label">程序</string>
 
     <!-- new approve application form item editor activity -->
     <string name="naafie_saveInfo_barButtonItem_title">保存</string>

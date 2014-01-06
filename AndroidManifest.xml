@@ -68,7 +68,7 @@
             android:name=".tab7tabcontent.newapproveapplication.NewApproveApplicationActivity"
             android:label="@string/title_activity_new_approve_application"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="stateUnchanged|adjustResize" >
         </activity>
         <activity
             android:name=".tab7tabcontent.newapproveapplication.NAAFormItemEditorActivity"

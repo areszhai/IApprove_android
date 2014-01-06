@@ -2,9 +2,11 @@ package com.futuo.iapprove.customwidget;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils.TruncateAt;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,6 +55,21 @@ public class EnterpriseFormItemFormItem extends LinearLayout {
 		setClickable(true);
 
 		super.setOnClickListener(onClickListener);
+	}
+
+	// add info textView text changed listener
+	public void addTextChangedListener(
+			EnterpriseFormItemInfoTextWatcher textChangedWatcher) {
+		// check text changed watcher
+		if (null != textChangedWatcher) {
+			// add info textView text changed watcher
+			_mInfoTextView
+					.addTextChangedListener(new EnterpriseFormItemFormItemInfoTextViewTextWatcher(
+							textChangedWatcher));
+		} else {
+			Log.e(LOG_TAG,
+					"Enterprise form item form item info textView text changed watcher is null");
+		}
 	}
 
 	public FormItemBean getFormItem() {
@@ -149,10 +166,8 @@ public class EnterpriseFormItemFormItem extends LinearLayout {
 
 				// set enterprise form item form item info textView hint
 				_newEnterpriseFormItemFormItem._mInfoTextView
-						.setHint(CTApplication
-								.getContext()
-								.getResources()
-								.getString(R.string.naa_form_item_info_notWrite));
+						.setHint(CTApplication.getContext().getResources()
+								.getString(R.string.naa_formItem_info_notWrite));
 			} else {
 				// set enterprise form item form item label string
 				_newEnterpriseFormItemFormItem._mLabelTextView.setText(formItem
@@ -165,6 +180,64 @@ public class EnterpriseFormItemFormItem extends LinearLayout {
 		}
 
 		return _newEnterpriseFormItemFormItem;
+	}
+
+	// inner class
+	// enterprise form item info text watcher interface
+	public static interface EnterpriseFormItemInfoTextWatcher {
+
+		// after text changed
+		public void afterTextChanged(
+				EnterpriseFormItemFormItem enterpriseFormItemFormItem,
+				Editable s);
+
+		// before text changed
+		public void beforeTextChanged(
+				EnterpriseFormItemFormItem enterpriseFormItemFormItem,
+				CharSequence s, int start, int count, int after);
+
+		// on text changed
+		public void onTextChanged(
+				EnterpriseFormItemFormItem enterpriseFormItemFormItem,
+				CharSequence s, int start, int before, int count);
+
+	}
+
+	// enterprise form item form item info textView text changed watcher
+	class EnterpriseFormItemFormItemInfoTextViewTextWatcher implements
+			TextWatcher {
+
+		// enterprise form item info text watcher
+		private EnterpriseFormItemInfoTextWatcher _mEnterpriseFormItemInfoTextWatcher;
+
+		public EnterpriseFormItemFormItemInfoTextViewTextWatcher(
+				EnterpriseFormItemInfoTextWatcher enterpriseFormItemInfoTextWatcher) {
+			super();
+
+			// save enterprise form item info text watcher
+			_mEnterpriseFormItemInfoTextWatcher = enterpriseFormItemInfoTextWatcher;
+		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			_mEnterpriseFormItemInfoTextWatcher.afterTextChanged(
+					EnterpriseFormItemFormItem.this, s);
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			_mEnterpriseFormItemInfoTextWatcher.beforeTextChanged(
+					EnterpriseFormItemFormItem.this, s, start, count, after);
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			_mEnterpriseFormItemInfoTextWatcher.onTextChanged(
+					EnterpriseFormItemFormItem.this, s, start, before, count);
+		}
+
 	}
 
 }

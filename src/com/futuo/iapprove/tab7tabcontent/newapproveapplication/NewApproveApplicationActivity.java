@@ -1,27 +1,46 @@
 package com.futuo.iapprove.tab7tabcontent.newapproveapplication;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
 import com.futuo.iapprove.addressbook.ABContactBean;
 import com.futuo.iapprove.customwidget.CommonFormSeparator;
 import com.futuo.iapprove.customwidget.EnterpriseFormItemFormItem;
+import com.futuo.iapprove.customwidget.EnterpriseFormItemFormItem.EnterpriseFormItemInfoTextWatcher;
+import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
 import com.futuo.iapprove.form.FormItemBean;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems.FormItem;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NAAFormItemEditorActivity.NAAFormItemEditorExtraData;
+import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationActivity.NAAMorePlusInputListAdapter.NAAMorePlusInputListAdapterIconItemDataKey;
+import com.futuo.iapprove.utils.CalculateStringUtils;
+import com.richitec.commontoolkit.customadapter.CTListAdapter;
 import com.richitec.commontoolkit.user.UserManager;
 
 public class NewApproveApplicationActivity extends IApproveNavigationActivity {
@@ -41,6 +60,40 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 	// enterprise form item id(key) and form item form item view(value) map
 	private Map<Long, EnterpriseFormItemFormItem> _mFormItemId7FormItemFormItemMap;
+
+	// enterprise form attachment form parent frameLayout
+	private FrameLayout _mAttachmentFormParentFrameLayout;
+
+	// change to text and voice input mode image button
+	private ImageButton _mChange2TextInputModeImageButton;
+	private ImageButton _mChange2VoiceInputModeImageButton;
+
+	// toggle audio recording button
+	private Button _mToggleAudioRecordingButton;
+
+	// note input editText and its with send button parent relativeLayout
+	private EditText _mNoteInputEditText;
+	private RelativeLayout _mNoteInputEditText7SendBtnParentRelativeLayout;
+
+	// more plus input parent relativeLayout
+	private RelativeLayout _mMorePlusInputParentRelativeLayout;
+
+	// input method manager
+	private InputMethodManager _mInputMethodManager;
+
+	// new approve application more plus input item icon image, its on click
+	// listener and label array, the photos, camera and applications
+	private final Object[][] NAA_MOREPLUS_INPUT_ITEMS = new Object[][] {
+			{ R.drawable.img_naa_moreplus_photosinput_icon_imgbtn,
+					new NAAMorePlusPhotosInputItemIconImgBtnOnClickListener(),
+					R.string.naa_morePlus_photosInput_label },
+			{ R.drawable.img_naa_moreplus_camerainput_icon_imgbtn,
+					new NAAMorePlusCameraInputItemIconImgBtnOnClickListener(),
+					R.string.naa_morePlus_cameraInput_label },
+			{
+					R.drawable.img_naa_moreplus_applicationsinput_icon_imgbtn,
+					new NAAMorePlusApplicationsInputItemIconImgBtnOnClickListener(),
+					R.string.naa_morePlus_applicationsInput_label } };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +122,18 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 					.getSerializable(NewApproveApplicationExtraData.NEW_APPROVEAPPLICATION_SUBMIT_CONTACT);
 		}
 
+		// get input method manager
+		_mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
 		// set subViews
 		// set title
 		setTitle(_enterpriseFormName);
+
+		// set new approve application submit bar button item as right bar
+		// button item
+		setRightBarButtonItem(new IApproveImageBarButtonItem(this,
+				R.drawable.img_naa_submitbarbtnitem,
+				new NAASubmitBarBtnItemOnClickListener()));
 
 		// submit contact
 		// check submit contact
@@ -89,11 +151,99 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		// refresh enterprise form item form
 		refreshFormItemForm();
 
+		// get enterprise form attachment form parent frameLayout
+		_mAttachmentFormParentFrameLayout = (FrameLayout) findViewById(R.id.naa_attachmentForm_parent_frameLayout);
+
 		// bind add submit contact button on click listener
 		((ImageButton) findViewById(R.id.naa_add_submitContact_imageButton))
 				.setOnClickListener(new AddSubmitContactImgBtnOnClickListener());
 
-		//
+		// get change to text input mode image button and bind its on click
+		// listener
+		_mChange2TextInputModeImageButton = (ImageButton) findViewById(R.id.naa_change2textInputMode_imageButton);
+		_mChange2TextInputModeImageButton
+				.setOnClickListener(new NAAChange2TextInputModeImgBtnOnClickListener());
+
+		// get change to voice input mode image button and bind its on click
+		// listener
+		_mChange2VoiceInputModeImageButton = (ImageButton) findViewById(R.id.naa_change2voiceInputMode_imageButton);
+		_mChange2VoiceInputModeImageButton
+				.setOnClickListener(new NAAChange2VoiceInputModeImgBtnOnClickListener());
+
+		// bind more plus input image button on click listener
+		((ImageButton) findViewById(R.id.naa_morePlusInput_imageButton))
+				.setOnClickListener(new NAAMorePlusInputImgBtnOnClickListener());
+
+		// get toggle audio recording button and set its on touch listener
+		_mToggleAudioRecordingButton = (Button) findViewById(R.id.naa_toggleAudioRecording_button);
+		_mToggleAudioRecordingButton
+				.setOnTouchListener(new NAAToggleAudioRecordingBtnOnTouchListener());
+
+		// get note input editText and send button parent relativeLayout
+		_mNoteInputEditText7SendBtnParentRelativeLayout = (RelativeLayout) findViewById(R.id.naa_note_parent_relativeLayout);
+
+		// get note input editText
+		_mNoteInputEditText = (EditText) findViewById(R.id.naa_note_editText);
+
+		// set note input editText text changed listener
+		_mNoteInputEditText
+				.addTextChangedListener(new NAANoteInputEditTextWatcher());
+
+		// bind its on touch listener
+		_mNoteInputEditText
+				.setOnTouchListener(new NAANoteInputEditTextOnTouchListener());
+
+		// bind note send button on click listener
+		((Button) findViewById(R.id.naa_note_send_button))
+				.setOnClickListener(new NAANoteSendBtnOnClickListener());
+
+		// get more plus input parent relativeLayout
+		_mMorePlusInputParentRelativeLayout = (RelativeLayout) findViewById(R.id.naa_morePlusInput_parent_relativeLayout);
+
+		// get more plus input gridView
+		GridView _morePlusInputGridView = (GridView) findViewById(R.id.naa_morePlusInput_gridView);
+
+		// generate more plus input item data list
+		// define more plus input item data list
+		List<Map<String, ?>> _morePlusInputItemDataList = new ArrayList<Map<String, ?>>();
+
+		for (int i = 0; i < NAA_MOREPLUS_INPUT_ITEMS.length; i++) {
+			// generate data
+			Map<String, Object> _dataMap = new HashMap<String, Object>();
+
+			// generate item icon value map
+			Map<String, Object> _iconValueMap = new HashMap<String, Object>();
+			// put icon image and on click listener in
+			_iconValueMap
+					.put(NAAMorePlusInputListAdapterIconItemDataKey.MOREPLUS_INPUT_ITEM_ICON_IMAGE,
+							NAA_MOREPLUS_INPUT_ITEMS[i][0]);
+			_iconValueMap
+					.put(NAAMorePlusInputListAdapterIconItemDataKey.MOREPLUS_INPUT_ITEM_ICON_ONCLICKLISTENER,
+							NAA_MOREPLUS_INPUT_ITEMS[i][1]);
+
+			// put icon data map and label in
+			_dataMap.put(NAAMorePlusInputListAdapter.MOREPLUS_INPUT_ITEM_ICON,
+					_iconValueMap);
+			_dataMap.put(
+					NAAMorePlusInputListAdapter.MOREPLUS_INPUT_ITEM_LABEL,
+					getResources().getString(
+							(Integer) NAA_MOREPLUS_INPUT_ITEMS[i][2]));
+
+			// add data map to data list
+			_morePlusInputItemDataList.add(_dataMap);
+		}
+
+		// set more plus input list adapter
+		_morePlusInputGridView
+				.setAdapter(new NAAMorePlusInputListAdapter(
+						this,
+						_morePlusInputItemDataList,
+						R.layout.naa_moreplus_input_item_layout,
+						new String[] {
+								NAAMorePlusInputListAdapter.MOREPLUS_INPUT_ITEM_ICON,
+								NAAMorePlusInputListAdapter.MOREPLUS_INPUT_ITEM_LABEL },
+						new int[] { R.id.naampii_icon_imageButton,
+								R.id.naampii_label_textView }));
 	}
 
 	@Override
@@ -138,9 +288,6 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 	// refresh enterprise form item form
 	private void refreshFormItemForm() {
-		// // remove the enterprise form item form linearLayout all subViews
-		// _mFormItemFormLinearLayout.removeAllViews();
-
 		// query the enterprise form all items
 		Cursor _cursor = getContentResolver()
 				.query(FormItem.FORMITEMS_CONTENT_URI,
@@ -182,19 +329,23 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 							.getChildCount();
 					if (0 == _formItemFormItemCount) {
 						// single
-						// check clickable and set enterprise form item form
-						// item background
+						// check clickable, need to capital and set enterprise
+						// form item form item background
 						if (_formItemFormItem.isClickable()) {
 							_formItemFormItem
-									.setBackgroundResource(R.drawable.enterprise_form_item_form_bottom_item_bg);
+									.setBackgroundResource(_formItem
+											.needCapital() ? R.drawable.enterprise_form_item_form_notbottom_item_bg
+											: R.drawable.enterprise_form_item_form_bottom_item_bg);
 						}
 					} else {
 						// two and more
-						// check clickable and set enterprise form item form
-						// item background
+						// check clickable, need to capital and set enterprise
+						// form item form item background
 						if (_formItemFormItem.isClickable()) {
 							_formItemFormItem
-									.setBackgroundResource(R.drawable.enterprise_form_item_form_bottom_item_bg);
+									.setBackgroundResource(_formItem
+											.needCapital() ? R.drawable.enterprise_form_item_form_notbottom_item_bg
+											: R.drawable.enterprise_form_item_form_bottom_item_bg);
 						}
 
 						for (int i = 0; i < _formItemFormItemCount; i++) {
@@ -222,6 +373,45 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 					_mFormItemFormLinearLayout.addView(_formItemFormItem,
 							new LayoutParams(LayoutParams.MATCH_PARENT,
 									LayoutParams.WRAP_CONTENT, 1));
+
+					// check enterprise form item need to capital
+					if (_formItem.needCapital()) {
+						// clone enterprise form item copy
+						FormItemBean _formItemCopy = new FormItemBean();
+						_formItemCopy
+								.setItemName(String
+										.format(getResources()
+												.getString(
+														R.string.naa_formItem_infoLabel_capitalFormat),
+												_formItem.getItemName()));
+						_formItemCopy.setItemType(_formItem.getItemType());
+						_formItemCopy.setMustWrite(false);
+
+						// generate new generate enterprise form item capital
+						// form item
+						EnterpriseFormItemFormItem _formItemCapitalFormItem = EnterpriseFormItemFormItem
+								.generateEnterpriseFormItemFormItem(_formItemCopy);
+
+						// set new generate enterprise form item capital form
+						// item as new enterprise form item form item tag
+						_formItemFormItem.setTag(_formItemCapitalFormItem);
+
+						// add need capital enterprise form item form item text
+						// changed listener
+						_formItemFormItem
+								.addTextChangedListener(new NAAFormItemCapitalFormItemInfoTextWatcher());
+
+						// add separator line and new generate enterprise form
+						// item capital form item to form item form
+						_mFormItemFormLinearLayout.addView(
+								new CommonFormSeparator(this),
+								new LayoutParams(LayoutParams.MATCH_PARENT,
+										LayoutParams.WRAP_CONTENT));
+						_mFormItemFormLinearLayout.addView(
+								_formItemCapitalFormItem, new LayoutParams(
+										LayoutParams.MATCH_PARENT,
+										LayoutParams.WRAP_CONTENT, 1));
+					}
 				} else {
 					// get the existed enterprise form item form item and set
 					// its form item
@@ -275,6 +465,18 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 	}
 
+	// new approve application submit bar button item on click listener
+	class NAASubmitBarBtnItemOnClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			Log.d(LOG_TAG, "Click submit new approve application");
+
+			//
+		}
+
+	}
+
 	// new approve application form item form item on click listener
 	class NAAFormItemFormItemOnClickListener implements OnClickListener {
 
@@ -311,12 +513,385 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 	}
 
+	// new approve application form item need capital form item info text
+	// watcher
+	class NAAFormItemCapitalFormItemInfoTextWatcher implements
+			EnterpriseFormItemInfoTextWatcher {
+
+		@Override
+		public void afterTextChanged(
+				EnterpriseFormItemFormItem enterpriseFormItemFormItem,
+				Editable s) {
+			// get and check enterprise form item form item tag as form item
+			// capital form item
+			EnterpriseFormItemFormItem _formItemCapitalFormItem = (EnterpriseFormItemFormItem) enterpriseFormItemFormItem
+					.getTag();
+			if (null != _formItemCapitalFormItem) {
+				// get and check editable info capital
+				String _capitalString = CalculateStringUtils.calculateCapital(s
+						.toString());
+				if (null != _capitalString) {
+					// set form item capital form item info
+					_formItemCapitalFormItem.setInfo(_capitalString);
+				} else {
+					Log.d(LOG_TAG, "Calculate editable info error");
+
+					// clear form item capital form item info
+					_formItemCapitalFormItem.setInfo("");
+				}
+			} else {
+				Log.e(LOG_TAG,
+						"New approve application form item capital form item info text watcher error");
+			}
+		}
+
+		@Override
+		public void beforeTextChanged(
+				EnterpriseFormItemFormItem enterpriseFormItemFormItem,
+				CharSequence s, int start, int count, int after) {
+			// nothing to do
+		}
+
+		@Override
+		public void onTextChanged(
+				EnterpriseFormItemFormItem enterpriseFormItemFormItem,
+				CharSequence s, int start, int before, int count) {
+			// nothing to do
+		}
+
+	}
+
 	// add submit contact image button on click listener
 	class AddSubmitContactImgBtnOnClickListener implements OnClickListener {
 
 		@Override
 		public void onClick(View v) {
 			Log.d(LOG_TAG, "Click add submit contact");
+
+			//
+		}
+
+	}
+
+	// new approve application change to text input mode image button on click
+	// listener
+	class NAAChange2TextInputModeImgBtnOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// change to text input mode
+			// hide change to text input mode image button and show change to
+			// voice input mode image button
+			_mChange2TextInputModeImageButton.setVisibility(View.GONE);
+			_mChange2VoiceInputModeImageButton.setVisibility(View.VISIBLE);
+
+			// hide toggle audio recording button and show note input editText
+			// and send button parent relativeLayout
+			_mToggleAudioRecordingButton.setVisibility(View.GONE);
+			_mNoteInputEditText7SendBtnParentRelativeLayout
+					.setVisibility(View.VISIBLE);
+
+			// show soft input
+			_mInputMethodManager.showSoftInput(_mNoteInputEditText, 0);
+		}
+
+	}
+
+	// new approve application change to voice input mode image button on click
+	// listener
+	class NAAChange2VoiceInputModeImgBtnOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// change to voice input mode
+			// hide change to voice input mode image button and show change to
+			// text input mode image button
+			_mChange2VoiceInputModeImageButton.setVisibility(View.GONE);
+			_mChange2TextInputModeImageButton.setVisibility(View.VISIBLE);
+
+			// hide note input editText and send button parent relativeLayout
+			// and show toggle audio recording button
+			_mNoteInputEditText7SendBtnParentRelativeLayout
+					.setVisibility(View.GONE);
+			_mToggleAudioRecordingButton.setVisibility(View.VISIBLE);
+
+			// hide soft input
+			_mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+			// hide more plus input parent relativeLayout if needed
+			if (View.VISIBLE == _mMorePlusInputParentRelativeLayout
+					.getVisibility()) {
+				_mMorePlusInputParentRelativeLayout.setVisibility(View.GONE);
+			}
+		}
+
+	}
+
+	// new approve application more plus input image button on click listener
+	class NAAMorePlusInputImgBtnOnClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// more plus input
+			// check more plus input parent relativeLayout visibility
+			if (View.VISIBLE != _mMorePlusInputParentRelativeLayout
+					.getVisibility()) {
+				// hide change to text input mode image button and show change
+				// to voice input mode image button
+				_mChange2TextInputModeImageButton.setVisibility(View.GONE);
+				_mChange2VoiceInputModeImageButton.setVisibility(View.VISIBLE);
+
+				// hide toggle audio recording button and show note input
+				// editText and send button parent relativeLayout
+				_mToggleAudioRecordingButton.setVisibility(View.GONE);
+				_mNoteInputEditText7SendBtnParentRelativeLayout
+						.setVisibility(View.VISIBLE);
+
+				// hide soft input
+				_mInputMethodManager.hideSoftInputFromWindow(
+						v.getWindowToken(), 0);
+
+				// show more plus input parent relativeLayout
+				_mMorePlusInputParentRelativeLayout.setVisibility(View.VISIBLE);
+			}
+		}
+
+	}
+
+	// new approve application toggle audio recording button on touch listener
+	class NAAToggleAudioRecordingBtnOnTouchListener implements OnTouchListener {
+
+		@Override
+		public boolean onTouch(View toggleAudioRecordingButton,
+				MotionEvent event) {
+			// get axis y
+			float _axisY = event.getY();
+
+			// check motion event action
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				// begin to record voice
+				Log.d(LOG_TAG, "Begin to record voice, move to cancel");
+
+				//
+				break;
+
+			case MotionEvent.ACTION_MOVE:
+				// get and check axis y
+				if (0 >= _axisY) {
+					// update toggle audio recording button background image as
+					// pressed
+					toggleAudioRecordingButton
+							.setBackgroundResource(R.drawable.img_naa_textvoiceinput_btn_pressed_bg);
+
+					Log.d(LOG_TAG, "Will you release to cancel");
+
+					//
+				} else {
+					Log.d(LOG_TAG, "Continue recording, move to cancel");
+
+					//
+				}
+				break;
+
+			case MotionEvent.ACTION_UP:
+				// recover toggle audio recording button background image
+				toggleAudioRecordingButton
+						.setBackgroundResource(R.drawable.naa_textvoiceinput_btn_bg);
+
+				// get and check axis y
+				if (0 >= _axisY) {
+					Log.d(LOG_TAG, "Cancel voice recording");
+
+					//
+				} else {
+					Log.d(LOG_TAG, "Voice recording finish");
+
+					// check enterprise form attachment form parent frameLayout
+					// visibility
+					if (View.VISIBLE != _mAttachmentFormParentFrameLayout
+							.getVisibility()) {
+						// show enterprise form attachment form parent
+						// frameLayout visibility
+						_mAttachmentFormParentFrameLayout
+								.setVisibility(View.VISIBLE);
+					}
+
+					//
+				}
+				break;
+			}
+
+			return false;
+		}
+
+	}
+
+	// new approve application note input editText text watcher
+	class NAANoteInputEditTextWatcher implements TextWatcher {
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			// get note send button
+			Button _noteSendButton = (Button) findViewById(R.id.naa_note_send_button);
+
+			// check editable and then enable or disable note send button
+			if (null == s || "".equalsIgnoreCase(s.toString())) {
+				_noteSendButton.setEnabled(false);
+			} else {
+				_noteSendButton.setEnabled(true);
+			}
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			// nothing to do
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			// nothing to do
+		}
+
+	}
+
+	// new approve application note input editText on touch listener
+	class NAANoteInputEditTextOnTouchListener implements OnTouchListener {
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			// check more plus input parent relativeLayout visibility
+			if (View.VISIBLE == _mMorePlusInputParentRelativeLayout
+					.getVisibility()) {
+				// hide more plus input parent relativeLayout
+				_mMorePlusInputParentRelativeLayout.setVisibility(View.GONE);
+			}
+
+			return false;
+		}
+
+	}
+
+	// new approve application note send button on click listener
+	class NAANoteSendBtnOnClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			Log.d(LOG_TAG, "Click note send button, the note = "
+					+ _mNoteInputEditText.getText() + " ready to send");
+
+			//
+		}
+
+	}
+
+	// new approve application more plus input list adapter
+	class NAAMorePlusInputListAdapter extends CTListAdapter {
+
+		// new approve application more plus input list adapter keys
+		private static final String MOREPLUS_INPUT_ITEM_LABEL = "moreplus_input_item_label";
+		private static final String MOREPLUS_INPUT_ITEM_ICON = "moreplus_input_item_icon";
+
+		public NAAMorePlusInputListAdapter(Context context,
+				List<Map<String, ?>> data, int itemsLayoutResId,
+				String[] dataKeys, int[] itemsComponentResIds) {
+			super(context, data, itemsLayoutResId, dataKeys,
+					itemsComponentResIds);
+		}
+
+		@Override
+		protected void bindView(View view, Map<String, ?> dataMap,
+				String dataKey) {
+			// get item data object
+			Object _itemData = dataMap.get(dataKey);
+
+			// check view type
+			// image button
+			if (view instanceof ImageButton) {
+				try {
+					// define item data map and convert item data to map
+					@SuppressWarnings("unchecked")
+					Map<String, Object> _itemDataMap = (Map<String, Object>) _itemData;
+
+					// set image button attributes
+					((ImageButton) view)
+							.setImageResource((Integer) _itemDataMap
+									.get(NAAMorePlusInputListAdapterIconItemDataKey.MOREPLUS_INPUT_ITEM_ICON_IMAGE));
+					((ImageButton) view)
+							.setOnClickListener((OnClickListener) _itemDataMap
+									.get(NAAMorePlusInputListAdapterIconItemDataKey.MOREPLUS_INPUT_ITEM_ICON_ONCLICKLISTENER));
+				} catch (Exception e) {
+					e.printStackTrace();
+
+					Log.e(LOG_TAG,
+							"Convert item data to map error, item data = "
+									+ _itemData);
+				}
+			}
+			// text view
+			else if (view instanceof TextView) {
+				// set text view text
+				((TextView) view).setText(_itemData.toString());
+			}
+		}
+
+		// inner class
+		// new approve application more plus input list adapter item icon data
+		// keys
+		class NAAMorePlusInputListAdapterIconItemDataKey {
+
+			// more plus input item icon image and on click listener
+			private static final String MOREPLUS_INPUT_ITEM_ICON_IMAGE = "moreplus_input_item_icon_image";
+			private static final String MOREPLUS_INPUT_ITEM_ICON_ONCLICKLISTENER = "moreplus_input_item_icon_onclicklistener";
+
+		}
+
+	}
+
+	// new approve application more plus photos input item icon image button on
+	// click listener
+	class NAAMorePlusPhotosInputItemIconImgBtnOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			Log.d(LOG_TAG, "Click more plus photos input item image button = "
+					+ v);
+
+			//
+		}
+
+	}
+
+	// new approve application more plus camera input item icon image button on
+	// click listener
+	class NAAMorePlusCameraInputItemIconImgBtnOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			Log.d(LOG_TAG, "Click more plus camera input item image button = "
+					+ v);
+
+			//
+		}
+
+	}
+
+	// new approve application more plus applications input item icon image
+	// button on click listener
+	class NAAMorePlusApplicationsInputItemIconImgBtnOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			Log.d(LOG_TAG,
+					"Click more plus applications input item image button = "
+							+ v);
 
 			//
 		}

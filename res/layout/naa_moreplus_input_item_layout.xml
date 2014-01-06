@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageButton
+        android:id="@+id/naampii_icon_imageButton"
+        android:layout_width="66dp"
+        android:layout_height="66dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/naa_moreplus_input_item_icon_imagebtn_bg"
+        android:contentDescription="@string/naa_morePlus_input_item_icon_imageButton_contentDescription"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/naampii_label_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_below="@id/naampii_icon_imageButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-4dp"
+        android:textColor="@color/gray"
+        android:textSize="15sp" />
+
+</RelativeLayout>

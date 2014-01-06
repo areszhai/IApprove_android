@@ -45,6 +45,9 @@ public class NAAFormItemEditorActivity extends IApproveNavigationActivity {
 	private FormItemType _mEditorFormItemType;
 	private Long _mEditorFormItemId;
 
+	// input method manager
+	private InputMethodManager _mInputMethodManager;
+
 	// new approve application form item editor form item text, number, multiple
 	// line textEdit, date picker, date display textView and spinner listView
 	private EditText _mEditorFormItemEditText;
@@ -83,6 +86,9 @@ public class NAAFormItemEditorActivity extends IApproveNavigationActivity {
 			_mEditorFormItemId = _extraData
 					.getLong(NAAFormItemEditorExtraData.NAA_FROMITEM_ID);
 		}
+
+		// get input method manager
+		_mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
 		// set subViews
 		// set title
@@ -221,12 +227,21 @@ public class NAAFormItemEditorActivity extends IApproveNavigationActivity {
 
 				@Override
 				public void run() {
-					((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-							.showSoftInput(_mEditorFormItemEditText, 0);
+					_mInputMethodManager.showSoftInput(
+							_mEditorFormItemEditText, 0);
 				}
 
 			}, 250);
 		}
+	}
+
+	@Override
+	protected void onBackBarButtonItemClick(View backBarBtnItem) {
+		// hide soft input
+		_mInputMethodManager.hideSoftInputFromWindow(
+				backBarBtnItem.getWindowToken(), 0);
+
+		super.onBackBarButtonItemClick(backBarBtnItem);
 	}
 
 	// inner class
@@ -251,6 +266,9 @@ public class NAAFormItemEditorActivity extends IApproveNavigationActivity {
 		public void onClick(View v) {
 			Log.d(LOG_TAG, "Save editor form item whose type = "
 					+ _mEditorFormItemType + " edit info value");
+
+			// hide soft input
+			_mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
 			// define new approve application extra data map
 			Map<String, Object> _extraMap = new HashMap<String, Object>();
