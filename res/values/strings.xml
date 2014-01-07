@@ -44,6 +44,9 @@
     <string name="naa_formItem_info_notWrite">Not write</string>
     <string name="naa_formItem_infoLabel_capitalFormat">%s(Capital)</string>
     <string name="naa_attachment_info_label">Attachment Info</string>
+    <string name="naa_imageAttachment_imageView_contentDescription" translatable="false">new approve application image attachment imageView</string>
+    <string name="naa_voiceAttachment_play_imageView_contentDescription" translatable="false">new approve application image attachment play imageView</string>
+    <string name="naa_voiceAttachment_voiceDuration_format">%d\"</string>
     <string name="naa_submitContact_label_textView_text">Recipient:</string>
     <string name="naa_add_submitContact_imageButton_contentDescription" translatable="false">new approve application add new submit contact imageButton</string>
     <string name="naa_textAudio_inputModeChange_imageButton_contentDescription" translatable="false">new approve application the text and audio attachment change imageButton</string>

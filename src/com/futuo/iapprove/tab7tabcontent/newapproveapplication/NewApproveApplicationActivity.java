@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +37,8 @@ import com.futuo.iapprove.customwidget.EnterpriseFormItemFormItem;
 import com.futuo.iapprove.customwidget.EnterpriseFormItemFormItem.EnterpriseFormItemInfoTextWatcher;
 import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
+import com.futuo.iapprove.customwidget.NAAFormAttachmentFormItem;
+import com.futuo.iapprove.customwidget.NAAFormAttachmentFormItem.NAAFormAttachmentType;
 import com.futuo.iapprove.form.FormItemBean;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems.FormItem;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NAAFormItemEditorActivity.NAAFormItemEditorExtraData;
@@ -439,6 +443,40 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		}
 	}
 
+	// add new approve application attachment(text, image, voice and
+	// application) as attachment form item to attachment form linearLayout
+	private void addNAAFormAttachmentFormItem(
+			NAAFormAttachmentType attachmentType, Object attachmentInfo,
+			OnClickListener attachmentOnClickListener) {
+		// check enterprise form attachment form parent frameLayout visibility
+		if (View.VISIBLE != _mAttachmentFormParentFrameLayout.getVisibility()) {
+			// show enterprise form attachment form parent frameLayout
+			// visibility
+			_mAttachmentFormParentFrameLayout.setVisibility(View.VISIBLE);
+		}
+
+		// generate new added attachment
+		NAAFormAttachmentFormItem _newAddedAttachmentFormItem = NAAFormAttachmentFormItem
+				.generateNAAFormAttachmentFormItem(attachmentType,
+						attachmentInfo);
+
+		// check attachment on click listener and set new added attachment form
+		// item on click listener
+		if (null != attachmentOnClickListener) {
+			_newAddedAttachmentFormItem
+					.setOnClickListener(attachmentOnClickListener);
+		}
+
+		// set new added attachment form item on long click listener
+		_newAddedAttachmentFormItem.setOnLongClickListener(null);
+
+		// add new added attachment to attachment form linearLayout
+		((LinearLayout) findViewById(R.id.naa_attachmentForm_linearLayout))
+				.addView(_newAddedAttachmentFormItem,
+						new LayoutParams(LayoutParams.MATCH_PARENT,
+								LayoutParams.WRAP_CONTENT, 1));
+	}
+
 	// inner class
 	// new approve application extra data constant
 	public static final class NewApproveApplicationExtraData {
@@ -663,6 +701,15 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 	// new approve application toggle audio recording button on touch listener
 	class NAAToggleAudioRecordingBtnOnTouchListener implements OnTouchListener {
 
+		// audio recording chronometer timer
+		private final Timer AUDIORECORDING_CHRONOMETER_TIMER = new Timer();
+
+		// audio recording chronometer timer task
+		private TimerTask _mAudioRecordingChronometerTimerTask;
+
+		// audio recording duration
+		private Integer _mAudioRecordingDuration;
+
 		@Override
 		public boolean onTouch(View toggleAudioRecordingButton,
 				MotionEvent event) {
@@ -674,6 +721,22 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 			case MotionEvent.ACTION_DOWN:
 				// begin to record voice
 				Log.d(LOG_TAG, "Begin to record voice, move to cancel");
+
+				// clear audio recording duration
+				_mAudioRecordingDuration = 0;
+
+				// schedule audio recording chronometer timer task after 300
+				// milliseconds and process every next one second
+				AUDIORECORDING_CHRONOMETER_TIMER.schedule(
+						_mAudioRecordingChronometerTimerTask = new TimerTask() {
+
+							@Override
+							public void run() {
+								// increase audio recording duration step
+								_mAudioRecordingDuration++;
+							}
+
+						}, 300, 1000);
 
 				//
 				break;
@@ -697,9 +760,15 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 				break;
 
 			case MotionEvent.ACTION_UP:
+				// stop recording
 				// recover toggle audio recording button background image
 				toggleAudioRecordingButton
 						.setBackgroundResource(R.drawable.naa_textvoiceinput_btn_bg);
+
+				// cancel audio recording chronometer timer task
+				_mAudioRecordingChronometerTimerTask.cancel();
+
+				//
 
 				// get and check axis y
 				if (0 >= _axisY) {
@@ -709,17 +778,18 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 				} else {
 					Log.d(LOG_TAG, "Voice recording finish");
 
-					// check enterprise form attachment form parent frameLayout
-					// visibility
-					if (View.VISIBLE != _mAttachmentFormParentFrameLayout
-							.getVisibility()) {
-						// show enterprise form attachment form parent
-						// frameLayout visibility
-						_mAttachmentFormParentFrameLayout
-								.setVisibility(View.VISIBLE);
-					}
+					// check audio recording duration
+					if (0 == _mAudioRecordingDuration) {
+						Log.w(LOG_TAG, "Audio recording duration too short");
 
-					//
+						//
+					} else {
+						// get the record voice and set as voice attachment,
+						// then add to form attachment form linearLayout
+						addNAAFormAttachmentFormItem(
+								NAAFormAttachmentType.VOICE_ATTACHMENT,
+								_mAudioRecordingDuration, null);
+					}
 				}
 				break;
 			}
@@ -784,7 +854,13 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 			Log.d(LOG_TAG, "Click note send button, the note = "
 					+ _mNoteInputEditText.getText() + " ready to send");
 
-			//
+			// get the ready to send note and set as text attachment, then add
+			// to form attachment form linearLayout
+			addNAAFormAttachmentFormItem(NAAFormAttachmentType.TEXT_ATTACHMENT,
+					_mNoteInputEditText.getText(), null);
+
+			// clear note input editText text
+			_mNoteInputEditText.setText("");
 		}
 
 	}

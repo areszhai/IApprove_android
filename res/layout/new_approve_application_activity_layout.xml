@@ -221,10 +221,16 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:layout_marginTop="16dp"
+                        android:background="@android:color/transparent"
                         android:orientation="vertical"
                         android:paddingBottom="1.5dp"
                         android:paddingLeft="1.5dp"
                         android:paddingRight="1.5dp" >
+
+                        <com.futuo.iapprove.customwidget.CommonFormSeparator
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="6dp" />
                     </LinearLayout>
                 </FrameLayout>
 

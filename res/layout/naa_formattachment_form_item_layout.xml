@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="6dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="6dp" >
+
+    <FrameLayout
+        android:id="@+id/naafafi_text7image_parent_frameLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:background="@drawable/naa_formattachment_formitem_text7img_bg"
+        android:clickable="true"
+        android:paddingBottom="12dp"
+        android:paddingLeft="14dp"
+        android:paddingRight="20dp"
+        android:paddingTop="4dp"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/naafafi_textAttachment_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:lineSpacingExtra="2dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:paddingTop="6dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/naafafi_imageAttachment_imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/naa_imageAttachment_imageView_contentDescription"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/naafafi_voice_parent_relativeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:visibility="gone" >
+
+        <RelativeLayout
+            android:id="@+id/naafafi_voice_playImgView_container_relativeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/naa_formattachment_formitem_voice_bg"
+            android:clickable="true"
+            android:paddingTop="12dp" >
+
+            <ImageView
+                android:id="@+id/naafafi_voiceAttachment_play_imageView"
+                android:layout_width="18dp"
+                android:layout_height="22dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/naa_formVoiceAttachment_playImgView_marginLeft_min"
+                android:contentDescription="@string/naa_voiceAttachment_play_imageView_contentDescription"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_naa_formattachment_formitem_voice_play" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/naafafi_voiceAttachment_duration_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="4dp"
+            android:layout_toLeftOf="@id/naafafi_voice_playImgView_container_relativeLayout"
+            android:textColor="@color/dark_cyanBlue"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+</FrameLayout>
