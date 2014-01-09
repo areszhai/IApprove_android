@@ -10,13 +10,16 @@ import java.util.TimerTask;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -24,6 +27,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
@@ -45,6 +49,7 @@ import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NAAFormItemEditor
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationActivity.NAAMorePlusInputListAdapter.NAAMorePlusInputListAdapterIconItemDataKey;
 import com.futuo.iapprove.utils.CalculateStringUtils;
 import com.richitec.commontoolkit.customadapter.CTListAdapter;
+import com.richitec.commontoolkit.customcomponent.CTToast;
 import com.richitec.commontoolkit.user.UserManager;
 
 public class NewApproveApplicationActivity extends IApproveNavigationActivity {
@@ -65,8 +70,9 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 	// enterprise form item id(key) and form item form item view(value) map
 	private Map<Long, EnterpriseFormItemFormItem> _mFormItemId7FormItemFormItemMap;
 
-	// enterprise form attachment form parent frameLayout
+	// enterprise form attachment form parent frameLayout and form linearLayout
 	private FrameLayout _mAttachmentFormParentFrameLayout;
+	private LinearLayout _mAttachmentFormLinearLayout;
 
 	// change to text and voice input mode image button
 	private ImageButton _mChange2TextInputModeImageButton;
@@ -155,8 +161,10 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		// refresh enterprise form item form
 		refreshFormItemForm();
 
-		// get enterprise form attachment form parent frameLayout
+		// get enterprise form attachment form parent frameLayout and form
+		// linearLayout
 		_mAttachmentFormParentFrameLayout = (FrameLayout) findViewById(R.id.naa_attachmentForm_parent_frameLayout);
+		_mAttachmentFormLinearLayout = (LinearLayout) findViewById(R.id.naa_attachmentForm_linearLayout);
 
 		// bind add submit contact button on click listener
 		((ImageButton) findViewById(R.id.naa_add_submitContact_imageButton))
@@ -451,7 +459,6 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		// check enterprise form attachment form parent frameLayout visibility
 		if (View.VISIBLE != _mAttachmentFormParentFrameLayout.getVisibility()) {
 			// show enterprise form attachment form parent frameLayout
-			// visibility
 			_mAttachmentFormParentFrameLayout.setVisibility(View.VISIBLE);
 		}
 
@@ -468,13 +475,13 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		}
 
 		// set new added attachment form item on long click listener
-		_newAddedAttachmentFormItem.setOnLongClickListener(null);
+		_newAddedAttachmentFormItem
+				.setOnLongClickListener(new NAAFormAttachmentFormItemOnLongClickListener());
 
 		// add new added attachment to attachment form linearLayout
-		((LinearLayout) findViewById(R.id.naa_attachmentForm_linearLayout))
-				.addView(_newAddedAttachmentFormItem,
-						new LayoutParams(LayoutParams.MATCH_PARENT,
-								LayoutParams.WRAP_CONTENT, 1));
+		_mAttachmentFormLinearLayout.addView(_newAddedAttachmentFormItem,
+				new LayoutParams(LayoutParams.MATCH_PARENT,
+						LayoutParams.WRAP_CONTENT, 1));
 	}
 
 	// inner class
@@ -599,6 +606,79 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 	}
 
+	// new approve application form text attachment form item on click listener
+	class NAAFormTextAttachmentFormItemOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			Log.d(LOG_TAG,
+					"Form text attachment form item on click listener, view = "
+							+ v);
+
+			//
+		}
+
+	}
+
+	// new approve application form image attachment form item on click listener
+	class NAAFormImageAttachmentFormItemOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			Log.d(LOG_TAG,
+					"Form image attachment form item on click listener, view = "
+							+ v);
+
+			//
+		}
+
+	}
+
+	// new approve application form voice attachment form item on click listener
+	class NAAFormVoiceAttachmentFormItemOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// get voice playing flag
+			if ((Boolean) v.getTag()) {
+				Log.d(LOG_TAG, "Play the voice");
+
+				// play the voice
+				//
+			} else {
+				Log.d(LOG_TAG, "Stop play the voice");
+
+				// stop play the voice
+				//
+			}
+		}
+
+	}
+
+	// new approve application form attachment form item on long click listener
+	class NAAFormAttachmentFormItemOnLongClickListener implements
+			OnLongClickListener {
+
+		@Override
+		public boolean onLongClick(View v) {
+			// remove the click form attachment form item from attachment form
+			// linearLayout
+			_mAttachmentFormLinearLayout.removeView(v);
+
+			// get and check form attachment form linearLayout subviews count
+			if (1 == _mAttachmentFormLinearLayout.getChildCount()) {
+				// hide enterprise form attachment form parent frameLayout
+				_mAttachmentFormParentFrameLayout.setVisibility(View.GONE);
+			}
+
+			return true;
+		}
+
+	}
+
 	// add submit contact image button on click listener
 	class AddSubmitContactImgBtnOnClickListener implements OnClickListener {
 
@@ -704,6 +784,13 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		// audio recording chronometer timer
 		private final Timer AUDIORECORDING_CHRONOMETER_TIMER = new Timer();
 
+		// milliseconds per second
+		private final Long MILLISECONDS_PER_SECOND = 1000L;
+
+		// voice record toast
+		private final NAAVoiceAttachmentVoiceRecordToast VOICERECORD_TOAST = new NAAVoiceAttachmentVoiceRecordToast(
+				NewApproveApplicationActivity.this);
+
 		// audio recording chronometer timer task
 		private TimerTask _mAudioRecordingChronometerTimerTask;
 
@@ -722,6 +809,10 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 				// begin to record voice
 				Log.d(LOG_TAG, "Begin to record voice, move to cancel");
 
+				// update toggle audio recording button title
+				((Button) toggleAudioRecordingButton)
+						.setText(R.string.naa_toggleAudioRecording_button_pressed_title);
+
 				// clear audio recording duration
 				_mAudioRecordingDuration = 0;
 
@@ -736,8 +827,14 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 								_mAudioRecordingDuration++;
 							}
 
-						}, 300, 1000);
+						}, 300, MILLISECONDS_PER_SECOND);
 
+				// set voice record toast tip text and show
+				VOICERECORD_TOAST
+						.setTipText(R.string.naa_voiceRecord_recording)
+						.showRecording();
+
+				// record voice
 				//
 				break;
 
@@ -751,16 +848,25 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 					Log.d(LOG_TAG, "Will you release to cancel");
 
-					//
+					// set voice record toast tip text and show
+					VOICERECORD_TOAST.setTipText(
+							R.string.naa_voiceRecord_cancelRecord)
+							.showCancelRecord();
 				} else {
 					Log.d(LOG_TAG, "Continue recording, move to cancel");
 
-					//
+					// set voice record toast tip text and show
+					VOICERECORD_TOAST.setTipText(
+							R.string.naa_voiceRecord_recording).showRecording();
 				}
 				break;
 
 			case MotionEvent.ACTION_UP:
 				// stop recording
+				// recover toggle audio recording button title
+				((Button) toggleAudioRecordingButton)
+						.setText(R.string.naa_toggleAudioRecording_button_normal_title);
+
 				// recover toggle audio recording button background image
 				toggleAudioRecordingButton
 						.setBackgroundResource(R.drawable.naa_textvoiceinput_btn_bg);
@@ -768,12 +874,17 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 				// cancel audio recording chronometer timer task
 				_mAudioRecordingChronometerTimerTask.cancel();
 
+				// cancel voice record toast
+				VOICERECORD_TOAST.cancel();
+
+				// stop record voice
 				//
 
 				// get and check axis y
 				if (0 >= _axisY) {
-					Log.d(LOG_TAG, "Cancel voice recording");
+					Log.d(LOG_TAG, "Voice recording canceled");
 
+					// remove the voice record file
 					//
 				} else {
 					Log.d(LOG_TAG, "Voice recording finish");
@@ -782,19 +893,148 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 					if (0 == _mAudioRecordingDuration) {
 						Log.w(LOG_TAG, "Audio recording duration too short");
 
-						//
+						// set voice record toast tip text and show
+						VOICERECORD_TOAST
+								.setTipText(
+										R.string.naa_voiceRecord_voiceDuration_tooShort)
+								.showRecordTooShort();
 					} else {
 						// get the record voice and set as voice attachment,
 						// then add to form attachment form linearLayout
 						addNAAFormAttachmentFormItem(
 								NAAFormAttachmentType.VOICE_ATTACHMENT,
-								_mAudioRecordingDuration, null);
+								_mAudioRecordingDuration,
+								new NAAFormVoiceAttachmentFormItemOnClickListener());
 					}
 				}
 				break;
 			}
 
 			return false;
+		}
+
+		// inner class
+		// new approve application voice attachment voice record toast
+		class NAAVoiceAttachmentVoiceRecordToast extends CTToast {
+
+			// new approve application voice attachment voice record tip
+			// textView, cancel record, record too short imageView, recording
+			// imageView parent linearLayout and recording voice amp imageView
+			private TextView _mTipTextView;
+			private ImageView _mCancelRecord6RecordTooShortImageView;
+			private LinearLayout _mRecordingImgViewParentLinearLayout;
+			private ImageView _mRecordingVoiceAmpImageView;
+
+			public NAAVoiceAttachmentVoiceRecordToast(Context context) {
+				super(context, R.layout.naa_voice_record_toast_layout);
+
+				// get new approve application voice attachment voice record tip
+				// textView, cancel record, record too short imageView,
+				// recording imageView parent linearLayout and recording voice
+				// amp imageView
+				_mTipTextView = (TextView) _mContentView
+						.findViewById(R.id.naavr_tip_textView);
+				_mCancelRecord6RecordTooShortImageView = (ImageView) _mContentView
+						.findViewById(R.id.naavr_cancelRecord6RecordTooShort_imageView);
+				_mRecordingImgViewParentLinearLayout = (LinearLayout) _mContentView
+						.findViewById(R.id.naavr_recordingImageView_parent_linearLayout);
+				_mRecordingVoiceAmpImageView = (ImageView) _mContentView
+						.findViewById(R.id.naavr_recordingVoiceAmp_imageView);
+
+				// set duration(always) and gravity
+				setDuration(Integer.MAX_VALUE);
+				setGravity(Gravity.CENTER, 0, 0);
+			}
+
+			// set voice record tip textView text
+			public NAAVoiceAttachmentVoiceRecordToast setTipText(int resId) {
+				// set tip textView text
+				_mTipTextView.setText(resId);
+
+				return this;
+			}
+
+			// show voice record recording
+			public void showRecording() {
+				// update duration
+				setDuration(Integer.MAX_VALUE);
+
+				// update tip textView background
+				_mTipTextView.setBackgroundColor(Color.TRANSPARENT);
+
+				// show recording imageView parent linearLayout and hide cancel
+				// record or record too short imageView if needed
+				if (View.VISIBLE != _mRecordingImgViewParentLinearLayout
+						.getVisibility()) {
+					_mRecordingImgViewParentLinearLayout
+							.setVisibility(View.VISIBLE);
+				}
+				if (View.VISIBLE == _mCancelRecord6RecordTooShortImageView
+						.getVisibility()) {
+					_mCancelRecord6RecordTooShortImageView
+							.setVisibility(View.GONE);
+				}
+
+				// show voice record toast
+				show();
+			}
+
+			// show voice record cancel record
+			public void showCancelRecord() {
+				// update tip textView background
+				_mTipTextView
+						.setBackgroundResource(R.drawable.naa_voicerecord_cancelrecord_tip_textview_bg);
+
+				// show cancel record or record too short image view and hide
+				// recording imageView parent linearLayout if needed
+				if (View.VISIBLE != _mCancelRecord6RecordTooShortImageView
+						.getVisibility()) {
+					_mCancelRecord6RecordTooShortImageView
+							.setVisibility(View.VISIBLE);
+				}
+				if (View.VISIBLE == _mRecordingImgViewParentLinearLayout
+						.getVisibility()) {
+					_mRecordingImgViewParentLinearLayout
+							.setVisibility(View.GONE);
+				}
+
+				// set cancel record imageView image
+				_mCancelRecord6RecordTooShortImageView
+						.setImageResource(R.drawable.img_naa_voicerecord_cancelrecord);
+
+				// show voice record toast
+				show();
+			}
+
+			// show voice record record too short
+			public void showRecordTooShort() {
+				// update duration
+				setDuration(LENGTH_TRANSIENT);
+
+				// update tip textView background
+				_mTipTextView.setBackgroundColor(Color.TRANSPARENT);
+
+				// show cancel record or record too short image view and hide
+				// recording imageView parent linearLayout if needed
+				if (View.VISIBLE != _mCancelRecord6RecordTooShortImageView
+						.getVisibility()) {
+					_mCancelRecord6RecordTooShortImageView
+							.setVisibility(View.VISIBLE);
+				}
+				if (View.VISIBLE == _mRecordingImgViewParentLinearLayout
+						.getVisibility()) {
+					_mRecordingImgViewParentLinearLayout
+							.setVisibility(View.GONE);
+				}
+
+				// set record too short imageView image
+				_mCancelRecord6RecordTooShortImageView
+						.setImageResource(R.drawable.img_naa_voicerecord_voicetooshort);
+
+				// show voice record toast
+				show();
+			}
+
 		}
 
 	}
@@ -851,13 +1091,11 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(LOG_TAG, "Click note send button, the note = "
-					+ _mNoteInputEditText.getText() + " ready to send");
-
 			// get the ready to send note and set as text attachment, then add
 			// to form attachment form linearLayout
 			addNAAFormAttachmentFormItem(NAAFormAttachmentType.TEXT_ATTACHMENT,
-					_mNoteInputEditText.getText(), null);
+					_mNoteInputEditText.getText(),
+					new NAAFormTextAttachmentFormItemOnClickListener());
 
 			// clear note input editText text
 			_mNoteInputEditText.setText("");

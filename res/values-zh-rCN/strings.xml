@@ -35,7 +35,11 @@
     <string name="naa_formItem_infoLabel_capitalFormat">%s（大写）</string>
     <string name="naa_attachment_info_label">附件信息</string>
     <string name="naa_submitContact_label_textView_text">接收人：</string>
-    <string name="naa_toggleAudioRecording_button_title">按住 说话</string>
+    <string name="naa_toggleAudioRecording_button_normal_title">按住 说话</string>
+    <string name="naa_toggleAudioRecording_button_pressed_title">松开 结束</string>
+    <string name="naa_voiceRecord_voiceDuration_tooShort">录音时间太短</string>
+    <string name="naa_voiceRecord_recording">手指上滑，取消录音</string>
+    <string name="naa_voiceRecord_cancelRecord">松开手指，取消录音</string>
     <string name="naa_noteSend_button_title">发送</string>
     <string name="naa_morePlus_photosInput_label">图片</string>
     <string name="naa_morePlus_cameraInput_label">拍摄</string>

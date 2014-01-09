@@ -112,7 +112,7 @@
                     android:shadowDx="0"
                     android:shadowDy="1"
                     android:shadowRadius="1"
-                    android:text="@string/naa_toggleAudioRecording_button_title" />
+                    android:text="@string/naa_toggleAudioRecording_button_normal_title" />
             </FrameLayout>
         </RelativeLayout>
 

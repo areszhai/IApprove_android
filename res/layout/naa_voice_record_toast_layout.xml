@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent" >
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/naa_voicerecord_toastcontent_bg"
+        android:padding="14dp" >
+
+        <RelativeLayout
+            android:layout_width="164dp"
+            android:layout_height="164dp"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent" >
+
+            <TextView
+                android:id="@+id/naavr_tip_textView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_above="@id/naavr_tip_textView" >
+
+                <ImageView
+                    android:id="@+id/naavr_cancelRecord6RecordTooShort_imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/naa_voiceRecord_cancelRecord6RecordTooShort_imageView_contentDescription"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/naavr_recordingImageView_parent_linearLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone" >
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/naa_voiceRecord_recording_imageView_contentDescription"
+                        android:paddingRight="6dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/img_naa_voicerecord_recording" />
+
+                    <ImageView
+                        android:id="@+id/naavr_recordingVoiceAmp_imageView"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/naa_voiceRecord_recordingVoiceAmp_imageView_contentDescription"
+                        android:paddingLeft="6dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/img_naa_voicerecord_recordingvoiceamp_1" />
+                </LinearLayout>
+            </FrameLayout>
+        </RelativeLayout>
+    </FrameLayout>
+
+</FrameLayout>

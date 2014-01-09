@@ -51,7 +51,14 @@
     <string name="naa_add_submitContact_imageButton_contentDescription" translatable="false">new approve application add new submit contact imageButton</string>
     <string name="naa_textAudio_inputModeChange_imageButton_contentDescription" translatable="false">new approve application the text and audio attachment change imageButton</string>
     <string name="naa_morePlusInput_imageButton_contentDescription" translatable="false">new approve application more plus attachment imageButton</string>
-    <string name="naa_toggleAudioRecording_button_title">Hold to talk</string>
+    <string name="naa_toggleAudioRecording_button_normal_title">Hold to talk</string>
+    <string name="naa_toggleAudioRecording_button_pressed_title">Release to send</string>
+    <string name="naa_voiceRecord_cancelRecord6RecordTooShort_imageView_contentDescription" translatable="false">new approve application voice attachment voice record cancel record or record too short imageView</string>
+    <string name="naa_voiceRecord_recording_imageView_contentDescription" translatable="false">new approve application voice attachment voice record recording imageView</string>
+    <string name="naa_voiceRecord_recordingVoiceAmp_imageView_contentDescription" translatable="false">new approve application voice attachment voice record recording voice amp imageView</string>
+    <string name="naa_voiceRecord_voiceDuration_tooShort">Voice duration is too short</string>
+    <string name="naa_voiceRecord_recording">Move up to cancel</string>
+    <string name="naa_voiceRecord_cancelRecord">Release to cancel</string>
     <string name="naa_noteSend_button_title">Send</string>
     <string name="naa_morePlus_input_item_icon_imageButton_contentDescription" translatable="false">new approve application more plus input item icon imageButton</string>
     <string name="naa_morePlus_photosInput_label">Photos</string>

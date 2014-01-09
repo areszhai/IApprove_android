@@ -13,6 +13,8 @@
     <color name="light_gray">#d6d6d6</color>
 
     <!-- transparent color -->
+    <color name="fourfives_transparent">#a8000000</color>
+    <color name="quarter_blackRed_transparent">#4fb40704</color>
     <color name="half_red_transparent">#80ff0000</color>
 
 </resources>

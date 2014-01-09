@@ -1,10 +1,17 @@
 package com.futuo.iapprove.customwidget;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -25,11 +32,23 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 	private Object _mAttachmentInfo;
 
 	// new approve application form attachment text, image attachment parent
-	// frameLayout and voice attachment play image view container
-	// relativeLayout, play image view
+	// frameLayout, text attachment textView, image attachment imageView and
+	// voice attachment play image view container relativeLayout, play image
+	// view
 	private FrameLayout _mText7ImageAttachmentParentFrameLayout;
+	private TextView _mTextAttachmentTextView;
+	private ImageView _mImageAttachmentImgView;
 	private RelativeLayout _mVoiceAttachmentPlayImgViewContainerRelativeLayout;
 	private ImageView _mVoiceAttachmentPlayImgView;
+
+	// new approve application form attachment form item on click and long click
+	// listener
+	private OnClickListener _mAttachmentFormItemOnClickListener;
+	private OnLongClickListener _mAttachmentFormItemOnLongClickListener;
+
+	// new approve application form voice attachment play image view container
+	// relativeLayout on click listener
+	private NAAFormVoiceAttachmentPlayImgViewContainerRelativeLayoutOnClickListener _mVoiceAttachmentPlayImgViewContainerRelativeLayoutOnClickListener;
 
 	private NAAFormAttachmentFormItem(Context context) {
 		super(context);
@@ -42,12 +61,16 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 		// parent frameLayout
 		_mText7ImageAttachmentParentFrameLayout = (FrameLayout) findViewById(R.id.naafafi_text7image_parent_frameLayout);
 
-		// get new approve application form attachment voice attachment play
-		// image view container relativeLayout
+		// get new approve application form text attachment textView and image
+		// attachment imageView
+		_mTextAttachmentTextView = (TextView) findViewById(R.id.naafafi_textAttachment_textView);
+		_mImageAttachmentImgView = (ImageView) findViewById(R.id.naafafi_imageAttachment_imageView);
+
+		// get new approve application form voice attachment play image view
+		// container relativeLayout
 		_mVoiceAttachmentPlayImgViewContainerRelativeLayout = (RelativeLayout) findViewById(R.id.naafafi_voice_playImgView_container_relativeLayout);
 
-		// get new approve application form attachment voice attachment play
-		// image view
+		// get new approve application form voice attachment play image view
 		_mVoiceAttachmentPlayImgView = (ImageView) findViewById(R.id.naafafi_voiceAttachment_play_imageView);
 
 		// set new approve application form attachment type default value
@@ -56,20 +79,24 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 
 	@Override
 	public void setOnClickListener(OnClickListener l) {
+		// save attachment on click listener
+		_mAttachmentFormItemOnClickListener = l;
+
 		// check new approve application form attachment type
 		switch (_mAttachmentType) {
 		case TEXT_ATTACHMENT:
 		case IMAGE_ATTACHMENT:
 			// set text and image attachment parent frameLayout on click
 			// listener
-			_mText7ImageAttachmentParentFrameLayout.setOnClickListener(l);
+			_mText7ImageAttachmentParentFrameLayout
+					.setOnClickListener(new NAAFormText7ImageAttachmentParentFrameLayoutOnClickListener());
 			break;
 
 		case VOICE_ATTACHMENT:
 			// set voice attachment play image view container relativeLayout on
 			// click listener
 			_mVoiceAttachmentPlayImgViewContainerRelativeLayout
-					.setOnClickListener(l);
+					.setOnClickListener(_mVoiceAttachmentPlayImgViewContainerRelativeLayoutOnClickListener = new NAAFormVoiceAttachmentPlayImgViewContainerRelativeLayoutOnClickListener());
 			break;
 
 		case APPLICATION_ATTACHMENT:
@@ -80,34 +107,35 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 
 	@Override
 	public void setOnLongClickListener(OnLongClickListener l) {
+		// save attachment on long click listener
+		_mAttachmentFormItemOnLongClickListener = l;
+
+		// new new approve application form text, image attachment parent
+		// frameLayout and voice attachment play image view container
+		// relativeLayout on long click listener
+		NAAFormText7ImgAttaPF7VoiceAttaPlayImgViewCROnLongClickListener _naaFormAttachmentFormItemOnLongClickListener = new NAAFormText7ImgAttaPF7VoiceAttaPlayImgViewCROnLongClickListener();
+
 		// check new approve application form attachment type
 		switch (_mAttachmentType) {
 		case TEXT_ATTACHMENT:
 		case IMAGE_ATTACHMENT:
 			// set text and image attachment parent frameLayout on long click
 			// listener
-			_mText7ImageAttachmentParentFrameLayout.setOnLongClickListener(l);
+			_mText7ImageAttachmentParentFrameLayout
+					.setOnLongClickListener(_naaFormAttachmentFormItemOnLongClickListener);
 			break;
 
 		case VOICE_ATTACHMENT:
 			// set voice attachment play image view container relativeLayout on
 			// long click listener
 			_mVoiceAttachmentPlayImgViewContainerRelativeLayout
-					.setOnLongClickListener(l);
+					.setOnLongClickListener(_naaFormAttachmentFormItemOnLongClickListener);
 			break;
 
 		case APPLICATION_ATTACHMENT:
 			// nothing to do
 			break;
 		}
-	}
-
-	public RelativeLayout getVoicePlayImageViewContainer() {
-		return _mVoiceAttachmentPlayImgViewContainerRelativeLayout;
-	}
-
-	public ImageView getVoicePlayImageView() {
-		return _mVoiceAttachmentPlayImgView;
 	}
 
 	// get text attachment text
@@ -166,6 +194,18 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 		return _voiceAttachmentVoiceDuration;
 	}
 
+	private Boolean isVoicePlaying() {
+		Boolean _isVoicePlaying = false;
+
+		// get and check voice attachment play imageView tag
+		Object _tag = _mVoiceAttachmentPlayImgView.getTag();
+		if (null != _tag) {
+			_isVoicePlaying = (Boolean) _tag;
+		}
+
+		return _isVoicePlaying;
+	}
+
 	// generate new approve application form attachment form item with type and
 	// info
 	public static NAAFormAttachmentFormItem generateNAAFormAttachmentFormItem(
@@ -192,18 +232,16 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 			_newNAAFormAttachmentFormItem._mText7ImageAttachmentParentFrameLayout
 					.setVisibility(View.VISIBLE);
 
-			// get text attachment textView
-			TextView _textAttachmentTextView = (TextView) _newNAAFormAttachmentFormItem
-					.findViewById(R.id.naafafi_textAttachment_textView);
-
-			// show it
-			_textAttachmentTextView.setVisibility(View.VISIBLE);
+			// show text attachment textView
+			_newNAAFormAttachmentFormItem._mTextAttachmentTextView
+					.setVisibility(View.VISIBLE);
 
 			// get, check text attachment text and set its text
 			String _textAttachmentText = _newNAAFormAttachmentFormItem
 					.getTextAttachmentText();
 			if (null != _textAttachmentText) {
-				_textAttachmentTextView.setText(_textAttachmentText);
+				_newNAAFormAttachmentFormItem._mTextAttachmentTextView
+						.setText(_textAttachmentText);
 			}
 			break;
 
@@ -212,18 +250,15 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 			_newNAAFormAttachmentFormItem._mText7ImageAttachmentParentFrameLayout
 					.setVisibility(View.VISIBLE);
 
-			// get image attachment imageView
-			ImageView _imageAttachmentImgView = (ImageView) _newNAAFormAttachmentFormItem
-					.findViewById(R.id.naafafi_imageAttachment_imageView);
-
-			// show it
-			_imageAttachmentImgView.setVisibility(View.VISIBLE);
+			// show image attachment imageView
+			_newNAAFormAttachmentFormItem._mImageAttachmentImgView
+					.setVisibility(View.VISIBLE);
 
 			// get, check image attachment image bitmap and set its image bitmap
 			Bitmap _imageAttachmentImgBitmap = _newNAAFormAttachmentFormItem
 					.getImageAttachmentImgBitmap();
 			if (null != _imageAttachmentImgBitmap) {
-				_imageAttachmentImgView
+				_newNAAFormAttachmentFormItem._mImageAttachmentImgView
 						.setImageBitmap(_imageAttachmentImgBitmap);
 			}
 			break;
@@ -291,6 +326,212 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 
 		// text, image, voice and application attachment
 		TEXT_ATTACHMENT, IMAGE_ATTACHMENT, VOICE_ATTACHMENT, APPLICATION_ATTACHMENT
+
+	}
+
+	// new approve application form text and image attachment parent frameLayout
+	// on click listener
+	class NAAFormText7ImageAttachmentParentFrameLayoutOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// check new approve application form attachment type and set text
+			// attachment textView or image attachment imageView as text or
+			// image attachment form item on click response view
+			if (NAAFormAttachmentType.TEXT_ATTACHMENT == _mAttachmentType) {
+				_mAttachmentFormItemOnClickListener
+						.onClick(_mTextAttachmentTextView);
+			} else {
+				_mAttachmentFormItemOnClickListener
+						.onClick(_mImageAttachmentImgView);
+			}
+		}
+
+	}
+
+	// new approve application form voice attachment play image view container
+	// relativeLayout on click listener
+	class NAAFormVoiceAttachmentPlayImgViewContainerRelativeLayoutOnClickListener
+			implements OnClickListener {
+
+		// voice attachment voice playing timer
+		private final Timer VOICEPLAYING_TIMER = new Timer();
+
+		// milliseconds per second
+		private final Long MILLISECONDS_PER_SECOND = 1000L;
+
+		// recover voice attachment voice ready to play status handle
+		private final Handler RECOVER_VOICEREADY2PLAYSTATUS_HANDLE = new Handler();
+
+		// get voice attachment voice playing drawable
+		private final Drawable VOICEPLAYING_DRAWABLE = getResources()
+				.getDrawable(R.anim.naa_voiceattachment_voiceplaying);
+
+		// voice attachment play imageView container relativeLayout padding top
+		private Integer VOICEPLAYIMGVIEWCONTAINERRELATIVELAYOUT_PT = _mVoiceAttachmentPlayImgViewContainerRelativeLayout
+				.getPaddingTop();
+
+		// voice playing timer task
+		private TimerTask _mVoicePlayingTimerTask;
+
+		// is voice playing
+		private Boolean _mIsVoicePlaying = false;
+
+		@Override
+		public void onClick(View v) {
+			// get voice attachment form item parent viewGroup
+			ViewGroup _rarentViewGroup = (ViewGroup) NAAFormAttachmentFormItem.this
+					.getParent();
+
+			// stop play other voice attachment voice
+			for (int i = 1; i < _rarentViewGroup.getChildCount(); i++) {
+				// get and check each voice attachment form item
+				NAAFormAttachmentFormItem _formAttachmentFormItem = (NAAFormAttachmentFormItem) _rarentViewGroup
+						.getChildAt(i);
+				if (NAAFormAttachmentType.VOICE_ATTACHMENT == _formAttachmentFormItem._mAttachmentType
+						&& NAAFormAttachmentFormItem.this != _formAttachmentFormItem
+						&& _formAttachmentFormItem.isVoicePlaying()) {
+					// click voice attachment play imageView container
+					// relaticeLayout
+					_formAttachmentFormItem._mVoiceAttachmentPlayImgViewContainerRelativeLayoutOnClickListener
+							.onClick(_mVoiceAttachmentPlayImgViewContainerRelativeLayout);
+
+					// break immediately
+					break;
+				}
+			}
+
+			// update voice playing flag and set as voice attachment voice play
+			// imageView tag
+			_mVoiceAttachmentPlayImgView
+					.setTag(_mIsVoicePlaying = !_mIsVoicePlaying);
+
+			// check is voice playing
+			if (_mIsVoicePlaying) {
+				// update voice attachment play imageView container
+				// relativeLayout background
+				_mVoiceAttachmentPlayImgViewContainerRelativeLayout
+						.setBackgroundResource(R.drawable.img_naa_formattachment_formitem_voice_playing_bg);
+				_mVoiceAttachmentPlayImgViewContainerRelativeLayout.setPadding(
+						_mVoiceAttachmentPlayImgViewContainerRelativeLayout
+								.getPaddingLeft(),
+						VOICEPLAYIMGVIEWCONTAINERRELATIVELAYOUT_PT,
+						_mVoiceAttachmentPlayImgViewContainerRelativeLayout
+								.getPaddingRight(),
+						_mVoiceAttachmentPlayImgViewContainerRelativeLayout
+								.getPaddingBottom());
+
+				// update voice attachment play imageView image drawable
+				_mVoiceAttachmentPlayImgView
+						.setImageDrawable(VOICEPLAYING_DRAWABLE);
+
+				// start voice attachment voice playing animation drawable
+				((AnimationDrawable) VOICEPLAYING_DRAWABLE).start();
+
+				// voice playing timer schedule delay duration to recover voice
+				// ready to play status
+				VOICEPLAYING_TIMER.schedule(
+						_mVoicePlayingTimerTask = new TimerTask() {
+
+							@Override
+							public void run() {
+								// handle on UI thread with handle
+								RECOVER_VOICEREADY2PLAYSTATUS_HANDLE
+										.post(new Runnable() {
+
+											@Override
+											public void run() {
+												// update voice playing flag and
+												// set as voice attachment voice
+												// play imageView tag
+												_mVoiceAttachmentPlayImgView
+														.setTag(_mIsVoicePlaying = !_mIsVoicePlaying);
+
+												// recover voice attachment play
+												// imageView container
+												// relativeLayout background
+												_mVoiceAttachmentPlayImgViewContainerRelativeLayout
+														.setBackgroundResource(R.drawable.naa_formattachment_formitem_voice_bg);
+												_mVoiceAttachmentPlayImgViewContainerRelativeLayout.setPadding(
+														_mVoiceAttachmentPlayImgViewContainerRelativeLayout
+																.getPaddingLeft(),
+														VOICEPLAYIMGVIEWCONTAINERRELATIVELAYOUT_PT,
+														_mVoiceAttachmentPlayImgViewContainerRelativeLayout
+																.getPaddingRight(),
+														_mVoiceAttachmentPlayImgViewContainerRelativeLayout
+																.getPaddingBottom());
+
+												// recover voice attachment play
+												// imageView image drawable
+												_mVoiceAttachmentPlayImgView
+														.setImageResource(R.drawable.img_naa_formattachment_formitem_voice_play);
+
+												// stop voice attachment voice
+												// playing animation drawable
+												((AnimationDrawable) VOICEPLAYING_DRAWABLE)
+														.stop();
+
+												// set voice attachment voice
+												// play imageView as voice
+												// attachment form item on click
+												// response view
+												_mAttachmentFormItemOnClickListener
+														.onClick(_mVoiceAttachmentPlayImgView);
+											}
+
+										});
+							}
+
+						}, getVoiceAttachmentVoiceDuration()
+								* MILLISECONDS_PER_SECOND);
+			} else {
+				// cancel voice playing timer task
+				_mVoicePlayingTimerTask.cancel();
+
+				// recover voice attachment play imageView container
+				// relativeLayout background
+				_mVoiceAttachmentPlayImgViewContainerRelativeLayout
+						.setBackgroundResource(R.drawable.naa_formattachment_formitem_voice_bg);
+				_mVoiceAttachmentPlayImgViewContainerRelativeLayout.setPadding(
+						_mVoiceAttachmentPlayImgViewContainerRelativeLayout
+								.getPaddingLeft(),
+						VOICEPLAYIMGVIEWCONTAINERRELATIVELAYOUT_PT,
+						_mVoiceAttachmentPlayImgViewContainerRelativeLayout
+								.getPaddingRight(),
+						_mVoiceAttachmentPlayImgViewContainerRelativeLayout
+								.getPaddingBottom());
+
+				// recover voice attachment play imageView image drawable
+				_mVoiceAttachmentPlayImgView
+						.setImageResource(R.drawable.img_naa_formattachment_formitem_voice_play);
+
+				// stop voice attachment voice playing animation drawable
+				((AnimationDrawable) VOICEPLAYING_DRAWABLE).stop();
+			}
+
+			// set voice attachment voice play imageView as voice attachment
+			// form item on click response view
+			_mAttachmentFormItemOnClickListener
+					.onClick(_mVoiceAttachmentPlayImgView);
+		}
+
+	}
+
+	// new approve application form text, image attachment parent frameLayout
+	// and voice attachment play image view container relativeLayout on long
+	// click listener
+	class NAAFormText7ImgAttaPF7VoiceAttaPlayImgViewCROnLongClickListener
+			implements OnLongClickListener {
+
+		@Override
+		public boolean onLongClick(View v) {
+			// set form attachment form item as text, image attachment parent
+			// frameLayout and voice attachment play image view container
+			// relativeLayout on long click response view
+			return _mAttachmentFormItemOnLongClickListener
+					.onLongClick(NAAFormAttachmentFormItem.this);
+		}
 
 	}
 
