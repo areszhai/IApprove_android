@@ -1,5 +1,6 @@
 package com.futuo.iapprove.customwidget;
 
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -138,8 +139,30 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 		}
 	}
 
+	public NAAFormAttachmentType getAttachmentType() {
+		return _mAttachmentType;
+	}
+
+	public Boolean isVoicePlaying() {
+		Boolean _isVoicePlaying = false;
+
+		// get and check voice attachment play imageView tag
+		Object _tag = _mVoiceAttachmentPlayImgView.getTag();
+		if (null != _tag) {
+			_isVoicePlaying = (Boolean) _tag;
+		}
+
+		return _isVoicePlaying;
+	}
+
+	// fake click voice attachment play imageView container relaticeLayout
+	public void fakeClickVoiceAttachmentPlayImgViewContainerRelativeLayout() {
+		_mVoiceAttachmentPlayImgViewContainerRelativeLayoutOnClickListener
+				.onClick(_mVoiceAttachmentPlayImgViewContainerRelativeLayout);
+	}
+
 	// get text attachment text
-	public String getTextAttachmentText() {
+	private String getTextAttachmentText() {
 		String _textAttachmentText = null;
 
 		// check new approve application form attachment type
@@ -153,7 +176,7 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 	}
 
 	// get image attachment image bitmap
-	public Bitmap getImageAttachmentImgBitmap() {
+	private Bitmap getImageAttachmentImgBitmap() {
 		Bitmap _imageAttachmentImgBitmap = null;
 
 		// check new approve application form attachment type
@@ -173,15 +196,46 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 		return _imageAttachmentImgBitmap;
 	}
 
+	// get voice attachment voice file path
+	private String getVoiceAttachmentVoiceFilePath() {
+		String _voiceAttachmentVoiceFilePath = null;
+
+		// check new approve application form attachment type
+		if (NAAFormAttachmentType.VOICE_ATTACHMENT == _mAttachmentType) {
+			// convert attachment info object to map
+			try {
+				@SuppressWarnings("unchecked")
+				Map<String, Object> _voiceAttachmentInfo = (Map<String, Object>) _mAttachmentInfo;
+
+				// get voice attachment voice file path
+				_voiceAttachmentVoiceFilePath = (String) _voiceAttachmentInfo
+						.get(NAAFormVoiceAttachmentInfoDataKeys.VOICEATTACHMENT_VOICE_FILEPATH);
+			} catch (Exception e) {
+				Log.e(LOG_TAG,
+						"Get voice attachment voice file path error, exception message = "
+								+ e.getMessage());
+
+				e.printStackTrace();
+			}
+		}
+
+		return _voiceAttachmentVoiceFilePath;
+	}
+
 	// get voice attachment voice duration
-	public Integer getVoiceAttachmentVoiceDuration() {
+	private Integer getVoiceAttachmentVoiceDuration() {
 		Integer _voiceAttachmentVoiceDuration = null;
 
 		// check new approve application form attachment type
 		if (NAAFormAttachmentType.VOICE_ATTACHMENT == _mAttachmentType) {
-			// convert attachment info object to integer
+			// convert attachment info object to map
 			try {
-				_voiceAttachmentVoiceDuration = (Integer) _mAttachmentInfo;
+				@SuppressWarnings("unchecked")
+				Map<String, Object> _voiceAttachmentInfo = (Map<String, Object>) _mAttachmentInfo;
+
+				// get voice attachment voice duration
+				_voiceAttachmentVoiceDuration = (Integer) _voiceAttachmentInfo
+						.get(NAAFormVoiceAttachmentInfoDataKeys.VOICEATTACHMENT_VOICE_DURATION);
 			} catch (Exception e) {
 				Log.e(LOG_TAG,
 						"Get voice attachment voice duration error, exception message = "
@@ -192,18 +246,6 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 		}
 
 		return _voiceAttachmentVoiceDuration;
-	}
-
-	private Boolean isVoicePlaying() {
-		Boolean _isVoicePlaying = false;
-
-		// get and check voice attachment play imageView tag
-		Object _tag = _mVoiceAttachmentPlayImgView.getTag();
-		if (null != _tag) {
-			_isVoicePlaying = (Boolean) _tag;
-		}
-
-		return _isVoicePlaying;
 	}
 
 	// generate new approve application form attachment form item with type and
@@ -329,6 +371,15 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 
 	}
 
+	// new approve application form voice attachment info data keys
+	public static class NAAFormVoiceAttachmentInfoDataKeys {
+
+		// voice attachment voice file path and duration
+		public static final String VOICEATTACHMENT_VOICE_FILEPATH = "voiceattachment_voice_filepath";
+		public static final String VOICEATTACHMENT_VOICE_DURATION = "voiceattachment_voice_duration";
+
+	}
+
 	// new approve application form text and image attachment parent frameLayout
 	// on click listener
 	class NAAFormText7ImageAttachmentParentFrameLayoutOnClickListener implements
@@ -402,8 +453,11 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 				}
 			}
 
-			// update voice playing flag and set as voice attachment voice play
-			// imageView tag
+			// update voice playing flag, voice file path and set as voice
+			// attachment voice play imageView tag
+			_mVoiceAttachmentPlayImgView
+					.setTag(NAAFormVoiceAttachmentInfoDataKeys.VOICEATTACHMENT_VOICE_FILEPATH
+							.hashCode(), getVoiceAttachmentVoiceFilePath());
 			_mVoiceAttachmentPlayImgView
 					.setTag(_mIsVoicePlaying = !_mIsVoicePlaying);
 

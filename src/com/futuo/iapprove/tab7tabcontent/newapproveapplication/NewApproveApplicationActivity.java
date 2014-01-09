@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -43,10 +44,12 @@ import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
 import com.futuo.iapprove.customwidget.NAAFormAttachmentFormItem;
 import com.futuo.iapprove.customwidget.NAAFormAttachmentFormItem.NAAFormAttachmentType;
+import com.futuo.iapprove.customwidget.NAAFormAttachmentFormItem.NAAFormVoiceAttachmentInfoDataKeys;
 import com.futuo.iapprove.form.FormItemBean;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems.FormItem;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NAAFormItemEditorActivity.NAAFormItemEditorExtraData;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationActivity.NAAMorePlusInputListAdapter.NAAMorePlusInputListAdapterIconItemDataKey;
+import com.futuo.iapprove.utils.AudioUtils;
 import com.futuo.iapprove.utils.CalculateStringUtils;
 import com.richitec.commontoolkit.customadapter.CTListAdapter;
 import com.richitec.commontoolkit.customcomponent.CTToast;
@@ -647,12 +650,15 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 				Log.d(LOG_TAG, "Play the voice");
 
 				// play the voice
-				//
+				AudioUtils
+						.playRecorderAudio((String) v
+								.getTag(NAAFormVoiceAttachmentInfoDataKeys.VOICEATTACHMENT_VOICE_FILEPATH
+										.hashCode()));
 			} else {
 				Log.d(LOG_TAG, "Stop play the voice");
 
 				// stop play the voice
-				//
+				AudioUtils.stopPlayRecorderAudio();
 			}
 		}
 
@@ -781,8 +787,8 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 	// new approve application toggle audio recording button on touch listener
 	class NAAToggleAudioRecordingBtnOnTouchListener implements OnTouchListener {
 
-		// audio recording chronometer timer
-		private final Timer AUDIORECORDING_CHRONOMETER_TIMER = new Timer();
+		// audio recording timer
+		private final Timer AUDIORECORDING_TIMER = new Timer();
 
 		// milliseconds per second
 		private final Long MILLISECONDS_PER_SECOND = 1000L;
@@ -791,10 +797,15 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		private final NAAVoiceAttachmentVoiceRecordToast VOICERECORD_TOAST = new NAAVoiceAttachmentVoiceRecordToast(
 				NewApproveApplicationActivity.this);
 
-		// audio recording chronometer timer task
-		private TimerTask _mAudioRecordingChronometerTimerTask;
+		// update recording voice amplitude imageView image handle
+		private final Handler UPDATE_RECORDINGVOICEAMP_IMGVIEW_IMAGE_HANDLE = new Handler();
 
-		// audio recording duration
+		// audio recording chronometer and amplitude timer task
+		private TimerTask _mAudioRecordingChronometerTimerTask;
+		private TimerTask _mAudioRecordingAmplitudeTimerTask;
+
+		// audio recording file path and duration
+		private String _mAudioRecordingFilePath;
 		private Integer _mAudioRecordingDuration;
 
 		@Override
@@ -806,6 +817,25 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 			// check motion event action
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
+				// stop play all voice attachment voice
+				for (int i = 1; i < _mAttachmentFormLinearLayout
+						.getChildCount(); i++) {
+					// get and check each voice attachment form item
+					NAAFormAttachmentFormItem _formAttachmentFormItem = (NAAFormAttachmentFormItem) _mAttachmentFormLinearLayout
+							.getChildAt(i);
+					if (NAAFormAttachmentType.VOICE_ATTACHMENT == _formAttachmentFormItem
+							.getAttachmentType()
+							&& _formAttachmentFormItem.isVoicePlaying()) {
+						// fake click voice attachment play imageView container
+						// relaticeLayout
+						_formAttachmentFormItem
+								.fakeClickVoiceAttachmentPlayImgViewContainerRelativeLayout();
+
+						// break immediately
+						break;
+					}
+				}
+
 				// begin to record voice
 				Log.d(LOG_TAG, "Begin to record voice, move to cancel");
 
@@ -818,7 +848,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 				// schedule audio recording chronometer timer task after 300
 				// milliseconds and process every next one second
-				AUDIORECORDING_CHRONOMETER_TIMER.schedule(
+				AUDIORECORDING_TIMER.schedule(
 						_mAudioRecordingChronometerTimerTask = new TimerTask() {
 
 							@Override
@@ -829,13 +859,88 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 						}, 300, MILLISECONDS_PER_SECOND);
 
+				// schedule audio recording amplitude timer task immediately and
+				// process every next 200 milliseconds
+				AUDIORECORDING_TIMER.schedule(
+						_mAudioRecordingAmplitudeTimerTask = new TimerTask() {
+
+							@Override
+							public void run() {
+								// handle on UI thread with handle
+								UPDATE_RECORDINGVOICEAMP_IMGVIEW_IMAGE_HANDLE
+										.postDelayed(new Runnable() {
+
+											@Override
+											public void run() {
+												// get and check recording audio
+												// amplitude
+												switch ((int) AudioUtils
+														.getRecordingAmplitude()) {
+												case 0:
+												case 1:
+													// step 1(default)
+													VOICERECORD_TOAST
+															.updateRecordingVoiceAmpImage(R.drawable.img_naa_voicerecord_recordingvoiceamp_1);
+													break;
+
+												case 2:
+												case 3:
+													// step 2
+													VOICERECORD_TOAST
+															.updateRecordingVoiceAmpImage(R.drawable.img_naa_voicerecord_recordingvoiceamp_2);
+													break;
+
+												case 4:
+												case 5:
+													// step 3
+													VOICERECORD_TOAST
+															.updateRecordingVoiceAmpImage(R.drawable.img_naa_voicerecord_recordingvoiceamp_3);
+													break;
+
+												case 6:
+												case 7:
+													// step 4
+													VOICERECORD_TOAST
+															.updateRecordingVoiceAmpImage(R.drawable.img_naa_voicerecord_recordingvoiceamp_4);
+													break;
+
+												case 8:
+												case 9:
+													// step 5
+													VOICERECORD_TOAST
+															.updateRecordingVoiceAmpImage(R.drawable.img_naa_voicerecord_recordingvoiceamp_5);
+													break;
+
+												case 10:
+												case 11:
+													// step 6
+													VOICERECORD_TOAST
+															.updateRecordingVoiceAmpImage(R.drawable.img_naa_voicerecord_recordingvoiceamp_6);
+													break;
+
+												default:
+													// step 7 and more(max)
+													VOICERECORD_TOAST
+															.updateRecordingVoiceAmpImage(R.drawable.img_naa_voicerecord_recordingvoiceamp_7);
+													break;
+												}
+											}
+
+										}, 0);
+
+							}
+
+						}, 0, 200);
+
 				// set voice record toast tip text and show
 				VOICERECORD_TOAST
 						.setTipText(R.string.naa_voiceRecord_recording)
 						.showRecording();
 
-				// record voice
-				//
+				// start record voice
+				_mAudioRecordingFilePath = AudioUtils
+						.startRecordAudio(UserManager.getInstance().getUser()
+								.getName());
 				break;
 
 			case MotionEvent.ACTION_MOVE:
@@ -871,14 +976,15 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 				toggleAudioRecordingButton
 						.setBackgroundResource(R.drawable.naa_textvoiceinput_btn_bg);
 
-				// cancel audio recording chronometer timer task
+				// cancel audio recording chronometer and amplitude timer task
 				_mAudioRecordingChronometerTimerTask.cancel();
+				_mAudioRecordingAmplitudeTimerTask.cancel();
 
 				// cancel voice record toast
 				VOICERECORD_TOAST.cancel();
 
 				// stop record voice
-				//
+				AudioUtils.stopRecordAudio();
 
 				// get and check axis y
 				if (0 >= _axisY) {
@@ -899,11 +1005,21 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 										R.string.naa_voiceRecord_voiceDuration_tooShort)
 								.showRecordTooShort();
 					} else {
+						// generate voice attachment info with file path and
+						// duration
+						Map<String, Object> _voiceAttachmentInfo = new HashMap<String, Object>();
+						_voiceAttachmentInfo
+								.put(NAAFormVoiceAttachmentInfoDataKeys.VOICEATTACHMENT_VOICE_FILEPATH,
+										_mAudioRecordingFilePath);
+						_voiceAttachmentInfo
+								.put(NAAFormVoiceAttachmentInfoDataKeys.VOICEATTACHMENT_VOICE_DURATION,
+										_mAudioRecordingDuration);
+
 						// get the record voice and set as voice attachment,
 						// then add to form attachment form linearLayout
 						addNAAFormAttachmentFormItem(
 								NAAFormAttachmentType.VOICE_ATTACHMENT,
-								_mAudioRecordingDuration,
+								_voiceAttachmentInfo,
 								new NAAFormVoiceAttachmentFormItemOnClickListener());
 					}
 				}
@@ -977,6 +1093,12 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 				// show voice record toast
 				show();
+			}
+
+			// update recording voice amplitude image
+			public void updateRecordingVoiceAmpImage(int resId) {
+				// update recording voice amplitude imageView image
+				_mRecordingVoiceAmpImageView.setImageResource(resId);
 			}
 
 			// show voice record cancel record
