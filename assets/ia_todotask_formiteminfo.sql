@@ -1,0 +1,1 @@
+CREATE TABLE "ia_todotask_formiteminfo" ("_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, "taskFormItemId" INTEGER NOT NULL, "taskSenderFakeId" INTEGER NOT NULL, "enterpriseId" INTEGER NOT NULL, "approveNumber" INTEGER NOT NULL, "taskFormItemName" VARCHAR(40) NOT NULL, "taskFormItemInfo" VARCHAR(300))

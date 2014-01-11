@@ -665,7 +665,7 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 
 					}).start();
 
-					// get enterprise form into with id
+					// get enterprise form info with id
 					for (int i = 0; i < _enterpriseFormJsonArray.length(); i++) {
 						// get enterprise form info with form id and its type id
 						getEnterpriseFormInfoWithFormId7TypeId(

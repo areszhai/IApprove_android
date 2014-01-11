@@ -393,7 +393,7 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	@SuppressWarnings("unchecked")
 	private Map<String, List<ContentValues>> getFormItemAndSelectorContentInfoContentValuesMap(
 			ContentValues values) {
-		Map<String, List<ContentValues>> _formItemAndSelectorContentInfoInfoContentValuesMap = new HashMap<String, List<ContentValues>>();
+		Map<String, List<ContentValues>> _formItemAndSelectorContentInfoContentValuesMap = new HashMap<String, List<ContentValues>>();
 
 		// check given content values
 		if (null != values) {
@@ -436,16 +436,16 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 
 			// put form item content values and its selector content info
 			// content values list into map using its table name as key
-			_formItemAndSelectorContentInfoInfoContentValuesMap
+			_formItemAndSelectorContentInfoContentValuesMap
 					.put(FormItems.FORMITEMS_TABLE,
 							(List<ContentValues>) CommonUtils
 									.array2List(new ContentValues[] { _formItemContentValues }));
-			_formItemAndSelectorContentInfoInfoContentValuesMap.put(
+			_formItemAndSelectorContentInfoContentValuesMap.put(
 					FormItems.FORMITEM_SELECTORCONTENTS_TABLE,
 					_formItemSelectorContentInfoContentValuesList);
 		}
 
-		return _formItemAndSelectorContentInfoInfoContentValuesMap;
+		return _formItemAndSelectorContentInfoContentValuesMap;
 	}
 
 	// inner class
@@ -453,10 +453,10 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseFormTypeTableAccessType {
 
 		// enterprise form type table access type
-		private static final int FORMTYPES = 40;
-		private static final int FORMTYPE = 41;
-		private static final int FORMTYPE_ID = 42;
-		private static final int FORMTYPE_ENTERPRISEID = 43;
+		private static final int FORMTYPES = 50;
+		private static final int FORMTYPE = 51;
+		private static final int FORMTYPE_ID = 52;
+		private static final int FORMTYPE_ENTERPRISEID = 53;
 
 	}
 
@@ -503,9 +503,9 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseFormTableAccessType {
 
 		// enterprise form table access type
-		private static final int FORMS = 50;
-		private static final int FORM = 51;
-		private static final int FORM_ID = 52;
+		private static final int FORMS = 60;
+		private static final int FORM = 61;
+		private static final int FORM_ID = 62;
 
 	}
 
@@ -554,9 +554,9 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseFormItemTableAccessType {
 
 		// enterprise form item table access type
-		private static final int FORMITEMS = 60;
-		private static final int FORMITEM = 61;
-		private static final int FORMITEM_ID = 62;
+		private static final int FORMITEMS = 70;
+		private static final int FORMITEM = 71;
+		private static final int FORMITEM_ID = 72;
 
 	}
 

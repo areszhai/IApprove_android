@@ -25,8 +25,9 @@ public class CoreService extends Service {
 
 	// core service task and period array
 	private final Object[][] CORESERVICE_TASK7PERIODS = new Object[][] {
-			{ GetTodoListTask.class, new GetTodoListTask(),
-					R.integer.cstp_getTodoList_period },
+			{ GetUserEnterpriseTodoListTaskTask.class,
+					new GetUserEnterpriseTodoListTaskTask(),
+					R.integer.cstp_getUserEnterpriseTodoListTask_period },
 			{ GetEnterpriseABTask.class, new GetEnterpriseABTask(),
 					R.integer.cstp_getEnterpriseAB_period },
 			{ GetEnterpriseFormTask.class, new GetEnterpriseFormTask(),
@@ -81,6 +82,45 @@ public class CoreService extends Service {
 
 		// stop core service timer
 		stopCoreServiceTimer();
+	}
+
+	// start get user enterprise to-do list task
+	public void startGetUserEnterpriseTodoListTask() {
+		Log.d(LOG_TAG, "Start get user enterprise to-do list task");
+
+		// get and check get user enterprise to-do list task task
+		CoreServiceTask _getUserEnterpriseTodoListTaskTask = getCoreServiceTask(GetUserEnterpriseTodoListTaskTask.class);
+		if (null != _getUserEnterpriseTodoListTaskTask) {
+			// set enterprise id
+			_getUserEnterpriseTodoListTaskTask.setEnterpriseId();
+		}
+	}
+
+	// force get user enterprise to-do list task
+	public void forceGetUserEnterpriseTodoListTask() {
+		Log.d(LOG_TAG, "Force get user enterprise to-do list task");
+
+		// get and check get user enterprise to-do list task task
+		CoreServiceTask _getUserEnterpriseTodoListTaskTask = getCoreServiceTask(GetUserEnterpriseTodoListTaskTask.class);
+		if (null != _getUserEnterpriseTodoListTaskTask) {
+			// set enterprise id
+			_getUserEnterpriseTodoListTaskTask.setEnterpriseId();
+
+			// force get user enterprise to-do list task immediately
+			_getUserEnterpriseTodoListTaskTask.execute();
+		}
+	}
+
+	// stop get user enterprise to-do list task
+	public void stopGetUserEnterpriseTodolistTask() {
+		Log.d(LOG_TAG, "Stop get user enterprise to-do list task");
+
+		// get and check get user enterprise to-do list task task
+		CoreServiceTask _getUserEnterpriseTodoListTaskTask = getCoreServiceTask(GetUserEnterpriseTodoListTaskTask.class);
+		if (null != _getUserEnterpriseTodoListTaskTask) {
+			// clear enterprise id
+			_getUserEnterpriseTodoListTaskTask.clearEnterpriseId();
+		}
 	}
 
 	// start get enterprise address book

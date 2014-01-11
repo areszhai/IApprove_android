@@ -11,8 +11,11 @@
     <string name="account_login_url" translatable="false">/enterpries/userLoginMobile</string>
 
     <!-- iApprove -->
+    <!-- iApprove list task form info common -->
+    <string name="get_iApproveListTaskFormInfo_url" translatable="false">/enterpries/infoDetailMobile</string>
+
     <!-- to-do list -->
-    <string name="get_todoList_url" translatable="false">/enterpries/processInfoMobile</string>
+    <string name="get_userEnterpriseTodoListTask_url" translatable="false">/enterpries/processInfoMobile</string>
 
     <!-- address book -->
     <string name="get_enterpriseAB_url" translatable="false">/enterpries/userMobile</string>

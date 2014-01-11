@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CursorAdapter;
@@ -28,20 +29,18 @@ import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
 import com.futuo.iapprove.account.user.IAUserLocalStorageAttributes;
 import com.futuo.iapprove.account.user.UserEnterpriseBean;
+import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveTabContentActivity;
 import com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider.EnterpriseProfiles.EnterpriseProfile;
 import com.futuo.iapprove.service.CoreService;
+import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationGenerator;
 import com.futuo.iapprove.tab7tabcontent.task.IApproveTaskAdapter;
-import com.futuo.iapprove.utils.HttpRequestParamUtils;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
 import com.richitec.commontoolkit.utils.DataStorageUtils;
 import com.richitec.commontoolkit.utils.HttpUtils;
-import com.richitec.commontoolkit.utils.HttpUtils.HttpRequestType;
 import com.richitec.commontoolkit.utils.HttpUtils.OnHttpRequestListener;
-import com.richitec.commontoolkit.utils.HttpUtils.PostRequestFormat;
 import com.richitec.commontoolkit.utils.JSONUtils;
-import com.richitec.commontoolkit.utils.StringUtils;
 
 public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
@@ -78,19 +77,12 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 		setTitle((_mTitleView = new TodoListTabContentViewActivityTitleView(
 				this)).generateTitleView());
 
-		// refresh to-do list when on create
-		refreshTodoList(false);
-	}
+		// set new approve application bar button item as right bar button item
+		setRightBarButtonItem(new IApproveImageBarButtonItem(this,
+				R.drawable.img_new_approveapplication_barbtnitem,
+				new NewApproveApplicationBarBtnItemOnClickListener()));
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		// check need to refresh to-do list flag
-		if (null != _mNeed2RefreshTodoList && true == _mNeed2RefreshTodoList) {
-			// refresh to-do list
-			refreshTodoList(false);
-		}
+		//
 	}
 
 	@Override
@@ -103,69 +95,71 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 	protected void onCoreServiceConnected(CoreService coreService) {
 		super.onCoreServiceConnected(coreService);
 
-		//
+		// start get user login enterprise to-do list task
+		coreService.startGetUserEnterpriseTodoListTask();
 	}
 
 	@Override
 	protected void onCoreServiceDisconnected(CoreService coreService) {
 		super.onCoreServiceDisconnected(coreService);
 
-		//
+		// stop get user login enterprise to-do list task
+		coreService.stopGetUserEnterpriseTodolistTask();
 	}
 
-	// refresh to-do list with changed user enterprise flag
-	private void refreshTodoList(Boolean changeUserEnterprise) {
-		// to-do list data fetching
-		_mDataFetching = true;
-
-		// check changed user enterprise flag
-		if (changeUserEnterprise) {
-			// show user enterprise to-do list change process dialog
-			_mUserEnterpriseTodoListChangeProgDlg = ProgressDialog
-					.show(TodoListTabContentActivity.this,
-							null,
-							getString(R.string.tdl_userEnterpriseChange_progDlg_message),
-							true);
-		} else {
-			// update title
-			setTitle(_mTitleView.generateTitleView());
-		}
-
-		// get to-do list
-		// generate get to-do list post http request param
-		Map<String, String> _getTodoListPostHttpReqParam = HttpRequestParamUtils
-				.genUserSigHttpReqParam();
-
-		// put get to-do list action, user enterprise id, state and page
-		// number in
-		_getTodoListPostHttpReqParam.put(
-				getResources().getString(
-						R.string.rbgServer_commonReqParam_action),
-				getResources().getString(
-						R.string.rbgServer_getTodoListReqParam_action));
-		_getTodoListPostHttpReqParam.put(
-				getResources().getString(
-						R.string.rbgServer_getIApproveReqParam_enterpriseId),
-				StringUtils.base64Encode(IAUserExtension
-						.getUserLoginEnterpriseId(_mLoginUser).toString()));
-		_getTodoListPostHttpReqParam.put(
-				getResources().getString(
-						R.string.rbgServer_getIApproveListReqParam_state),
-				getResources().getString(
-						R.string.rbgServer_getTodoListReqParam_state));
-		_getTodoListPostHttpReqParam.put(
-				getResources().getString(
-						R.string.rbgServer_getIApproveListReqParam_pageNum),
-				"1");
-
-		// send get to-do list post http request
-		HttpUtils.postRequest(getResources().getString(R.string.server_url)
-				+ getResources().getString(R.string.get_todoList_url),
-				PostRequestFormat.URLENCODED, _getTodoListPostHttpReqParam,
-				null, HttpRequestType.ASYNCHRONOUS,
-				new GetTodoListPostHttpRequestListener(
-						GetTodoListType.GET_FIRST));
-	}
+	// // refresh to-do list with changed user enterprise flag
+	// private void refreshTodoList(Boolean changeUserEnterprise) {
+	// // to-do list data fetching
+	// _mDataFetching = true;
+	//
+	// // check changed user enterprise flag
+	// if (changeUserEnterprise) {
+	// // show user enterprise to-do list change process dialog
+	// _mUserEnterpriseTodoListChangeProgDlg = ProgressDialog
+	// .show(TodoListTabContentActivity.this,
+	// null,
+	// getString(R.string.tdl_userEnterpriseChange_progDlg_message),
+	// true);
+	// } else {
+	// // update title
+	// setTitle(_mTitleView.generateTitleView());
+	// }
+	//
+	// // get to-do list
+	// // generate get to-do list post http request param
+	// Map<String, String> _getTodoListPostHttpReqParam = HttpRequestParamUtils
+	// .genUserSigHttpReqParam();
+	//
+	// // put get to-do list action, user enterprise id, state and page
+	// // number in
+	// _getTodoListPostHttpReqParam.put(
+	// getResources().getString(
+	// R.string.rbgServer_commonReqParam_action),
+	// getResources().getString(
+	// R.string.rbgServer_getTodoListReqParam_action));
+	// _getTodoListPostHttpReqParam.put(
+	// getResources().getString(
+	// R.string.rbgServer_getIApproveReqParam_enterpriseId),
+	// StringUtils.base64Encode(IAUserExtension
+	// .getUserLoginEnterpriseId(_mLoginUser).toString()));
+	// _getTodoListPostHttpReqParam.put(
+	// getResources().getString(
+	// R.string.rbgServer_getIApproveListReqParam_state),
+	// getResources().getString(
+	// R.string.rbgServer_getTodoListReqParam_state));
+	// // _getTodoListPostHttpReqParam.put(
+	// // getResources().getString(
+	// // R.string.rbgServer_getIApproveListReqParam_pageNum),
+	// // "1");
+	//
+	// // send get to-do list post http request
+	// HttpUtils.postRequest(getResources().getString(R.string.server_url)
+	// + getResources().getString(R.string.get_todoList_url),
+	// PostRequestFormat.URLENCODED, _getTodoListPostHttpReqParam,
+	// null, HttpRequestType.ASYNCHRONOUS,
+	// new GetTodoListPostHttpRequestListener(
+	// GetTodoListType.GET_FIRST));
+	// }
 
 	// close user enterprise to-do list change process dialog
 	private void closeUserEnterpriseTodoListChangeProgDlg() {
@@ -289,8 +283,8 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 											.name(), _selectedEnterpriseId);
 				}
 
-				// refresh to-do list
-				refreshTodoList(true);
+				// // refresh to-do list
+				// refreshTodoList(true);
 			}
 
 			@Override
@@ -298,6 +292,18 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 				// nothing to do
 			}
 
+		}
+
+	}
+
+	// new approve application bar button item on click listener
+	class NewApproveApplicationBarBtnItemOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// generate new approve application
+			new NewApproveApplicationGenerator().genNewApproveApplication(null);
 		}
 
 	}
@@ -399,7 +405,7 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 									_respJsonData,
 									getResources()
 											.getString(
-													R.string.rbgServer_getIApproveListReqResp_list));
+													R.string.rbgServer_getIApproveListReqResp_taskList));
 
 					if (null != _todoListJsonArray) {
 						Log.d(LOG_TAG, "Get to-do list successful");

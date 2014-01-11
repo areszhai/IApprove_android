@@ -26,12 +26,38 @@
     <!-- iApprove list common -->
     <string name="rbgServer_getIApproveListReqParam_state" translatable="false">state</string>
     <string name="rbgServer_getIApproveListReqParam_pageNum" translatable="false">strpage</string>
-    <string name="rbgServer_getIApproveListReqResp_list" translatable="false">processinfoMobileList</string>
+    <string name="rbgServer_getIApproveListReqResp_taskList" translatable="false">processinfoMobileList</string>
     <string name="rbgServer_getIApproveListReqResp_hasNext" translatable="false">hasNext</string>
+    <string name="rbgServer_getIApproveListReqResp_task_id" translatable="false">id</string>
+    <string name="rbgServer_getIApproveListReqResp_task_title" translatable="false">title</string>
+    <string name="rbgServer_getIApproveListReqResp_task_applicantName" translatable="false">username</string>
+    <string name="rbgServer_getIApproveListReqResp_task_senderFakeId" translatable="false">interflowid</string>
+    <string name="rbgServer_getIApproveListReqResp_task_state" translatable="false">state</string>
+    <string name="rbgServer_getIApproveListReqResp_task_endedState" translatable="false">0</string>
+    <string name="rbgServer_getIApproveListReqResp_task_goingState" translatable="false">1</string>
+    <string name="rbgServer_getIApproveListReqResp_task_adviceList" translatable="false">processRecordInfoList</string>
+    <string name="rbgServer_getIApproveListReqResp_task_advice_advisorName" translatable="false">username</string>
+    <string name="rbgServer_getIApproveListReqResp_task_advice_state" translatable="false">examine</string>
+    <string name="rbgServer_getIApproveListReqResp_task_advice_agreedState" translatable="false">1</string>
+    <string name="rbgServer_getIApproveListReqResp_task_advice_disAgreedstate" translatable="false">0</string>
+    <string name="rbgServer_getIApproveListReqResp_task_advice_adviceList" translatable="false">opinionInfoList</string>
+    <string name="rbgServer_getIApproveListReqResp_task_advice_adviceContent" translatable="false">tProcessTextinfo</string>
+    <string name="rbgServer_getIApproveListReqResp_task_advice_adviceContentInfo" translatable="false">content</string>
+    <string name="rbgServer_getIApproveListReqResp_task_advice_adviceGivenTimestamp" translatable="false">datetime</string>
+
+    <!-- iApprove list task form info common -->
+    <string name="rbgServer_getIApproveListTaskFormInfoReqParam_action" translatable="false">getInfoDetail</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskId" translatable="false">infoid</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskSenderFakeId" translatable="false">interflowid</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskStatus" translatable="false">interflowdetailstate</string>
 
     <!-- to-do list -->
-    <string name="rbgServer_getTodoListReqParam_action" translatable="false">getProcessInfo</string>
-    <string name="rbgServer_getTodoListReqParam_state" translatable="false">1</string>
+    <string name="rbgServer_getUserEnterpriseTodoListTaskReqParam_action" translatable="false">getAllProcessInfo</string>
+    <string name="rbgServer_getUserEnterpriseTodoListTaskReqParam_state" translatable="false">1</string>
+    <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_status" translatable="false">interflowdetailstate</string>
+    <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_unreadStatus" translatable="false">0</string>
+    <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_readStatus" translatable="false">1</string>
+    <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_submitTimestamp" translatable="false">datetime</string>
 
     <!-- checked list -->
     <string name="rbgServer_getCheckedListReqParam_action" translatable="false">getProcessInfo</string>
@@ -86,8 +112,8 @@
     <string name="rbgServer_getEnterpriseFormInfoReqResp_item_dateType" translatable="false">date</string>
     <string name="rbgServer_getEnterpriseFormInfoReqResp_item_spinnerType" translatable="false">select</string>
     <string name="rbgServer_getEnterpriseFormInfoReqResp_item_mustWriteFlag" translatable="false">mustfill</string>
-    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_mustnotWrite" translatable="false">0</string>
-    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_mustWrite" translatable="false">2</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_mustnotWrite" translatable="false">2</string>
+    <string name="rbgServer_getEnterpriseFormInfoReqResp_item_mustWrite" translatable="false">1</string>
     <string name="rbgServer_getEnterpriseFormInfoReqResp_item_capitalFlag" translatable="false">capital</string>
     <string name="rbgServer_getEnterpriseFormInfoReqResp_item_notCapital" translatable="false">0</string>
     <string name="rbgServer_getEnterpriseFormInfoReqResp_item_capital" translatable="false">1</string>

@@ -453,10 +453,10 @@ public class EnterpriseABContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseABTableAccessType {
 
 		// enterprise address book table access type
-		private static final int EMPLOYEES = 30;
-		private static final int EMPLOYEE = 31;
-		private static final int EMPLOYEE_ID = 32;
-		private static final int EMPLOYEE_ENTERPRISEID = 33;
+		private static final int EMPLOYEES = 40;
+		private static final int EMPLOYEE = 41;
+		private static final int EMPLOYEE_ID = 42;
+		private static final int EMPLOYEE_ENTERPRISEID = 43;
 
 	}
 

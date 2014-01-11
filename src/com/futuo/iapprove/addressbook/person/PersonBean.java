@@ -305,6 +305,7 @@ public class PersonBean implements Serializable {
 		this.note = note;
 	}
 
+	// comparable compare to
 	public int compareTo(PersonBean another) {
 		int _result = -1;
 
@@ -371,6 +372,12 @@ public class PersonBean implements Serializable {
 		}
 
 		return _result;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString();
 	}
 
 }

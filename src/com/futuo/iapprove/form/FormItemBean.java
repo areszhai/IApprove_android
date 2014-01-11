@@ -49,7 +49,7 @@ public class FormItemBean implements Comparable<FormItemBean>, Serializable {
 	public FormItemBean() {
 		super();
 
-		// set default type, must write flag, capital flag and
+		// set default type, must write flag and capital flag
 		itemType = FormItemType.TEXTEDIT_TEXT;
 		mustWrite = true;
 		capital = false;

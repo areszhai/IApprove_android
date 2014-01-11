@@ -51,7 +51,7 @@ public class GetEnterpriseABTask extends CoreServiceTask {
 
 				// check cursor
 				if (null != _cursor) {
-					// get and check employee address book contacts count
+					// get and check address book contacts count
 					while (_cursor.moveToNext()) {
 						if (0 == _cursor.getLong(_cursor
 								.getColumnIndex(Employee._COUNT))) {
@@ -293,11 +293,11 @@ public class GetEnterpriseABTask extends CoreServiceTask {
 
 							// delete the local storage enterprise address book
 							// contact for synchronizing
-							for (Long _localStorageEABContactUseId : _localStorageEABContactsUserIdAndBeanMap
+							for (Long _localStorageEABContactUserId : _localStorageEABContactsUserIdAndBeanMap
 									.keySet()) {
 								// get the for deleting address book contact
 								ABContactBean _4deletingABContact = _localStorageEABContactsUserIdAndBeanMap
-										.get(_localStorageEABContactUseId);
+										.get(_localStorageEABContactUserId);
 
 								// check its data dirty type
 								if (LocalStorageDataDirtyType.DELETE == _4deletingABContact

@@ -120,8 +120,8 @@
             android:authorities="com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider"
             android:exported="false" />
         <provider
-            android:name=".provider.EnterpriseTodoTaskContentProvider"
-            android:authorities="com.futuo.iapprove.provider.EnterpriseTodoTaskContentProvider"
+            android:name=".provider.UserEnterpriseTodoListTaskContentProvider"
+            android:authorities="com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider"
             android:exported="false" />
         <provider
             android:name=".provider.EnterpriseABContentProvider"
