@@ -205,8 +205,23 @@ public class TodoTaskBean extends IApproveTaskBean implements
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
+		// define description
+		StringBuilder _description = new StringBuilder();
+
+		// append user enterprise to-do list task row id, task id, title,
+		// applicant name, sender fake id, is ended flag, advices, task status
+		// and submit timestamp
+		_description.append("User enterprise to-do list task row id = ")
+				.append(rowId).append(", ").append("task id = ").append(taskId)
+				.append(", ").append("title = ").append(taskTitle).append(", ")
+				.append("applicant name = ").append(applicantName).append(", ")
+				.append("sender fake id = ").append(senderFakeId).append(", ")
+				.append("is ended = ").append(ended).append(", ")
+				.append("advices = ").append(advices).append(", ")
+				.append("task status = ").append(taskStatus).append(" and ")
+				.append("submit timestamp = ").append(submitTimestamp);
+
+		return _description.toString();
 	}
 
 	// get to-do list task advice list with advisor ids, names, advice states,
@@ -246,20 +261,20 @@ public class TodoTaskBean extends IApproveTaskBean implements
 								TodoTask.ADVICE_SEPARATOR));
 				_adviceCount = Math.max(_adviceCount, _advisorNameList.size());
 			}
-			if (null != advisorIds) {
+			if (null != adviceStates) {
 				_adviceStateList = (List<String>) CommonUtils
 						.array2List(StringUtils.split(adviceStates,
 								TodoTask.ADVICE_SEPARATOR));
 				_adviceCount = Math.max(_adviceCount, _adviceStateList.size());
 			}
-			if (null != advisorIds) {
+			if (null != adviceContents) {
 				_adviceContentList = (List<String>) CommonUtils
 						.array2List(StringUtils.split(adviceContents,
 								TodoTask.ADVICE_SEPARATOR));
 				_adviceCount = Math
 						.max(_adviceCount, _adviceContentList.size());
 			}
-			if (null != advisorIds) {
+			if (null != adviceGivenTimestamps) {
 				_adviceGivenTimestampList = (List<String>) CommonUtils
 						.array2List(StringUtils.split(adviceGivenTimestamps,
 								TodoTask.ADVICE_SEPARATOR));
@@ -281,8 +296,9 @@ public class TodoTaskBean extends IApproveTaskBean implements
 				}
 				if (null != _adviceStateList) {
 					// set advice agreed
-					_todoTaskAdvice.setAgreed(Boolean
-							.parseBoolean(_adviceStateList.get(i)));
+					_todoTaskAdvice
+							.setAgreed(0 == Short.parseShort(_adviceStateList
+									.get(i)) ? false : true);
 				}
 				if (null != _adviceContentList) {
 					// get and check advice content value

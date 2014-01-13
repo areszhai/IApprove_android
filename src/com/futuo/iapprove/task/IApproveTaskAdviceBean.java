@@ -27,9 +27,6 @@ public class IApproveTaskAdviceBean implements
 	private static final String LOG_TAG = IApproveTaskAdviceBean.class
 			.getCanonicalName();
 
-	// application context
-	protected transient Context _mAppContext;
-
 	// advisor id, advisor name, is agreed flag, advice and advice given
 	// timestamp
 	private Long advisorId;
@@ -40,9 +37,6 @@ public class IApproveTaskAdviceBean implements
 
 	public IApproveTaskAdviceBean() {
 		super();
-
-		// get application context
-		_mAppContext = CTApplication.getContext();
 
 		// set default is agreed flag and advice given timestamp
 		agreed = false;
@@ -55,6 +49,9 @@ public class IApproveTaskAdviceBean implements
 
 		// check task advice JSON object
 		if (null != taskAdviceJSONObject) {
+			// get application context
+			Context _appContext = CTApplication.getContext();
+
 			// set iApprove task advice attributes
 			// advisor id
 			try {
@@ -71,7 +68,7 @@ public class IApproveTaskAdviceBean implements
 			advisorName = JSONUtils
 					.getStringFromJSONObject(
 							taskAdviceJSONObject,
-							_mAppContext
+							_appContext
 									.getResources()
 									.getString(
 											R.string.rbgServer_getIApproveListReqResp_task_advice_advisorName));
@@ -83,19 +80,19 @@ public class IApproveTaskAdviceBean implements
 						.parseInt(JSONUtils
 								.getStringFromJSONObject(
 										taskAdviceJSONObject,
-										_mAppContext
+										_appContext
 												.getResources()
 												.getString(
 														R.string.rbgServer_getIApproveListReqResp_task_advice_state)));
 				if (Integer
-						.parseInt(_mAppContext
+						.parseInt(_appContext
 								.getResources()
 								.getString(
 										R.string.rbgServer_getIApproveListReqResp_task_advice_disAgreedstate)) == _stateValue
 						.intValue()) {
 					agreed = false;
 				} else if (Integer
-						.parseInt(_mAppContext
+						.parseInt(_appContext
 								.getResources()
 								.getString(
 										R.string.rbgServer_getIApproveListReqResp_task_advice_agreedState)) == _stateValue
@@ -115,7 +112,7 @@ public class IApproveTaskAdviceBean implements
 			JSONArray _adviceList = JSONUtils
 					.getJSONArrayFromJSONObject(
 							taskAdviceJSONObject,
-							_mAppContext
+							_appContext
 									.getResources()
 									.getString(
 											R.string.rbgServer_getIApproveListReqResp_task_advice_adviceList));
@@ -128,7 +125,7 @@ public class IApproveTaskAdviceBean implements
 				JSONObject _adviceContentObject = JSONUtils
 						.getJSONObjectFromJSONObject(
 								_adviceObject,
-								_mAppContext
+								_appContext
 										.getResources()
 										.getString(
 												R.string.rbgServer_getIApproveListReqResp_task_advice_adviceContent));
@@ -137,7 +134,7 @@ public class IApproveTaskAdviceBean implements
 					advice = JSONUtils
 							.getStringFromJSONObject(
 									_adviceContentObject,
-									_mAppContext
+									_appContext
 											.getResources()
 											.getString(
 													R.string.rbgServer_getIApproveListReqResp_task_advice_adviceContentInfo));
@@ -149,7 +146,7 @@ public class IApproveTaskAdviceBean implements
 						.longDateString2Date(JSONUtils
 								.getStringFromJSONObject(
 										_adviceObject,
-										_mAppContext
+										_appContext
 												.getResources()
 												.getString(
 														R.string.rbgServer_getIApproveListReqResp_task_advice_adviceGivenTimestamp)));
@@ -256,9 +253,28 @@ public class IApproveTaskAdviceBean implements
 	}
 
 	@Override
+	public boolean equals(Object another) {
+		// iApprove task advice bean equals
+		return 0 == compareTo((IApproveTaskAdviceBean) another) ? true : false;
+	}
+
+	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
+		// define description
+		StringBuilder _description = new StringBuilder();
+
+		// append user enterprise iApprove task advice advisor id, name, is
+		// agreed flag, advice content and advice given timestamp
+		_description
+				.append("User enterprise iApprove task advice advisor id = ")
+				.append(advisorId).append(", ").append("advisor name = ")
+				.append(advisorName).append(", ").append("is agreed = ")
+				.append(agreed).append(", ").append("advice content = ")
+				.append(advice).append(" and ")
+				.append("advice given timestamp = ")
+				.append(adviceGivenTimestamp);
+
+		return _description.toString();
 	}
 
 	// get iApprove task advice list with JSON object
@@ -282,8 +298,8 @@ public class IApproveTaskAdviceBean implements
 									.getResources()
 									.getString(
 											R.string.rbgServer_getIApproveListReqResp_task_adviceList));
-			if (null != _taskAdvices) {
-				for (int i = 0; i < _taskAdvices.size(); i++) {
+			if (null != _taskAdviceList) {
+				for (int i = 0; i < _taskAdviceList.length(); i++) {
 					// get, check task each advice and then add the advice for
 					// the task
 					IApproveTaskAdviceBean _taskAdvice = new IApproveTaskAdviceBean(

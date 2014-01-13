@@ -528,7 +528,7 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 			public static final String APPLICANTNAME = "applicantName";
 			public static final String SENDERFAKEID = "taskSenderFakeId";
 			public static final String TASK_STATUS = "taskStatus";
-			public static final String SUBMITTIMESTAMP = "taskSubmitTimeStamp";
+			public static final String SUBMITTIMESTAMP = "taskSubmitTimestamp";
 
 			public static final String ADVISOR_IDS = "advisorIds";
 			public static final String ADVISOR_NAMES = "advisorNames";

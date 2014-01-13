@@ -267,8 +267,20 @@ public class IApproveTaskBean implements Serializable {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
+		// define description
+		StringBuilder _description = new StringBuilder();
+
+		// append user enterprise iApprove task id, title, applicant name,
+		// sender fake id, is ended flag and advices
+		_description.append("User enterprise iApprove task id = ")
+				.append(taskId).append(", ").append("title = ")
+				.append(taskTitle).append(", ").append("applicant name = ")
+				.append(applicantName).append(", ").append("sender fake id = ")
+				.append(senderFakeId).append(", ").append("is ended = ")
+				.append(ended).append(" and ").append("advices = ")
+				.append(advices);
+
+		return _description.toString();
 	}
 
 }
