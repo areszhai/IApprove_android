@@ -50,6 +50,13 @@
     <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskId" translatable="false">infoid</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskSenderFakeId" translatable="false">interflowid</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskStatus" translatable="false">interflowdetailstate</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_itemList" translatable="false">fieldlist</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_item_id" translatable="false">id</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_item_name" translatable="false">name</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_item_physicalName" translatable="false">physicsname</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_itemValueList" translatable="false">tablefieldvalue</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachmentList" translatable="false">fileinfolist</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_currentState" translatable="false">currentState</string>
 
     <!-- to-do list -->
     <string name="rbgServer_getUserEnterpriseTodoListTaskReqParam_action" translatable="false">getAllProcessInfo</string>

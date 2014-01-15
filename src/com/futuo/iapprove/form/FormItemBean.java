@@ -435,7 +435,7 @@ public class FormItemBean implements Comparable<FormItemBean>, Serializable {
 		return _selectorContentInfoList;
 	}
 
-	// get form item bean with JSON object
+	// get form item list with JSON object
 	public static List<FormItemBean> getFormItems(JSONObject formInfoJSONObject) {
 		List<FormItemBean> _formItems = null;
 

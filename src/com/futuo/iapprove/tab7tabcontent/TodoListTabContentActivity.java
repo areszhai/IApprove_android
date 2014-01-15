@@ -1,29 +1,41 @@
 package com.futuo.iapprove.tab7tabcontent;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import android.app.ProgressDialog;
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CursorAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
@@ -31,24 +43,24 @@ import com.futuo.iapprove.account.user.IAUserLocalStorageAttributes;
 import com.futuo.iapprove.account.user.UserEnterpriseBean;
 import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveTabContentActivity;
+import com.futuo.iapprove.customwidget.TodoTaskAdvice;
+import com.futuo.iapprove.form.FormBean;
 import com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider.EnterpriseProfiles.EnterpriseProfile;
+import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
+import com.futuo.iapprove.receiver.UserEnterpriseBroadcastReceiver;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationGenerator;
-import com.futuo.iapprove.tab7tabcontent.task.IApproveTaskAdapter;
+import com.futuo.iapprove.task.IApproveTaskAdviceBean;
+import com.futuo.iapprove.task.TodoTaskBean;
+import com.richitec.commontoolkit.customadapter.CTListCursorAdapter;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
 import com.richitec.commontoolkit.utils.DataStorageUtils;
-import com.richitec.commontoolkit.utils.HttpUtils;
-import com.richitec.commontoolkit.utils.HttpUtils.OnHttpRequestListener;
-import com.richitec.commontoolkit.utils.JSONUtils;
 
 public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 	private static final String LOG_TAG = TodoListTabContentActivity.class
 			.getCanonicalName();
-
-	// need to refresh to-do list flag
-	private Boolean _mNeed2RefreshTodoList;
 
 	// login user
 	private UserBean _mLoginUser;
@@ -56,11 +68,11 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 	// to-do list tab content view activity title view
 	private TodoListTabContentViewActivityTitleView _mTitleView;
 
-	// to-do list data fetching flag
-	private Boolean _mDataFetching;
+	// to-do list task list cursor adapter
+	private TodoListTaskListAdapter _mTodoListTaskListCursorAdapter;
 
-	// user enterprise to-do list change progress dialog
-	private ProgressDialog _mUserEnterpriseTodoListChangeProgDlg;
+	// user enterprise broadcast receiver
+	private TodoListTabUserEnterpriseBroadcastReceiver _mUserEnterpriseBroadcastReceiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +94,41 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 				R.drawable.img_new_approveapplication_barbtnitem,
 				new NewApproveApplicationBarBtnItemOnClickListener()));
 
-		//
+		// get to-do list task listView
+		ListView _todoListTaskListView = (ListView) findViewById(R.id.tdl_task_listView);
+
+		// set to-do list task list cursor adapter
+		_todoListTaskListView
+				.setAdapter(_mTodoListTaskListCursorAdapter = new TodoListTaskListAdapter(
+						this,
+						R.layout.todo_list_task_layout,
+						getContentResolver()
+								.query(ContentUris
+										.withAppendedId(
+												TodoTask.ENTERPRISE_CONTENT_URI,
+												IAUserExtension
+														.getUserLoginEnterpriseId(_mLoginUser)),
+										null,
+										TodoTask.USER_ENTERPRISETODOLISTTASKS_WITHLOGINNAME_CONDITION,
+										new String[] { _mLoginUser.getName() },
+										null),
+						new String[] {
+								TodoListTaskListAdapter.TASKTITLE7APPLICANT_KEY,
+								TodoListTaskListAdapter.TASKSUBMITTIMESTAMP_KEY,
+								TodoListTaskListAdapter.TASKAPPROVEADVICES_KEY },
+						new int[] { R.id.tdli_taskTitle7Applicant_textView,
+								R.id.tdli_taskSubmitTimestamp_textView,
+								R.id.tdli_taskAdvice_linearLayout }));
+
+		// set to-do list task listView on item click listener
+		_todoListTaskListView
+				.setOnItemClickListener(new TodoListTaskListViewOnItemClickListener());
+
+		// register user enterprise broadcast receiver
+		registerReceiver(
+				_mUserEnterpriseBroadcastReceiver = new TodoListTabUserEnterpriseBroadcastReceiver(),
+				new IntentFilter(
+						UserEnterpriseBroadcastReceiver.A_ENTERPRISECHANGE));
 	}
 
 	@Override
@@ -107,65 +153,15 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 		coreService.stopGetUserEnterpriseTodolistTask();
 	}
 
-	// // refresh to-do list with changed user enterprise flag
-	// private void refreshTodoList(Boolean changeUserEnterprise) {
-	// // to-do list data fetching
-	// _mDataFetching = true;
-	//
-	// // check changed user enterprise flag
-	// if (changeUserEnterprise) {
-	// // show user enterprise to-do list change process dialog
-	// _mUserEnterpriseTodoListChangeProgDlg = ProgressDialog
-	// .show(TodoListTabContentActivity.this,
-	// null,
-	// getString(R.string.tdl_userEnterpriseChange_progDlg_message),
-	// true);
-	// } else {
-	// // update title
-	// setTitle(_mTitleView.generateTitleView());
-	// }
-	//
-	// // get to-do list
-	// // generate get to-do list post http request param
-	// Map<String, String> _getTodoListPostHttpReqParam = HttpRequestParamUtils
-	// .genUserSigHttpReqParam();
-	//
-	// // put get to-do list action, user enterprise id, state and page
-	// // number in
-	// _getTodoListPostHttpReqParam.put(
-	// getResources().getString(
-	// R.string.rbgServer_commonReqParam_action),
-	// getResources().getString(
-	// R.string.rbgServer_getTodoListReqParam_action));
-	// _getTodoListPostHttpReqParam.put(
-	// getResources().getString(
-	// R.string.rbgServer_getIApproveReqParam_enterpriseId),
-	// StringUtils.base64Encode(IAUserExtension
-	// .getUserLoginEnterpriseId(_mLoginUser).toString()));
-	// _getTodoListPostHttpReqParam.put(
-	// getResources().getString(
-	// R.string.rbgServer_getIApproveListReqParam_state),
-	// getResources().getString(
-	// R.string.rbgServer_getTodoListReqParam_state));
-	// // _getTodoListPostHttpReqParam.put(
-	// // getResources().getString(
-	// // R.string.rbgServer_getIApproveListReqParam_pageNum),
-	// // "1");
-	//
-	// // send get to-do list post http request
-	// HttpUtils.postRequest(getResources().getString(R.string.server_url)
-	// + getResources().getString(R.string.get_todoList_url),
-	// PostRequestFormat.URLENCODED, _getTodoListPostHttpReqParam,
-	// null, HttpRequestType.ASYNCHRONOUS,
-	// new GetTodoListPostHttpRequestListener(
-	// GetTodoListType.GET_FIRST));
-	// }
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 
-	// close user enterprise to-do list change process dialog
-	private void closeUserEnterpriseTodoListChangeProgDlg() {
-		// check and dismiss user enterprise to-do list change process dialog
-		if (null != _mUserEnterpriseTodoListChangeProgDlg) {
-			_mUserEnterpriseTodoListChangeProgDlg.dismiss();
+		// release user enterprise broadcast receiver
+		if (null != _mUserEnterpriseBroadcastReceiver) {
+			unregisterReceiver(_mUserEnterpriseBroadcastReceiver);
+
+			_mUserEnterpriseBroadcastReceiver = null;
 		}
 	}
 
@@ -240,18 +236,10 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 		// generate title view
 		public View generateTitleView() {
-			// check to-do list data fetching
-			if (null != _mDataFetching && true == _mDataFetching) {
-				// hide title enterprises spinner and show title data fetching
-				// relativeLayout
-				_mTitleEnterprisesSpinner.setVisibility(View.GONE);
-				_mTitleDataFetchingRelativeLayout.setVisibility(View.VISIBLE);
-			} else {
-				// show title enterprises spinner and hide title data fetching
-				// relativeLayout
-				_mTitleEnterprisesSpinner.setVisibility(View.VISIBLE);
-				_mTitleDataFetchingRelativeLayout.setVisibility(View.GONE);
-			}
+			// show title enterprises spinner and hide title data fetching
+			// relativeLayout
+			_mTitleEnterprisesSpinner.setVisibility(View.VISIBLE);
+			_mTitleDataFetchingRelativeLayout.setVisibility(View.GONE);
 
 			return this;
 		}
@@ -308,140 +296,325 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 	}
 
-	// to-do task adapter
-	class TodoTaskAdapter extends IApproveTaskAdapter {
+	// to-do list task list adapter
+	class TodoListTaskListAdapter extends CTListCursorAdapter {
 
 		// to-do task adapter keys
-		public static final String TASKINFO7APPLICANT_KEY = "task info and applicant key";
+		public static final String TASKTITLE7APPLICANT_KEY = "task title and applicant key";
 		public static final String TASKSUBMITTIMESTAMP_KEY = "task submit timestamp key";
 		public static final String TASKAPPROVEADVICES_KEY = "task approve advices key";
 
-		public TodoTaskAdapter(Context context, List<Map<String, ?>> data,
-				int itemsLayoutResId, String[] dataKeys,
-				int[] itemsComponentResIds) {
-			super(context, data, itemsLayoutResId, dataKeys,
-					itemsComponentResIds);
+		public TodoListTaskListAdapter(Context context, int itemsLayoutResId,
+				Cursor c, String[] dataKeys, int[] itemsComponentResIds) {
+			super(context, itemsLayoutResId, c, dataKeys, itemsComponentResIds,
+					true);
 		}
 
-	}
+		@Override
+		protected void onContentChanged() {
+			// auto requery
+			super.onContentChanged();
 
-	// get to-do list type
-	enum GetTodoListType {
-
-		// get first and append more
-		GET_FIRST, APPEND_MORE
-
-	}
-
-	// get to-do list post http request listener
-	class GetTodoListPostHttpRequestListener extends OnHttpRequestListener {
-
-		// get to-do list type
-		private GetTodoListType _mGetTodoListType;
-
-		public GetTodoListPostHttpRequestListener(GetTodoListType type) {
-			super();
-
-			// save get to-do list type
-			_mGetTodoListType = type;
+			//
 		}
 
-		// done get to-do list
-		private void doneGetTodoList() {
-			// check get to-do list type
-			switch (_mGetTodoListType) {
-			case GET_FIRST:
-				// close user enterprise change process dialog
-				closeUserEnterpriseTodoListChangeProgDlg();
-
-				// finish data fetching
-				_mDataFetching = false;
-
-				// update title
-				setTitle(_mTitleView.generateTitleView());
-				break;
-
-			case APPEND_MORE:
-				//
-				break;
+		@Override
+		protected void appendCursorData(List<Object> data, Cursor cursor) {
+			// check the cursor
+			if (null != cursor) {
+				// get to-do list task bean and append to data list
+				data.add(new TodoTaskBean(cursor));
+			} else {
+				Log.e(LOG_TAG,
+						"Query user login enterprise to-do list all tasks error, cursor = "
+								+ cursor);
 			}
 		}
 
 		@Override
-		public void onFinished(HttpRequest request, HttpResponse response) {
-			// done get to-do list
-			doneGetTodoList();
+		protected Map<String, ?> recombinationData(String dataKey,
+				Object dataObject) {
+			// define return data map and the data value for key in data object
+			Map<String, Object> _dataMap = new HashMap<String, Object>();
+			Object _dataValue = null;
 
-			// get http response entity string
-			String _respEntityString = HttpUtils
-					.getHttpResponseEntityString(response);
+			// check data object and convert to to-do list task object
+			try {
+				// convert data object to to-do list task
+				TodoTaskBean _todoTaskObject = (TodoTaskBean) dataObject;
 
-			Log.d(LOG_TAG,
-					"Send get to-do list post http request successful, response entity string = "
-							+ _respEntityString);
-
-			// get and check http response entity string error json data
-			JSONObject _respJsonData = JSONUtils
-					.toJSONObject(_respEntityString);
-
-			if (null != _respJsonData) {
-				// get and check error message
-				String _errorMsg = JSONUtils.getStringFromJSONObject(
-						_respJsonData,
-						getResources().getString(
-								R.string.rbgServer_commonReqResp_error));
-
-				if (null != _errorMsg) {
-					Log.e(LOG_TAG,
-							"Get to-do list failed, response error message = "
-									+ _errorMsg);
-
-					Toast.makeText(TodoListTabContentActivity.this, _errorMsg,
-							Toast.LENGTH_SHORT).show();
+				// check data key and get data value for it
+				if (TASKTITLE7APPLICANT_KEY.equalsIgnoreCase(dataKey)) {
+					// title and applicant
+					_dataValue = String
+							.format(getResources()
+									.getString(
+											R.string.tdl_task_title7applicantName_format),
+									_todoTaskObject.getTaskTitle(),
+									_todoTaskObject.getApplicantName());
+				} else if (TASKSUBMITTIMESTAMP_KEY.equalsIgnoreCase(dataKey)) {
+					// submit timestamp
+					_dataValue = formatTodoTaskSubmitTime(_todoTaskObject
+							.getSubmitTimestamp());
+				} else if (TASKAPPROVEADVICES_KEY.equalsIgnoreCase(dataKey)) {
+					// submit timestamp
+					_dataValue = _todoTaskObject.getAdvices();
 				} else {
-					// get and check to-do list
-					JSONArray _todoListJsonArray = JSONUtils
-							.getJSONArrayFromJSONObject(
-									_respJsonData,
-									getResources()
-											.getString(
-													R.string.rbgServer_getIApproveListReqResp_taskList));
+					Log.e(LOG_TAG, "Recombination data error, data key = "
+							+ dataKey + " and data object = " + dataObject);
+				}
+			} catch (Exception e) {
+				Log.e(LOG_TAG,
+						"Convert data object to to-do list task bean object error, data = "
+								+ dataObject);
 
-					if (null != _todoListJsonArray) {
-						Log.d(LOG_TAG, "Get to-do list successful");
+				e.printStackTrace();
+			}
 
-						Log.d(LOG_TAG, "to-do list = " + _todoListJsonArray);
+			// put data value to map and return
+			_dataMap.put(dataKey, _dataValue);
+			return _dataMap;
+		}
 
-						//
-					} else {
-						Log.e(LOG_TAG,
-								"Get to-do list failed, response entity unrecognized");
+		@Override
+		protected void bindView(View view, Map<String, ?> dataMap,
+				String dataKey) {
+			// get item data object
+			Object _itemData = dataMap.get(dataKey);
 
-						Toast.makeText(TodoListTabContentActivity.this,
-								R.string.toast_requestResp_unrecognized,
-								Toast.LENGTH_SHORT).show();
+			// check view type
+			// textView
+			if (view instanceof TextView) {
+				// generate view text
+				SpannableString _viewNewText = new SpannableString(
+						null == _itemData ? "" : _itemData.toString());
+
+				// check data class name
+				if (_itemData instanceof SpannableString) {
+					_viewNewText.setSpan(new ForegroundColorSpan(Color.RED), 0,
+							_viewNewText.length(),
+							Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}
+
+				// set view text
+				((TextView) view).setText(_viewNewText);
+			} else if (view instanceof ImageView) {
+				try {
+					// define item data bitmap and convert item data to bitmap
+					Bitmap _itemDataBitmap = (Bitmap) _itemData;
+
+					// check and set imageView image
+					if (null != _itemDataBitmap) {
+						((ImageView) view).setImageBitmap(_itemDataBitmap);
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
+
+					Log.e(LOG_TAG,
+							"Convert item data to bitmap error, item data = "
+									+ _itemData);
+				}
+			} else if (view instanceof LinearLayout) {
+				try {
+					// define item data list and convert item data to list
+					@SuppressWarnings("unchecked")
+					List<IApproveTaskAdviceBean> _itemDataList = (List<IApproveTaskAdviceBean>) _itemData;
+
+					// check to-do list task advices
+					if (null != _itemDataList && !_itemDataList.isEmpty()) {
+						// show to-do list task advice parent view if needed
+						ViewGroup _todoTaskAdviceParentView = (ViewGroup) ((LinearLayout) view)
+								.getParent();
+						if (View.VISIBLE != _todoTaskAdviceParentView
+								.getVisibility()) {
+							_todoTaskAdviceParentView
+									.setVisibility(View.VISIBLE);
+						}
+
+						// remove all subviews from to-do list task advice
+						// linearLayout
+						((LinearLayout) view).removeAllViews();
+
+						for (int i = 0; i < _itemDataList.size(); i++) {
+							// generate new to-do list task advice
+							TodoTaskAdvice _newTodoTaskAdvice = TodoTaskAdvice
+									.generateTodoTaskAdvice(_itemDataList
+											.get(i));
+
+							// set it on click listener
+							_newTodoTaskAdvice
+									.setOnClickListener(new OnClickListener() {
+
+										@Override
+										public void onClick(View v) {
+											Log.d(LOG_TAG, "@@, view = " + v);
+										}
+
+									});
+
+							// add to to-do list task advice linearLayout
+							((LinearLayout) view).addView(_newTodoTaskAdvice);
+
+							// check index not the last
+							if (i != _itemDataList.size() - 1) {
+								// add to to-do list task advice separator
+								// linearLayout
+								((LinearLayout) view).addView(TodoTaskAdvice
+										.generateTodoTaskAdviceSeparator(),
+										new LayoutParams(
+												LayoutParams.WRAP_CONTENT,
+												LayoutParams.MATCH_PARENT));
+							}
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+
+					Log.e(LOG_TAG,
+							"Convert item data to list error, item data = "
+									+ _itemData);
+				}
+			} else {
+				Log.e(LOG_TAG, "Bind view error, view = " + view
+						+ " not recognized, data key = " + dataKey
+						+ " and data map = " + dataMap);
+			}
+		}
+
+		// format to-do list task submit time
+		private String formatTodoTaskSubmitTime(Long submitTimestamp) {
+			// define return string builder
+			StringBuilder _ret = new StringBuilder();
+
+			// to-do list task submit time day and time format, format timeStamp
+			final DateFormat _todoTaskSubmitTimeDayFormat = new SimpleDateFormat(
+					"yy-MM-dd", Locale.getDefault());
+			final DateFormat _todoTaskSubmitTimeTimeFormat = new SimpleDateFormat(
+					"HH:mm", Locale.getDefault());
+
+			// miliSceonds of day
+			final Long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000L;
+
+			// get current system time
+			Long _currentSystemTime = System.currentTimeMillis();
+
+			// compare current system time and submit timestamp
+			if (_currentSystemTime - submitTimestamp >= 0) {
+				// get today zero o'clock calendar instance
+				Calendar _todayZeroCalendarInstance = Calendar
+						.getInstance(Locale.getDefault());
+				_todayZeroCalendarInstance.set(Calendar.AM_PM, 0);
+				_todayZeroCalendarInstance.set(Calendar.HOUR, 0);
+				_todayZeroCalendarInstance.set(Calendar.MINUTE, 0);
+				_todayZeroCalendarInstance.set(Calendar.SECOND, 0);
+				_todayZeroCalendarInstance.set(Calendar.MILLISECOND, 0);
+
+				// get to-do list task submit timestamp calendar instance
+				Calendar _submitTimestampCalendarInstance = Calendar
+						.getInstance(Locale.getDefault());
+				_submitTimestampCalendarInstance
+						.setTimeInMillis(submitTimestamp);
+
+				// format day and time
+				if (_submitTimestampCalendarInstance
+						.before(_todayZeroCalendarInstance)) {
+					// get today zero o'clock and submit timestamp time
+					// different
+					Long _today7submitTimestampCalendarTimeDifferent = _todayZeroCalendarInstance
+							.getTimeInMillis()
+							- _submitTimestampCalendarInstance
+									.getTimeInMillis();
+
+					// check time different
+					if (_today7submitTimestampCalendarTimeDifferent <= MILLISECONDS_PER_DAY) {
+						_ret.append(_mContext
+								.getResources()
+								.getString(
+										R.string.tdl_task_yesterdaySubmit_submitTimestamp));
+					} else {
+						// get first day zero o'clock of week calendar instance
+						Calendar _firstDayOfWeekZeroCalendarInstance = Calendar
+								.getInstance(Locale.getDefault());
+						_firstDayOfWeekZeroCalendarInstance
+								.setTimeInMillis(_todayZeroCalendarInstance
+										.getTimeInMillis());
+						_firstDayOfWeekZeroCalendarInstance.set(
+								Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+
+						if (_submitTimestampCalendarInstance
+								.before(_firstDayOfWeekZeroCalendarInstance)) {
+							_ret.append(_todoTaskSubmitTimeDayFormat
+									.format(submitTimestamp));
+						} else {
+							_ret.append(_mContext
+									.getResources()
+									.getStringArray(
+											R.array.tdl_task_submitTimestamp_daysOfWeek)[_submitTimestampCalendarInstance
+									.get(Calendar.DAY_OF_WEEK) - 1]);
+						}
+					}
+				} else {
+					_ret.append(_todoTaskSubmitTimeTimeFormat
+							.format(submitTimestamp));
 				}
 			} else {
 				Log.e(LOG_TAG,
-						"Get to-do list failed, response entity unrecognized");
-
-				Toast.makeText(TodoListTabContentActivity.this,
-						R.string.toast_requestResp_unrecognized,
-						Toast.LENGTH_SHORT).show();
+						"Format to-do list task submit time error, submit timestamp greater than current system time");
 			}
+
+			return _ret.toString();
 		}
 
+	}
+
+	// to-do list task listView on item click listener
+	class TodoListTaskListViewOnItemClickListener implements
+			OnItemClickListener {
+
 		@Override
-		public void onFailed(HttpRequest request, HttpResponse response) {
-			// done get to-do list
-			doneGetTodoList();
+		public void onItemClick(AdapterView<?> todoListTaskListView,
+				View todoTaskItemContentView, int position, long id) {
+			Log.d(LOG_TAG,
+					"TodoListTaskListViewOnItemClickListener - to-do list task = "
+							+ _mTodoListTaskListCursorAdapter.getDataList()
+									.get(position));
 
-			Log.e(LOG_TAG, "Send get to-do list post http request failed");
+//			// define to-do list task approve application extra data map
+//						Map<String, Object> _extraMap = new HashMap<String, Object>();
+//
+//						// get the clicked form
+//						FormBean _clickedForm = (FormBean) _mEnterpriseFormListCursorAdapter
+//								.getDataList().get(position);
+		}
 
-			Toast.makeText(TodoListTabContentActivity.this,
-					R.string.toast_request_exception, Toast.LENGTH_SHORT)
-					.show();
+	}
+
+	// to-do list tab user enterprise broadcast receiver
+	class TodoListTabUserEnterpriseBroadcastReceiver extends
+			UserEnterpriseBroadcastReceiver {
+
+		@Override
+		public void onEnterpriseChange(Long newEnterpriseId) {
+			// get and check core service
+			CoreService _coreService = getCoreService();
+			if (null != _coreService) {
+				// force do on core service connected
+				onCoreServiceConnected(_coreService);
+			}
+
+			// need to change user enterprise to-do list task query cursor
+			// change user enterprise to-do list task query cursor
+			_mTodoListTaskListCursorAdapter
+					.changeCursor(getContentResolver()
+							.query(ContentUris
+									.withAppendedId(
+											TodoTask.ENTERPRISE_CONTENT_URI,
+											IAUserExtension
+													.getUserLoginEnterpriseId(_mLoginUser)),
+									null,
+									TodoTask.USER_ENTERPRISETODOLISTTASKS_WITHLOGINNAME_CONDITION,
+									new String[] { _mLoginUser.getName() },
+									null));
 		}
 
 	}

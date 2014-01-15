@@ -77,8 +77,7 @@ public class UserEnterpriseProfileContentProvider extends
 		Log.d(LOG_TAG, "Insert user enterprise profile with values = " + values);
 
 		// insert user enterprise profile into its local storage table and
-		// return new
-		// insert row id
+		// return new insert row id
 		long _newInsertRowId = _lswDB.insert(_insertTableName,
 				EnterpriseProfile._ID, values);
 

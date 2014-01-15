@@ -2,12 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp" >
+    android:background="@drawable/listview_item_bg"
+    android:descendantFocusability="blocksDescendants"
+    android:paddingBottom="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="12dp" >
 
     <ImageView
         android:id="@+id/tdli_detailInfo_imageView"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:contentDescription="@string/iapprove_listView_item_detailInfo_imageView_contentDescription"
@@ -24,6 +29,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_marginBottom="4dp"
             android:layout_weight="1" >
 
             <TextView
@@ -31,30 +37,38 @@
                 android:layout_width="64dp"
                 android:layout_height="fill_parent"
                 android:layout_alignParentRight="true"
-                android:gravity="center_vertical"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical|right"
                 android:singleLine="true"
-                android:text=""
                 android:textColor="@color/gray" />
 
             <TextView
-                android:id="@+id/tdli_taskInfo7Applicant_textView"
+                android:id="@+id/tdli_taskTitle7Applicant_textView"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/tdli_taskSubmitTimestamp_textView"
                 android:ellipsize="end"
-                android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text=""
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
         </RelativeLayout>
 
-        <com.futuo.iapprove.customwidget.ApproveAdviceListView
-            android:id="@+id/tdli_approveAdviceListView"
-            android:layout_width="fill_parent"
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:layout_weight="1" >
-        </com.futuo.iapprove.customwidget.ApproveAdviceListView>
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:scrollbars="none"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:id="@+id/tdli_taskAdvice_linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </HorizontalScrollView>
     </LinearLayout>
 
 </RelativeLayout>

@@ -80,9 +80,9 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 						new int[] { R.id.abc_avatar_imageView,
 								R.id.abc_name_textView }));
 
-		// set address book contact list on item click listener
+		// set address book contact listView on item click listener
 		_addressbookContactListView
-				.setOnItemClickListener(new ABContactListOnItemClickListener());
+				.setOnItemClickListener(new ABContactListViewOnItemClickListener());
 
 		// register user enterprise broadcast receiver
 		registerReceiver(
@@ -148,14 +148,14 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 			// auto requery
 			super.onContentChanged();
 
-//			// need to change enterprise address book query cursor change
-//			// enterprise address book query cursor
-//			_mABContactListCursorAdapter.changeCursor(getContentResolver()
-//					.query(ContentUris.withAppendedId(
-//							Employee.ENTERPRISE_CONTENT_URI, IAUserExtension
-//									.getUserLoginEnterpriseId(UserManager
-//											.getInstance().getUser())), null,
-//							null, null, null));
+			// // need to change enterprise address book query cursor change
+			// // enterprise address book query cursor
+			// _mABContactListCursorAdapter.changeCursor(getContentResolver()
+			// .query(ContentUris.withAppendedId(
+			// Employee.ENTERPRISE_CONTENT_URI, IAUserExtension
+			// .getUserLoginEnterpriseId(UserManager
+			// .getInstance().getUser())), null,
+			// null, null, null));
 		}
 
 		@Override
@@ -266,8 +266,8 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 
 	}
 
-	// address book contact list on item click listener
-	class ABContactListOnItemClickListener implements OnItemClickListener {
+	// address book contact listView on item click listener
+	class ABContactListViewOnItemClickListener implements OnItemClickListener {
 
 		@Override
 		public void onItemClick(AdapterView<?> abcontactListView,

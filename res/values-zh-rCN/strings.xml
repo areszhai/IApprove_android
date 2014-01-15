@@ -51,8 +51,16 @@
     <!-- to-do list tab content activity -->
     <string name="todoList_tab_title">未审批</string>
     <string name="tdl_taskSearch_editText_hint">搜索</string>
-    <string name="tdl_userEnterpriseChange_progDlg_message">企业切换中，请稍后&#8230;</string>
     <string name="tdlt_fetchingData_label">读取中&#8230;</string>
+    <string name="tdl_task_title7applicantName_format" formatted="false">%s（%s）</string>
+    <string name="tdl_task_yesterdaySubmit_submitTimestamp">昨天</string>
+    <string name="tdl_task_sundaySubmit_submitTimestamp">周日</string>
+    <string name="tdl_task_mondaySubmit_submitTimestamp">周一</string>
+    <string name="tdl_task_tuesdaySubmit_submitTimestamp">周二</string>
+    <string name="tdl_task_wednesdaySubmit_submitTimestamp">周三</string>
+    <string name="tdl_task_thursdaySubmit_submitTimestamp">周四</string>
+    <string name="tdl_task_fridaySubmit_submitTimestamp">周五</string>
+    <string name="tdl_task_saturdaySubmit_submitTimestamp">周六</string>
 
     <!-- address book tab content activity -->
     <string name="addressbook_tab7nav_title">通讯录</string>
@@ -72,6 +80,17 @@
     <string name="abcdi_phone_infoFormItem_label_format">%s电话</string>
     <string name="abcdi_email_infoFormItem_label">邮件</string>
     <string name="abcdi_new_approveApplication_button_title">申请审批</string>
+
+    <!-- popup window -->
+    <string name="common_popupWindow_cancelButton_title">取消</string>
+
+    <!-- address book contact more operation popup window -->
+    <string name="abcmospw_moreOperationSelect_modifyAliasOperationButton_title">修改备注名</string>
+
+    <!-- address book contact phone operation popup window -->
+    <string name="abcpospw_phoneOperationSelect_title_format">选择对 %d 的操作</string>
+    <string name="abcpospw_phoneOperationSelect_callOperationButton_title">呼叫</string>
+    <string name="abcpospw_phoneOperationSelect_smsOperationButton_title">短信息</string>
 
     <!-- history record tab content activity -->
     <string name="historyRecord_tab_title">记录</string>

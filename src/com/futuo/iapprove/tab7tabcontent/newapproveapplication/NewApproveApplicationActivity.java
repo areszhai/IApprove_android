@@ -145,7 +145,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		// set new approve application submit bar button item as right bar
 		// button item
 		setRightBarButtonItem(new IApproveImageBarButtonItem(this,
-				R.drawable.img_naa_submitbarbtnitem,
+				R.drawable.img_naa6tdta_submitbarbtnitem,
 				new NAASubmitBarBtnItemOnClickListener()));
 
 		// submit contact

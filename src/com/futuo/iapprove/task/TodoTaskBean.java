@@ -321,8 +321,8 @@ public class TodoTaskBean extends IApproveTaskBean implements
 			}
 		} else {
 			// set empty as default
-			Log.e(LOG_TAG, "To-do list task = " + this + " advices = "
-					+ _todoTaskAdviceList);
+			Log.e(LOG_TAG, "Get to-do list task = " + this
+					+ " advices error, advices = " + _todoTaskAdviceList);
 		}
 
 		return _todoTaskAdviceList;

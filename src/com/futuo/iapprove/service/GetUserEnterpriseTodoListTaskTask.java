@@ -15,8 +15,10 @@ import android.util.Log;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyType;
+import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskFormItems.TodoTaskFormItem;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
+import com.futuo.iapprove.task.IApproveTaskFormItemBean;
 import com.futuo.iapprove.task.TodoTaskBean;
 import com.futuo.iapprove.task.TodoTaskStatus;
 import com.futuo.iapprove.utils.HttpRequestParamUtils;
@@ -238,6 +240,38 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 								.toString()));
 
 		return _mGetUserEnterpriseTodoListTaskFormInfoPostHttpReqParam;
+	}
+
+	// get local storage user enterprise to-do list task form item task form
+	// item id as key and bean as value map
+	private Map<Long, IApproveTaskFormItemBean> getLocalStorageUETodoTaskFormItemsItemIdAndBeanMap(
+			Cursor cursor) {
+		Map<Long, IApproveTaskFormItemBean> _localStorageUETodoTaskFormItemsItemIdAndBeanMap = new HashMap<Long, IApproveTaskFormItemBean>();
+
+		// check the cursor
+		if (null != cursor) {
+			// set all local storage user enterprise to-do list task form item
+			// for deleting
+			while (cursor.moveToNext()) {
+				// get for deleting to-do list task form item
+				IApproveTaskFormItemBean _4deletingTodoTaskFormItem = IApproveTaskFormItemBean
+						.getTaskFormItem(cursor);
+
+				// set it for deleting
+				_4deletingTodoTaskFormItem
+						.setLocalStorageDataDirtyType(LocalStorageDataDirtyType.DELETE);
+
+				// put to-do task form item id and bean in
+				_localStorageUETodoTaskFormItemsItemIdAndBeanMap.put(
+						_4deletingTodoTaskFormItem.getItemId(),
+						_4deletingTodoTaskFormItem);
+			}
+
+			// close cursor
+			cursor.close();
+		}
+
+		return _localStorageUETodoTaskFormItemsItemIdAndBeanMap;
 	}
 
 	// inner class
@@ -516,8 +550,176 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 
 		@Override
 		public void onFinished(HttpRequest request, HttpResponse response) {
-			// TODO Auto-generated method stub
+			// get http response entity string
+			String _respEntityString = HttpUtils
+					.getHttpResponseEntityString(response);
 
+			Log.d(LOG_TAG,
+					"Send get user enterprise to-do list task form info post http request successful, response entity string = "
+							+ _respEntityString);
+
+			// get and check http response entity string error json data
+			final JSONObject _respJsonData = JSONUtils
+					.toJSONObject(_respEntityString);
+
+			if (null != _respJsonData) {
+				// get and check error message
+				String _errorMsg = JSONUtils.getStringFromJSONObject(
+						_respJsonData,
+						_mContext.getResources().getString(
+								R.string.rbgServer_commonReqResp_error));
+
+				if (null != _errorMsg) {
+					Log.e(LOG_TAG,
+							"Get enterprise form info failed, response error message = "
+									+ _errorMsg);
+				} else {
+					Log.d(LOG_TAG,
+							"Get user enterprise to-do list task form info successful");
+
+					// process user enterprise to-do list task form info in work
+					// thread
+					new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							// get login user name
+							String _loginUserName = UserManager.getInstance()
+									.getUser().getName();
+
+							// get local storage user enterprise to-do list task
+							// form items task form item id as key and bean as
+							// value map
+							Map<Long, IApproveTaskFormItemBean> _localStorageUETodoTaskFormItemsItemIdAndBeanMap = (Map<Long, IApproveTaskFormItemBean>) getLocalStorageUETodoTaskFormItemsItemIdAndBeanMap(_mContentResolver
+									.query(TodoTaskFormItem.TODOTASKFORMITEMS_CONTENT_URI,
+											null,
+											TodoTaskFormItem.USER_ENTERPRISETODOLISTTASK_FORMITEMS_WITHSENDERFAKEID7LOGINNAME_CONDITION,
+											new String[] {
+													_mEnterpriseId.toString(),
+													_mTaskSenderFakeId
+															.toString(),
+													_loginUserName }, null));
+
+							// define the to-do list task form item content
+							// values
+							ContentValues _todoTaskFormItemContentValues = new ContentValues();
+
+							// get and process to-do list task form items
+							for (IApproveTaskFormItemBean todoTaskFormItem : IApproveTaskFormItemBean
+									.getTaskFormItems(_respJsonData)) {
+								// clear the to-do list task form item content
+								// values
+								_todoTaskFormItemContentValues.clear();
+
+								// generate the to-do list task form item
+								// content values with item id, name and info
+								_todoTaskFormItemContentValues.put(
+										TodoTaskFormItem.ITEM_ID,
+										todoTaskFormItem.getItemId());
+								_todoTaskFormItemContentValues.put(
+										TodoTaskFormItem.NAME,
+										todoTaskFormItem.getItemName());
+								_todoTaskFormItemContentValues.put(
+										TodoTaskFormItem.INFO,
+										todoTaskFormItem.getItemInfo());
+
+								// append task form item form sender fake id,
+								// enterprise id and approve number
+								_todoTaskFormItemContentValues.put(
+										TodoTaskFormItem.SENDER_FAKEID,
+										_mTaskSenderFakeId.toString());
+								_todoTaskFormItemContentValues.put(
+										TodoTaskFormItem.ENTERPRISE_ID,
+										_mEnterpriseId);
+								_todoTaskFormItemContentValues.put(
+										TodoTaskFormItem.APPROVE_NUMBER,
+										_loginUserName);
+
+								// insert the to-do list task form item if not
+								// existed in local storage database or update
+								// if existed
+								if (!_localStorageUETodoTaskFormItemsItemIdAndBeanMap
+										.keySet().contains(
+												todoTaskFormItem.getItemId())) {
+									Log.d(LOG_TAG,
+											"The to-do list task form item = "
+													+ todoTaskFormItem
+													+ " for inserting into local storage database, its content values = "
+													+ _todoTaskFormItemContentValues);
+
+									_mContentResolver
+											.insert(TodoTaskFormItem.TODOTASKFORMITEM_CONTENT_URI,
+													_todoTaskFormItemContentValues);
+								} else {
+									// get for updating to-do list task form
+									// item
+									IApproveTaskFormItemBean _4updatingTodoTaskFormItem = _localStorageUETodoTaskFormItemsItemIdAndBeanMap
+											.get(todoTaskFormItem.getItemId());
+
+									// update local storage enterprise to-do
+									// list task form item normal
+									_4updatingTodoTaskFormItem
+											.setLocalStorageDataDirtyType(LocalStorageDataDirtyType.NORMAL);
+
+									// compare the got to-do list task form item
+									// with the for updating to-do list task
+									// form item
+									if (0 != todoTaskFormItem
+											.compareTo(_4updatingTodoTaskFormItem)) {
+										Log.d(LOG_TAG,
+												"The to-do list task form item whose id = "
+														+ _4updatingTodoTaskFormItem
+																.getItemId()
+														+ " for updating to local storage database, its content values = "
+														+ _todoTaskFormItemContentValues);
+
+										_mContentResolver.update(
+												ContentUris
+														.withAppendedId(
+																TodoTaskFormItem.TODOTASKFORMITEM_CONTENT_URI,
+																_4updatingTodoTaskFormItem
+																		.getRowId()),
+												_todoTaskFormItemContentValues,
+												null, null);
+									}
+								}
+							}
+
+							// delete the local storage enterprise to-do list
+							// task form item for synchronizing
+							for (Long _localStorageUETDTFISFormItemId : _localStorageUETodoTaskFormItemsItemIdAndBeanMap
+									.keySet()) {
+								// get the for deleting to-do list task form
+								// item
+								IApproveTaskFormItemBean _4deletingTodoTaskFormItem = _localStorageUETodoTaskFormItemsItemIdAndBeanMap
+										.get(_localStorageUETDTFISFormItemId);
+
+								// check its data dirty type
+								if (LocalStorageDataDirtyType.DELETE == _4deletingTodoTaskFormItem
+										.getLocalStorageDataDirtyType()) {
+									Log.d(LOG_TAG,
+											"The to-do list task form item whose id = "
+													+ _4deletingTodoTaskFormItem
+															.getItemId()
+													+ " will delete from local storage database");
+
+									_mContentResolver.delete(
+											ContentUris
+													.withAppendedId(
+															TodoTaskFormItem.TODOTASKFORMITEM_CONTENT_URI,
+															_4deletingTodoTaskFormItem
+																	.getRowId()),
+											null, null);
+								}
+							}
+						}
+
+					}).start();
+				}
+			} else {
+				Log.e(LOG_TAG,
+						"Get user enterprise to-do list task form info failed, response entity unrecognized");
+			}
 		}
 
 		@Override

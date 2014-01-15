@@ -519,7 +519,7 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 		// user enterprise to-do list task
 		public static final class TodoTask implements SimpleBaseColumns {
 
-			// user enterprise to-do list task content provider to-do task type
+			// user enterprise to-do list task content provider to-do task
 			// process data columns
 			public static final String TASK_ID = "taskId";
 			public static final String ENTERPRISE_ID = "enterpriseId";
@@ -625,7 +625,14 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 		// user enterprise to-do list task form item
 		public static final class TodoTaskFormItem implements SimpleBaseColumns {
 
-			//
+			// user enterprise to-do list task content provider to-do task form
+			// item process data columns
+			public static final String ITEM_ID = "taskFormItemId";
+			public static final String SENDER_FAKEID = "taskSenderFakeId";
+			public static final String ENTERPRISE_ID = "enterpriseId";
+			public static final String APPROVE_NUMBER = "approveNumber";
+			public static final String NAME = "taskFormItemName";
+			public static final String INFO = "taskFormItemInfo";
 
 			// content uri
 			private static final Uri TODOTASKFORMITEMS_NOTIFICATION_CONTENT_URI = Uri
@@ -642,6 +649,15 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 					+ TodoTaskFormItems.class.getCanonicalName();
 			private static final String TODOTASKFORMITEM_CONTENT_TYPE = "vnd.android.cursor.item/"
 					+ TodoTaskFormItems.class.getCanonicalName();
+
+			// user enterprise to-do list task form item condition
+			public static final String USER_ENTERPRISETODOLISTTASK_FORMITEMS_WITHSENDERFAKEID7LOGINNAME_CONDITION = ENTERPRISE_ID
+					+ "=?"
+					+ " and "
+					+ SENDER_FAKEID
+					+ "=?"
+					+ " and "
+					+ APPROVE_NUMBER + "=?";
 
 		}
 

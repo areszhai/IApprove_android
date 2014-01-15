@@ -63,6 +63,12 @@ public class IApproveTabContentActivity extends NavigationActivity {
 		}
 	}
 
+	// get core service
+	public CoreService getCoreService() {
+		return null != _mCoreServiceConnection ? _mCoreServiceConnection
+				.getCoreService() : null;
+	}
+
 	// set bind core service or not when on resume
 	protected boolean bindCoreServiceWhenOnResume() {
 		// default not need to bind core service when on resume
@@ -110,6 +116,11 @@ public class IApproveTabContentActivity extends NavigationActivity {
 
 			// core service on disconnected
 			onCoreServiceDisconnected(_mCoreService);
+		}
+
+		// get core service
+		public CoreService getCoreService() {
+			return _mCoreService;
 		}
 
 	}

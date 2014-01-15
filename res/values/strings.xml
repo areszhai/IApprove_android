@@ -77,8 +77,16 @@
     <string name="todoList_tab_tag" translatable="false">the to-do list tab</string>
     <string name="todoList_tab_title">To-do</string>
     <string name="tdl_taskSearch_editText_hint">Search</string>
-    <string name="tdl_userEnterpriseChange_progDlg_message">Enterprise changing, please wait&#8230;</string>
     <string name="tdlt_fetchingData_label">Fetching&#8230;</string>
+    <string name="tdl_task_title7applicantName_format" formatted="false">%s(%s)</string>
+    <string name="tdl_task_yesterdaySubmit_submitTimestamp">Yesterday</string>
+    <string name="tdl_task_sundaySubmit_submitTimestamp">Sunday</string>
+    <string name="tdl_task_mondaySubmit_submitTimestamp">Monday</string>
+    <string name="tdl_task_tuesdaySubmit_submitTimestamp">Tuesday</string>
+    <string name="tdl_task_wednesdaySubmit_submitTimestamp">Wednesday</string>
+    <string name="tdl_task_thursdaySubmit_submitTimestamp">Thursday</string>
+    <string name="tdl_task_fridaySubmit_submitTimestamp">Friday</string>
+    <string name="tdl_task_saturdaySubmit_submitTimestamp">Saturday</string>
 
     <!-- to-do task detail info activity -->
     <string name="title_activity_todo_task_detail_info" translatable="false">TodoTaskDetailInfoActivity</string>
@@ -108,6 +116,17 @@
     <string name="abcdi_phone_infoFormItem_label_format">%s phone</string>
     <string name="abcdi_email_infoFormItem_label">Email</string>
     <string name="abcdi_new_approveApplication_button_title">New approve application</string>
+
+    <!-- popup window -->
+    <string name="common_popupWindow_cancelButton_title">Cancel</string>
+
+    <!-- address book contact more operation popup window -->
+    <string name="abcmospw_moreOperationSelect_modifyAliasOperationButton_title">Modify alias</string>
+
+    <!-- address book contact phone operation popup window -->
+    <string name="abcpospw_phoneOperationSelect_title_format">Select operation with %d</string>
+    <string name="abcpospw_phoneOperationSelect_callOperationButton_title">Call</string>
+    <string name="abcpospw_phoneOperationSelect_smsOperationButton_title">SMS</string>
 
     <!-- history record tab content activity -->
     <string name="title_activity_history_record_tab_content" translatable="false">HistoryRecordTabContentActivity</string>

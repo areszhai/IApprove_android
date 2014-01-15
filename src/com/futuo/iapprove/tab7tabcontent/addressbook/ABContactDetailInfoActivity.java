@@ -6,9 +6,12 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -25,6 +28,8 @@ import com.futuo.iapprove.customwidget.CommonFormSeparator;
 import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationGenerator;
+import com.richitec.commontoolkit.customcomponent.CTPopupWindow;
+import com.richitec.commontoolkit.utils.CommonUtils;
 
 public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 
@@ -36,6 +41,16 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 
 	// address book contact bean
 	private ABContactBean _mABContactBean;
+
+	// address book contact more operation select popup window
+	private final ABContactMoreOperationSelectPopupWindow ABCONTACT_MOREOPERATION_SELECT_POPUPWINDOW = new ABContactMoreOperationSelectPopupWindow(
+			R.layout.abcontact_moreoperation_select_popupwindow_layout,
+			LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+
+	// address book contact phone operation select popup window
+	private final ABContactPhoneOperationSelectPopupWindow ABCONTACT_PHONEOPERATION_SELECT_POPUPWINDOW = new ABContactPhoneOperationSelectPopupWindow(
+			R.layout.abcontact_phoneoperation_select_popupwindow_layout,
+			LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -305,10 +320,67 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onClick(View moreBarBtnItem) {
-			Log.d(LOG_TAG, "More bar button item = " + moreBarBtnItem
-					+ " on click listener");
+			// show address book more operation select popup window
+			ABCONTACT_MOREOPERATION_SELECT_POPUPWINDOW.showAtLocation(
+					moreBarBtnItem, Gravity.CENTER, 0, 0);
+		}
 
-			//
+	}
+
+	// address book contact more operation select popup window
+	class ABContactMoreOperationSelectPopupWindow extends CTPopupWindow {
+
+		public ABContactMoreOperationSelectPopupWindow(int resource, int width,
+				int height) {
+			super(resource, width, height);
+		}
+
+		@Override
+		protected void bindPopupWindowComponentsListener() {
+			// bind address book contact more operation select modify alias and
+			// cancel button click listener
+			((Button) getContentView().findViewById(
+					R.id.abcmospw_moreOperationSelect_modifyAlias_button))
+					.setOnClickListener(new ABContactMoreOperationSelectModifyAliasBtnOnClickListener());
+			((Button) getContentView().findViewById(
+					R.id.abcmospw_moreOperationSelect_cancel_button))
+					.setOnClickListener(new ABContactMoreOperationSelectCancelBtnOnClickListener());
+		}
+
+		@Override
+		protected void resetPopupWindow() {
+			// nothing to do
+		}
+
+		// inner class
+		// address book contact more operation select modify alias button on
+		// click listener
+		class ABContactMoreOperationSelectModifyAliasBtnOnClickListener
+				implements OnClickListener {
+
+			@Override
+			public void onClick(View v) {
+				// dismiss address book contact more operation select popup
+				// window
+				dismiss();
+
+				//
+			}
+
+		}
+
+		// address book contact more operation select cancel button on click
+		// listener
+		class ABContactMoreOperationSelectCancelBtnOnClickListener implements
+				OnClickListener {
+
+			@Override
+			public void onClick(View v) {
+				// dismiss address book contact phone operation select popup
+				// window
+				dismiss();
+			}
+
 		}
 
 	}
@@ -318,10 +390,134 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onClick(View phoneInfoFormItem) {
-			Log.d(LOG_TAG, "Click phone = "
-					+ ((ABContactInfoFormItem) phoneInfoFormItem).getInfo());
+			// set address book contact operation phone number and show address
+			// book contact phone operation select popup window
+			ABCONTACT_PHONEOPERATION_SELECT_POPUPWINDOW
+					.setABContactOperationPhone(
+							Long.parseLong(((ABContactInfoFormItem) phoneInfoFormItem)
+									.getInfo())).showAtLocation(
+							phoneInfoFormItem, Gravity.CENTER, 0, 0);
+		}
 
-			//
+	}
+
+	// address book contact phone operation select popup window
+	class ABContactPhoneOperationSelectPopupWindow extends CTPopupWindow {
+
+		// address book contact operation phone number
+		private Long _mABContactOperationPhone;
+
+		// address book contact phone operation popup window title textView
+		private TextView _mABContactPhoneOperationPWTitleTextView;
+
+		public ABContactPhoneOperationSelectPopupWindow(int resource,
+				int width, int height) {
+			super(resource, width, height);
+
+			// get address book contact phone operation popup window title
+			// textView
+			_mABContactPhoneOperationPWTitleTextView = (TextView) getContentView()
+					.findViewById(
+							R.id.abcpospw_phoneOperationSelect_title_textView);
+		}
+
+		public ABContactPhoneOperationSelectPopupWindow setABContactOperationPhone(
+				Long abcontactOperationPhone) {
+			_mABContactOperationPhone = abcontactOperationPhone;
+
+			// update address book contact phone operation popup window title
+			// textView text
+			_mABContactPhoneOperationPWTitleTextView
+					.setText(String
+							.format(getResources()
+									.getString(
+											R.string.abcpospw_phoneOperationSelect_title_format),
+									abcontactOperationPhone));
+
+			return this;
+		}
+
+		@Override
+		protected void bindPopupWindowComponentsListener() {
+			// bind address book contact phone operation select call, sms and
+			// cancel button click listener
+			((Button) getContentView().findViewById(
+					R.id.abcpospw_phoneOperationSelect_call_button))
+					.setOnClickListener(new ABContactPhoneOperationSelectCallBtnOnClickListener());
+			((Button) getContentView().findViewById(
+					R.id.abcpospw_phoneOperationSelect_sms_button))
+					.setOnClickListener(new ABContactPhoneOperationSelectSMSBtnOnClickListener());
+			((Button) getContentView().findViewById(
+					R.id.abcpospw_phoneOperationSelect_cancel_button))
+					.setOnClickListener(new ABContactPhoneOperationSelectCancelBtnOnClickListener());
+		}
+
+		@Override
+		protected void resetPopupWindow() {
+			// nothing to do
+		}
+
+		// inner class
+		// address book contact phone operation select call button on click
+		// listener
+		class ABContactPhoneOperationSelectCallBtnOnClickListener implements
+				OnClickListener {
+
+			@Override
+			public void onClick(View v) {
+				// dismiss address book contact phone operation select popup
+				// window
+				dismiss();
+
+				// dial call
+				// define dial call intent
+				Intent _callIntent = new Intent(Intent.ACTION_CALL,
+						Uri.parse("tel:" + _mABContactOperationPhone));
+
+				// check dial call intent and start the activity
+				if (CommonUtils.isIntentAvailable(_callIntent)) {
+					startActivity(_callIntent);
+				}
+			}
+
+		}
+
+		// address book contact phone operation select sms button on click
+		// listener
+		class ABContactPhoneOperationSelectSMSBtnOnClickListener implements
+				OnClickListener {
+
+			@Override
+			public void onClick(View v) {
+				// dismiss address book contact phone operation select popup
+				// window
+				dismiss();
+
+				// send short message
+				// define send short message intent
+				Intent _smsIntent = new Intent(Intent.ACTION_SENDTO,
+						Uri.parse("smsto:" + _mABContactOperationPhone));
+
+				// check send short message intent and start the activity
+				if (CommonUtils.isIntentAvailable(_smsIntent)) {
+					startActivity(_smsIntent);
+				}
+			}
+
+		}
+
+		// address book contact phone operation select cancel button on click
+		// listener
+		class ABContactPhoneOperationSelectCancelBtnOnClickListener implements
+				OnClickListener {
+
+			@Override
+			public void onClick(View v) {
+				// dismiss address book contact phone operation select popup
+				// window
+				dismiss();
+			}
+
 		}
 
 	}
@@ -331,10 +527,22 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onClick(View phoneInfoFormItem) {
-			Log.d(LOG_TAG, "Click email = "
-					+ ((ABContactInfoFormItem) phoneInfoFormItem).getInfo());
+			// send email
+			// get the address book contact email address
+			String _email = ((ABContactInfoFormItem) phoneInfoFormItem)
+					.getInfo();
 
-			//
+			// define send email intent
+			Intent _emailIntent = new Intent(Intent.ACTION_SENDTO,
+					Uri.parse("mailto:" + _email));
+
+			// set ekail receiver address
+			_emailIntent.putExtra(Intent.EXTRA_EMAIL, _email);
+
+			// check send email intent and start the activity
+			if (CommonUtils.isIntentAvailable(_emailIntent)) {
+				startActivity(_emailIntent);
+			}
 		}
 
 	}

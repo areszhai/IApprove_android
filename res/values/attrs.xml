@@ -8,12 +8,4 @@
         <attr name="inputEditTextType" format="string" />
     </declare-styleable>
 
-    <!-- approve advice listView -->
-    <declare-styleable name="approve_advice_listview">
-        <attr name="dividerWidth" format="dimension" />
-        <attr name="android:divider" />
-        <attr name="android:requiresFadingEdge" />
-        <attr name="android:fadingEdgeLength" />
-    </declare-styleable>
-
 </resources>
