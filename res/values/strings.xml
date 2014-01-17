@@ -46,7 +46,7 @@
     <string name="naa_attachment_info_label">Attachment Info</string>
     <string name="naa_imageAttachment_imageView_contentDescription" translatable="false">new approve application image attachment imageView</string>
     <string name="naa_voiceAttachment_play_imageView_contentDescription" translatable="false">new approve application image attachment play imageView</string>
-    <string name="naa_voiceAttachment_voiceDuration_format">%d\"</string>
+    <string name="naa_voiceAttachment_voiceDuration_format" translatable="false">%d\"</string>
     <string name="naa_submitContact_label_textView_text">Recipient:</string>
     <string name="naa_add_submitContact_imageButton_contentDescription" translatable="false">new approve application add new submit contact imageButton</string>
     <string name="naa_textAudio_inputModeChange_imageButton_contentDescription" translatable="false">new approve application the text and audio attachment change imageButton</string>
@@ -88,8 +88,16 @@
     <string name="tdl_task_fridaySubmit_submitTimestamp">Friday</string>
     <string name="tdl_task_saturdaySubmit_submitTimestamp">Saturday</string>
 
-    <!-- to-do task detail info activity -->
-    <string name="title_activity_todo_task_detail_info" translatable="false">TodoTaskDetailInfoActivity</string>
+    <!-- to-do task approve activity -->
+    <string name="title_activity_todo_task_approve" translatable="false">TodoTaskApproveActivity</string>
+    <string name="tdta_form_info_label">Form Info</string>
+    <string name="tdta_attachment_info_label">Attachment Info</string>
+    <string name="tdta_advice_info_label">Advice Info</string>
+    <string name="tdta_submitContact_label_textView_text">Recipient:</string>
+    <string name="tdta_add_submitContact_imageButton_contentDescription" translatable="false">to-do list task approve add new submit contact imageButton</string>
+    <string name="tdta_adviceSwitch_onText">Agree</string>
+    <string name="tdta_adviceSwitch_offText">Disagree</string>
+    <string name="tdta_adviceSend_button_title">Send</string>
 
     <!-- address book tab content activity -->
     <string name="title_activity_addressbook_tab_content" translatable="false">AddressbookTabContentActivity</string>
@@ -115,13 +123,14 @@
     <string name="abcdi_department_infoFormItem_label">Department</string>
     <string name="abcdi_phone_infoFormItem_label_format">%s phone</string>
     <string name="abcdi_email_infoFormItem_label">Email</string>
+    <string name="abcdi_note_infoFormItem_label">What\'s up</string>
     <string name="abcdi_new_approveApplication_button_title">New approve application</string>
 
     <!-- popup window -->
     <string name="common_popupWindow_cancelButton_title">Cancel</string>
 
     <!-- address book contact more operation popup window -->
-    <string name="abcmospw_moreOperationSelect_modifyAliasOperationButton_title">Modify alias</string>
+    <string name="abcmospw_moreOperationSelect_aliasOperationButton_title">Alias</string>
 
     <!-- address book contact phone operation popup window -->
     <string name="abcpospw_phoneOperationSelect_title_format">Select operation with %d</string>
@@ -142,5 +151,46 @@
     <string name="title_activity_settings_tab_content" translatable="false">SettingsTabContentActivity</string>
     <string name="settings_tab_tag" translatable="false">settings tab</string>
     <string name="settings_tab7nav_title">Settings</string>
+    <string name="st_userProfileSetting_userAvatar_imageView_contentDescription" translatable="false">user profile setting user avatar imageView</string>
+    <string name="st_userProfileSetting_userApproveNumber_format">Approve ID: %d</string>
+    <string name="stfi_indicator_imageView_contentDescription" translatable="false">setting form item indicator imageView</string>
+    <string name="st_rateSettingFormItem_label">Rate iApprove</string>
+    <string name="st_supportSettingFormItem_label">Support</string>
+    <string name="st_feedbackSettingFormItem_label">Feedback</string>
+    <string name="st_aboutSettingFormItem_label">About</string>
+    <string name="st_check4updateSettingFormItem_label">Check for update</string>
+    <string name="st_user_logout_button_title">Logout</string>
+
+    <!-- user profile setting activity -->
+    <string name="title_activity_user_profile_setting" translatable="false">UserProfileSettingActivity</string>
+    <string name="userProfile_setting_nav_title">My profile</string>
+    <string name="upst_avatarSetting_userAvatar_label">Avatar</string>
+    <string name="upst_avatarSetting_userAvatar_imageView_contentDescription" translatable="false">avatar setting user avatar imageView</string>
+    <string name="upstfi_indicator_imageView_contentDescription" translatable="false">user profile setting form item indicator imageView</string>
+    <string name="upstfi_info_textView_hint">Not set</string>
+    <string name="upst_approveNumberUserProfileSettingFormItem_label">Approve ID</string>
+    <string name="upst_employeeNameUserProfileSettingFormItem_label">Employee name</string>
+    <string name="upst_sexUserProfileSettingFormItem_label">Sex</string>
+    <string name="upst_birthdayUserProfileSettingFormItem_label">Birthday</string>
+    <string name="upst_departmentUserProfileSettingFormItem_label">Department</string>
+    <string name="upst_mobilePhoneUserProfileSettingFormItem_label">Mobile phone</string>
+    <string name="upst_officePhoneUserProfileSettingFormItem_label">Office phone</string>
+    <string name="upst_emailUserProfileSettingFormItem_label">Email</string>
+    <string name="upst_noteUserProfileSettingFormItem_label">What\'s up</string>
+
+    <!-- support activity -->
+    <string name="title_activity_support" translatable="false">SupportActivity</string>
+
+    <!-- feedback activity -->
+    <string name="title_activity_feedback" translatable="false">FeedbackActivity</string>
+
+    <!-- about activity -->
+    <string name="title_activity_about" translatable="false">AboutActivity</string>
+
+    <!-- iApprove exit alert dialog -->
+    <string name="iApprove_exitAlertDialog_title">IApprove remind</string>
+    <string name="iApprove_exitAlertDialog_message">Are you sure to exit iApprove application?</string>
+    <string name="iApprove_exitAlertDialog_exitButton_title">Exit</string>
+    <string name="iApprove_exitAlertDialog_cancelButton_title">Cancel</string>
 
 </resources>

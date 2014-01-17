@@ -23,11 +23,6 @@ public class AccountLoginFormItem extends LinearLayout {
 	private static final String LOG_TAG = AccountLoginFormItem.class
 			.getCanonicalName();
 
-	// account login form item label, input editText hint and type
-	private String _mLabel;
-	private String _mInputEditTextHint;
-	private String _mInputEditTextType;
-
 	// account login form item input editText
 	private EditText _mInputEditText;
 
@@ -35,28 +30,32 @@ public class AccountLoginFormItem extends LinearLayout {
 			int defStyle) {
 		super(context, attrs, defStyle);
 
-		// init account login form item
-		init(context, attrs);
+		// initialize account login form item attributes
+		initAttrs(context, attrs);
 	}
 
 	public AccountLoginFormItem(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
-		// init account login form item
-		init(context, attrs);
+		// initialize account login form item attributes
+		initAttrs(context, attrs);
 	}
 
 	public AccountLoginFormItem(Context context) {
 		super(context);
 
-		// init account login form item
-		init(context, null);
+		// initialize account login form item attributes
+		initAttrs(context, null);
 	}
 
-	// initialize account login form item
-	private void init(Context context, AttributeSet attrs) {
-		// define account login form item typedArray
+	// initialize account login form item attributes
+	private void initAttrs(Context context, AttributeSet attrs) {
+		// define account login form item typedArray, label, input editText hint
+		// and type
 		TypedArray _typedArray = null;
+		String _label = null;
+		String _inputEditTextHint = null;
+		String _inputEditTextType = null;
 
 		try {
 			// get account login form item typedArray
@@ -65,12 +64,12 @@ public class AccountLoginFormItem extends LinearLayout {
 
 			// get account login form item label, input editText hint and input
 			// type attributes
-			_mLabel = _typedArray
-					.getString(R.styleable.account_login_form_item_label);
-			_mInputEditTextHint = _typedArray
-					.getString(R.styleable.account_login_form_item_inputEditTextHint);
-			_mInputEditTextType = _typedArray
-					.getString(R.styleable.account_login_form_item_inputEditTextType);
+			_label = _typedArray
+					.getString(R.styleable.account_login_form_item_alfi_label);
+			_inputEditTextHint = _typedArray
+					.getString(R.styleable.account_login_form_item_alfi_inputEditTextHint);
+			_inputEditTextType = _typedArray
+					.getString(R.styleable.account_login_form_item_alfi_inputEditTextType);
 		} catch (Exception e) {
 			Log.e(LOG_TAG,
 					"Get account login form item label, input editText hint and input type attributes error, exception massage = "
@@ -89,32 +88,31 @@ public class AccountLoginFormItem extends LinearLayout {
 				R.layout.account_login_form_item_layout, this);
 
 		// check account login form item label and set its text
-		if (null != _mLabel) {
+		if (null != _label) {
 			// set account login form item label textView text
-			((TextView) findViewById(R.id.alfi_label_textView))
-					.setText(_mLabel);
+			((TextView) findViewById(R.id.alfi_label_textView)).setText(_label);
 		}
 
 		// get account login form item input editText
 		_mInputEditText = (EditText) findViewById(R.id.alfi_input_editText);
 
 		// check account login form item input editText hint and set its hint
-		if (null != _mInputEditTextHint) {
+		if (null != _inputEditTextHint) {
 			// set account login form item input editText hint
-			_mInputEditText.setHint(_mInputEditTextHint);
+			_mInputEditText.setHint(_inputEditTextHint);
 		}
 
 		// check account login form item input editText input type and set its
 		// type
-		if (null != _mInputEditTextType) {
+		if (null != _inputEditTextType) {
 			// set account login form item input editText input type
-			if ("phone".equalsIgnoreCase(_mInputEditTextType)) {
+			if ("phone".equalsIgnoreCase(_inputEditTextType)) {
 				_mInputEditText.setInputType(InputType.TYPE_CLASS_PHONE);
-			} else if ("textPassword".equalsIgnoreCase(_mInputEditTextType)) {
+			} else if ("textPassword".equalsIgnoreCase(_inputEditTextType)) {
 				_mInputEditText.setInputType(InputType.TYPE_CLASS_TEXT
 						| InputType.TYPE_TEXT_VARIATION_PASSWORD);
 			} else {
-				Log.w(LOG_TAG, _mInputEditTextType + " setting not implement");
+				Log.w(LOG_TAG, _inputEditTextType + " setting not implement");
 
 				_mInputEditText.setInputType(InputType.TYPE_CLASS_TEXT);
 			}

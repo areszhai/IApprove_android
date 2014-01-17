@@ -653,11 +653,10 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 			// user enterprise to-do list task form item condition
 			public static final String USER_ENTERPRISETODOLISTTASK_FORMITEMS_WITHSENDERFAKEID7LOGINNAME_CONDITION = ENTERPRISE_ID
 					+ "=?"
-					+ " and "
+					+ _AND_SELECTION
 					+ SENDER_FAKEID
 					+ "=?"
-					+ " and "
-					+ APPROVE_NUMBER + "=?";
+					+ _AND_SELECTION + APPROVE_NUMBER + "=?";
 
 		}
 

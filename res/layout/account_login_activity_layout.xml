@@ -21,9 +21,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            iapprove:inputEditTextHint="@string/al_userLoginPhone_editText_hint"
-            iapprove:inputEditTextType="phone"
-            iapprove:label="@string/al_userLoginPhone_label" >
+            iapprove:alfi_inputEditTextHint="@string/al_userLoginPhone_editText_hint"
+            iapprove:alfi_inputEditTextType="phone"
+            iapprove:alfi_label="@string/al_userLoginPhone_label" >
         </com.futuo.iapprove.customwidget.AccountLoginFormItem>
 
         <com.futuo.iapprove.customwidget.CommonFormSeparator
@@ -35,9 +35,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            iapprove:inputEditTextHint="@string/al_userLoginPwd_editText_hint"
-            iapprove:inputEditTextType="textPassword"
-            iapprove:label="@string/al_userLoginPwd_label" >
+            iapprove:alfi_inputEditTextHint="@string/al_userLoginPwd_editText_hint"
+            iapprove:alfi_inputEditTextType="textPassword"
+            iapprove:alfi_label="@string/al_userLoginPwd_label" >
         </com.futuo.iapprove.customwidget.AccountLoginFormItem>
     </LinearLayout>
 

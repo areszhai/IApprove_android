@@ -3,15 +3,20 @@ package com.futuo.iapprove.customwidget;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 
 import com.futuo.iapprove.R;
+import com.futuo.iapprove.receiver.UserEnterpriseBroadcastReceiver;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.service.CoreService.LocalBinder;
 import com.richitec.commontoolkit.activityextension.NavigationActivity;
+import com.richitec.commontoolkit.user.UserBean;
+import com.richitec.commontoolkit.user.UserManager;
 
 public class IApproveTabContentActivity extends NavigationActivity {
 
@@ -20,6 +25,26 @@ public class IApproveTabContentActivity extends NavigationActivity {
 
 	// core service connection
 	private CoreServiceConnection _mCoreServiceConnection;
+
+	// iApprove tab user enterprise broadcast receiver
+	private IATabUserEnterpriseBroadcastReceiver _mUserEnterpriseBroadcastReceiver;
+
+	// login user
+	protected UserBean _mLoginUser;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		// get login user
+		_mLoginUser = UserManager.getInstance().getUser();
+
+		// register user enterprise broadcast receiver
+		registerReceiver(
+				_mUserEnterpriseBroadcastReceiver = new IATabUserEnterpriseBroadcastReceiver(),
+				new IntentFilter(
+						UserEnterpriseBroadcastReceiver.A_ENTERPRISECHANGE));
+	}
 
 	@Override
 	public void setContentView(int layoutResID) {
@@ -61,6 +86,13 @@ public class IApproveTabContentActivity extends NavigationActivity {
 		if (true == bindCoreServiceWhenOnResume()) {
 			getApplicationContext().unbindService(_mCoreServiceConnection);
 		}
+
+		// release user enterprise broadcast receiver
+		if (null != _mUserEnterpriseBroadcastReceiver) {
+			unregisterReceiver(_mUserEnterpriseBroadcastReceiver);
+
+			_mUserEnterpriseBroadcastReceiver = null;
+		}
 	}
 
 	// get core service
@@ -84,6 +116,11 @@ public class IApproveTabContentActivity extends NavigationActivity {
 	protected void onCoreServiceDisconnected(CoreService coreService) {
 		Log.d(LOG_TAG, "Core service on disconnected");
 	};
+
+	// on iApprove tab user enterprise changed
+	protected void onUserEnterpriseChanged(Long newEnterpriseId) {
+		Log.d(LOG_TAG, "On user enterprise changed");
+	}
 
 	// inner class
 	// core service connection
@@ -121,6 +158,18 @@ public class IApproveTabContentActivity extends NavigationActivity {
 		// get core service
 		public CoreService getCoreService() {
 			return _mCoreService;
+		}
+
+	}
+
+	// iApprove tab user enterprise broadcast receiver
+	class IATabUserEnterpriseBroadcastReceiver extends
+			UserEnterpriseBroadcastReceiver {
+
+		@Override
+		public void onEnterpriseChange(Long newEnterpriseId) {
+			// on iApprove tab user enterprise changed
+			onUserEnterpriseChanged(newEnterpriseId);
 		}
 
 	}

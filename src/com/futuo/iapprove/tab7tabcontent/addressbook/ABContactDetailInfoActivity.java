@@ -222,7 +222,10 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 			// set email
 			// generate office phone info form item
 			ABContactInfoFormItem _emailInfoFormItem = ABContactInfoFormItem
-					.generateABContactInfoFormItem("邮件", _emailValue);
+					.generateABContactInfoFormItem(
+							getResources().getString(
+									R.string.abcdi_email_infoFormItem_label),
+							_emailValue);
 
 			// set on click listener
 			_emailInfoFormItem
@@ -230,6 +233,18 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 
 			// add email info form item to linearLayout
 			addABContactInfoFormItem(_emailInfoFormItem, _infoFormLinearLayout);
+		}
+
+		// note
+		// get and check note value
+		String _noteValue = _mABContactBean.getNote();
+		if (null != _noteValue && !"".equalsIgnoreCase(_noteValue)) {
+			// set note
+			addABContactInfoFormItem(
+					ABContactInfoFormItem.generateABContactInfoFormItem(
+							getResources().getString(
+									R.string.abcdi_note_infoFormItem_label),
+							_noteValue), _infoFormLinearLayout);
 		}
 
 		// bind new approve application button on click listener
@@ -337,11 +352,11 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 
 		@Override
 		protected void bindPopupWindowComponentsListener() {
-			// bind address book contact more operation select modify alias and
-			// cancel button click listener
+			// bind address book contact more operation select alias and cancel
+			// button click listener
 			((Button) getContentView().findViewById(
-					R.id.abcmospw_moreOperationSelect_modifyAlias_button))
-					.setOnClickListener(new ABContactMoreOperationSelectModifyAliasBtnOnClickListener());
+					R.id.abcmospw_moreOperationSelect_alias_button))
+					.setOnClickListener(new ABContactMoreOperationSelectAliasBtnOnClickListener());
 			((Button) getContentView().findViewById(
 					R.id.abcmospw_moreOperationSelect_cancel_button))
 					.setOnClickListener(new ABContactMoreOperationSelectCancelBtnOnClickListener());
@@ -353,10 +368,10 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 		}
 
 		// inner class
-		// address book contact more operation select modify alias button on
-		// click listener
-		class ABContactMoreOperationSelectModifyAliasBtnOnClickListener
-				implements OnClickListener {
+		// address book contact more operation select alias button on click
+		// listener
+		class ABContactMoreOperationSelectAliasBtnOnClickListener implements
+				OnClickListener {
 
 			@Override
 			public void onClick(View v) {
@@ -364,6 +379,7 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 				// window
 				dismiss();
 
+				// set address book contact alias
 				//
 			}
 

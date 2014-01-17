@@ -153,13 +153,17 @@ public class PersonBean implements Serializable {
 			}
 
 			// note
-			note = JSONUtils
+			// get and check note value
+			String _noteValue = JSONUtils
 					.getStringFromJSONObject(
 							personJSONObject,
 							_mAppContext
 									.getResources()
 									.getString(
 											R.string.rbgServer_getEnterpriseABReqResp_employee_note));
+			if (null != _noteValue && !"null".equalsIgnoreCase(_noteValue)) {
+				note = _noteValue;
+			}
 		} else {
 			Log.e(LOG_TAG,
 					"New person with JSON object error, contact JSON object = "
@@ -316,49 +320,72 @@ public class PersonBean implements Serializable {
 						.equalsIgnoreCase(another.employeeName))) {
 			if ((null == sex && null == another.sex)
 					|| (null != sex && null != another.sex && sex == another.sex)) {
-				if ((null == department && null == another.department)
-						|| (null != department && null != another.department && department
-								.equalsIgnoreCase(another.department))) {
-					if ((null == mobilePhone && null == another.mobilePhone)
-							|| (null != mobilePhone
-									&& null != another.mobilePhone && mobilePhone
-									.longValue() == another.mobilePhone
-									.longValue())) {
-						if ((null == officePhone && null == another.officePhone)
-								|| (null != officePhone
-										&& null != another.officePhone && officePhone
-										.longValue() == another.officePhone
+				if ((null == birthday && null == another.birthday)
+						|| (null != birthday && null != birthday && birthday
+								.longValue() == another.birthday.longValue())) {
+					if ((null == department && null == another.department)
+							|| (null != department
+									&& null != another.department && department
+										.equalsIgnoreCase(another.department))) {
+						if ((null == mobilePhone && null == another.mobilePhone)
+								|| (null != mobilePhone
+										&& null != another.mobilePhone && mobilePhone
+										.longValue() == another.mobilePhone
 										.longValue())) {
-							if ((null == email && null == another.email)
-									|| (null != email && null != another.email && email
-											.equalsIgnoreCase(another.email))) {
-								_result = 0;
+							if ((null == officePhone && null == another.officePhone)
+									|| (null != officePhone
+											&& null != another.officePhone && officePhone
+											.longValue() == another.officePhone
+											.longValue())) {
+								if ((null == email && null == another.email)
+										|| (null != email
+												&& null != another.email && email
+													.equalsIgnoreCase(another.email))) {
+									if ((null == note && null == another.note)
+											|| (null != note
+													&& null != another.note && note
+														.equalsIgnoreCase(another.note))) {
+										_result = 0;
+									} else {
+										Log.d(LOG_TAG,
+												"Person note not equals, self note = "
+														+ note
+														+ " and another note = "
+														+ another.note);
+									}
+								} else {
+									Log.d(LOG_TAG,
+											"Person email not equals, self email = "
+													+ email
+													+ " and another email = "
+													+ another.email);
+								}
 							} else {
 								Log.d(LOG_TAG,
-										"Person email not equals, self email = "
-												+ email
-												+ " and another email = "
-												+ another.email);
+										"Person office phone not equals, self office phone = "
+												+ officePhone
+												+ " and another office phone = "
+												+ another.officePhone);
 							}
 						} else {
 							Log.d(LOG_TAG,
-									"Person office phone not equals, self office phone = "
-											+ officePhone
-											+ " and another office phone = "
-											+ another.officePhone);
+									"Person mobile phone not equals, self mobile phone = "
+											+ mobilePhone
+											+ " and another mobile phone = "
+											+ another.mobilePhone);
 						}
 					} else {
 						Log.d(LOG_TAG,
-								"Person mobile phone not equals, self mobile phone = "
-										+ mobilePhone
-										+ " and another mobile phone = "
-										+ another.mobilePhone);
+								"Person department not equals, self department = "
+										+ department
+										+ " and another department = "
+										+ another.department);
 					}
 				} else {
 					Log.d(LOG_TAG,
-							"Person department not equals, self department = "
-									+ department + " and another department = "
-									+ another.department);
+							"Person birthday not equals, self birthday = "
+									+ birthday + " and another birthday = "
+									+ another.birthday);
 				}
 			} else {
 				Log.d(LOG_TAG, "Person sex not equals, self sex = " + sex

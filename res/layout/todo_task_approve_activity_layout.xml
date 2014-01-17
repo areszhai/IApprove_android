@@ -1,0 +1,236 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".tab7tabcontent.task.TodoTaskApproveActivity" >
+
+    <RelativeLayout
+        android:id="@+id/tdta_footer_relativeLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="54dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/img_naa_bottomtoolbar_bg"
+        android:paddingBottom="4dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="4dp" >
+
+        <ToggleButton
+            android:id="@+id/tdta_adviceSwitch_toggleButton"
+            android:layout_width="66dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:textOff="@string/tdta_adviceSwitch_offText"
+            android:textOn="@string/tdta_adviceSwitch_onText" />
+
+        <RelativeLayout
+            android:id="@+id/tdta_advice_parent_relativeLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            android:layout_toRightOf="@id/tdta_adviceSwitch_toggleButton"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp" >
+
+            <Button
+                android:id="@+id/tdta_advice_send_button"
+                android:layout_width="56dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="2dp"
+                android:background="@drawable/naa_textvoiceinput_btn_bg"
+                android:enabled="false"
+                android:text="@string/tdta_adviceSend_button_title"
+                android:textColor="@color/naa_note_send_button_title_textcolor"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/tdta_advice_editText"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_toLeftOf="@id/tdta_advice_send_button"
+                android:background="@drawable/naa_note_edittext_bg"
+                android:inputType="text"
+                android:textSize="16sp" >
+
+                <requestFocus />
+            </EditText>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/tdta_footer_relativeLayout"
+        android:padding="12dp"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/common_form_bg" >
+
+                    <LinearLayout
+                        android:id="@+id/tdta_formItemForm_linearLayout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
+                        android:paddingBottom="1.5dp"
+                        android:paddingLeft="1.5dp"
+                        android:paddingRight="1.5dp" >
+                    </LinearLayout>
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:text="@string/tdta_form_info_label"
+                    android:textColor="@color/gray"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/tdta_attachmentForm_parent_frameLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:visibility="gone" >
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/common_form_bg" >
+
+                    <LinearLayout
+                        android:id="@+id/tdta_attachmentForm_linearLayout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginTop="16dp"
+                        android:background="@android:color/transparent"
+                        android:orientation="vertical"
+                        android:paddingBottom="1.5dp"
+                        android:paddingLeft="1.5dp"
+                        android:paddingRight="1.5dp" >
+
+                        <com.futuo.iapprove.customwidget.CommonFormSeparator
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="6dp" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:text="@string/tdta_attachment_info_label"
+                    android:textColor="@color/gray"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/tdta_adviceForm_parent_frameLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:visibility="gone" >
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/common_form_bg" >
+
+                    <LinearLayout
+                        android:id="@+id/tdta_adviceForm_linearLayout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginTop="16dp"
+                        android:background="@android:color/transparent"
+                        android:orientation="vertical"
+                        android:paddingBottom="1.5dp"
+                        android:paddingLeft="1.5dp"
+                        android:paddingRight="1.5dp" >
+
+                        <com.futuo.iapprove.customwidget.CommonFormSeparator
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="6dp" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:text="@string/tdta_advice_info_label"
+                    android:textColor="@color/gray"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/common_form_bg"
+                android:padding="12dp" >
+
+                <TextView
+                    android:id="@+id/tdta_submitContact_label_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/tdta_submitContact_label_textView_text"
+                    android:textColor="@color/gray"
+                    android:textSize="15sp" />
+
+                <ImageButton
+                    android:id="@+id/tdta_add_submitContact_imageButton"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_toRightOf="@id/tdta_submitContact_label_textView"
+                    android:background="@null"
+                    android:contentDescription="@string/tdta_add_submitContact_imageButton_contentDescription"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/img_add_submitcontact_button" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

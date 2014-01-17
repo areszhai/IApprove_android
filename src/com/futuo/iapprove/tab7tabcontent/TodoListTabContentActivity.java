@@ -10,7 +10,6 @@ import java.util.Map;
 
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -44,12 +43,12 @@ import com.futuo.iapprove.account.user.UserEnterpriseBean;
 import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveTabContentActivity;
 import com.futuo.iapprove.customwidget.TodoTaskAdvice;
-import com.futuo.iapprove.form.FormBean;
 import com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider.EnterpriseProfiles.EnterpriseProfile;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
-import com.futuo.iapprove.receiver.UserEnterpriseBroadcastReceiver;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationGenerator;
+import com.futuo.iapprove.tab7tabcontent.task.TodoTaskApproveActivity;
+import com.futuo.iapprove.tab7tabcontent.task.TodoTaskApproveActivity.TodoTaskApproveExtraData;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
 import com.futuo.iapprove.task.TodoTaskBean;
 import com.richitec.commontoolkit.customadapter.CTListCursorAdapter;
@@ -70,9 +69,6 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 	// to-do list task list cursor adapter
 	private TodoListTaskListAdapter _mTodoListTaskListCursorAdapter;
-
-	// user enterprise broadcast receiver
-	private TodoListTabUserEnterpriseBroadcastReceiver _mUserEnterpriseBroadcastReceiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -123,12 +119,6 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 		// set to-do list task listView on item click listener
 		_todoListTaskListView
 				.setOnItemClickListener(new TodoListTaskListViewOnItemClickListener());
-
-		// register user enterprise broadcast receiver
-		registerReceiver(
-				_mUserEnterpriseBroadcastReceiver = new TodoListTabUserEnterpriseBroadcastReceiver(),
-				new IntentFilter(
-						UserEnterpriseBroadcastReceiver.A_ENTERPRISECHANGE));
 	}
 
 	@Override
@@ -146,23 +136,35 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 	}
 
 	@Override
+	protected void onUserEnterpriseChanged(Long newEnterpriseId) {
+		super.onUserEnterpriseChanged(newEnterpriseId);
+
+		// get and check core service
+		CoreService _coreService = getCoreService();
+		if (null != _coreService) {
+			// force do on core service connected
+			onCoreServiceConnected(_coreService);
+		}
+
+		// need to change user enterprise to-do list task query cursor change
+		// user enterprise to-do list task query cursor
+		_mTodoListTaskListCursorAdapter
+				.changeCursor(getContentResolver()
+						.query(ContentUris.withAppendedId(
+								TodoTask.ENTERPRISE_CONTENT_URI,
+								IAUserExtension
+										.getUserLoginEnterpriseId(_mLoginUser)),
+								null,
+								TodoTask.USER_ENTERPRISETODOLISTTASKS_WITHLOGINNAME_CONDITION,
+								new String[] { _mLoginUser.getName() }, null));
+	}
+
+	@Override
 	protected void onCoreServiceDisconnected(CoreService coreService) {
 		super.onCoreServiceDisconnected(coreService);
 
 		// stop get user login enterprise to-do list task
 		coreService.stopGetUserEnterpriseTodolistTask();
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-
-		// release user enterprise broadcast receiver
-		if (null != _mUserEnterpriseBroadcastReceiver) {
-			unregisterReceiver(_mUserEnterpriseBroadcastReceiver);
-
-			_mUserEnterpriseBroadcastReceiver = null;
-		}
 	}
 
 	// inner class
@@ -574,47 +576,23 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 		@Override
 		public void onItemClick(AdapterView<?> todoListTaskListView,
 				View todoTaskItemContentView, int position, long id) {
-			Log.d(LOG_TAG,
-					"TodoListTaskListViewOnItemClickListener - to-do list task = "
-							+ _mTodoListTaskListCursorAdapter.getDataList()
-									.get(position));
+			// define to-do list task approve extra data map
+			Map<String, Object> _extraMap = new HashMap<String, Object>();
 
-//			// define to-do list task approve application extra data map
-//						Map<String, Object> _extraMap = new HashMap<String, Object>();
-//
-//						// get the clicked form
-//						FormBean _clickedForm = (FormBean) _mEnterpriseFormListCursorAdapter
-//								.getDataList().get(position);
-		}
+			// get the clicked to-do list task
+			TodoTaskBean _clickedTodoTask = (TodoTaskBean) _mTodoListTaskListCursorAdapter
+					.getDataList().get(position);
 
-	}
+			// put user enterprise to-do list task title and sender fake id to
+			// extra data map as param
+			_extraMap.put(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKTITLE,
+					_clickedTodoTask.getTaskTitle());
+			_extraMap.put(
+					TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKSENDERFAKEID,
+					_clickedTodoTask.getSenderFakeId());
 
-	// to-do list tab user enterprise broadcast receiver
-	class TodoListTabUserEnterpriseBroadcastReceiver extends
-			UserEnterpriseBroadcastReceiver {
-
-		@Override
-		public void onEnterpriseChange(Long newEnterpriseId) {
-			// get and check core service
-			CoreService _coreService = getCoreService();
-			if (null != _coreService) {
-				// force do on core service connected
-				onCoreServiceConnected(_coreService);
-			}
-
-			// need to change user enterprise to-do list task query cursor
-			// change user enterprise to-do list task query cursor
-			_mTodoListTaskListCursorAdapter
-					.changeCursor(getContentResolver()
-							.query(ContentUris
-									.withAppendedId(
-											TodoTask.ENTERPRISE_CONTENT_URI,
-											IAUserExtension
-													.getUserLoginEnterpriseId(_mLoginUser)),
-									null,
-									TodoTask.USER_ENTERPRISETODOLISTTASKS_WITHLOGINNAME_CONDITION,
-									new String[] { _mLoginUser.getName() },
-									null));
+			// go to to-do list task approve activity with extra data map
+			pushActivity(TodoTaskApproveActivity.class, _extraMap);
 		}
 
 	}

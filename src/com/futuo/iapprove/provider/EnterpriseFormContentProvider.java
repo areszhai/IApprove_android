@@ -544,7 +544,7 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 
 			// enterprise forms with type id condition
 			public static final String ENTERPRISE_FORMS_WITHTYPEID_CONDITION = ENTERPRISE_ID
-					+ "=?" + " and " + FORMTYPE_ID + "=?";
+					+ "=?" + _AND_SELECTION + FORMTYPE_ID + "=?";
 
 		}
 
@@ -612,12 +612,10 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 			// enterprise form items with form type id and form id condition
 			public static final String ENTERPRISE_FORMITEMS_WITHFORMTYPEID7FORMID_CONDITION = ENTERPRISE_ID
 					+ "=?"
-					+ " and "
+					+ _AND_SELECTION
 					+ FORMTYPE_ID
 					+ "=?"
-					+ " and "
-					+ FORM_ID
-					+ "=?";
+					+ _AND_SELECTION + FORM_ID + "=?";
 
 		}
 

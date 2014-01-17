@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:iapprove="http://schemas.android.com/apk/res/com.futuo.iapprove"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="18dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:paddingTop="18dp"
+    android:scrollbars="none"
+    tools:context=".setting.UserProfileSettingActivity" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/upst_avatarSetting_relativeLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/setting_single_item_bg"
+            android:clickable="true"
+            android:paddingBottom="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="8dp"
+            android:paddingTop="12dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="@string/upst_avatarSetting_userAvatar_label"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/upst_avatarSetting_indicator_imageView"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:contentDescription="@string/upstfi_indicator_imageView_contentDescription"
+                android:src="@drawable/img_setting_item_indicator_arrow" />
+
+            <ImageView
+                android:id="@+id/upst_avatarSetting_userAvatar_imageView"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/upst_avatarSetting_indicator_imageView"
+                android:contentDescription="@string/upst_avatarSetting_userAvatar_imageView_contentDescription"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_dot_large_avatar" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/common_form_bg"
+            android:orientation="vertical"
+            android:padding="1.5dp" >
+
+            <com.futuo.iapprove.customwidget.UserProfileSettingFormItem
+                android:id="@+id/upst_approveNumber_userProfileSettingFormItem"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                iapprove:upstfi_label="@string/upst_approveNumberUserProfileSettingFormItem_label" >
+            </com.futuo.iapprove.customwidget.UserProfileSettingFormItem>
+
+            <com.futuo.iapprove.customwidget.CommonFormSeparator
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
+            <com.futuo.iapprove.customwidget.UserProfileSettingFormItem
+                android:id="@+id/upst_employeeName_userProfileSettingFormItem"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                iapprove:upstfi_label="@string/upst_employeeNameUserProfileSettingFormItem_label" >
+            </com.futuo.iapprove.customwidget.UserProfileSettingFormItem>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/common_form_bg"
+            android:orientation="vertical"
+            android:padding="1.5dp" >
+
+            <com.futuo.iapprove.customwidget.UserProfileSettingFormItem
+                android:id="@+id/upst_sex_userProfileSettingFormItem"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/common_form_multipletop_item_bg"
+                iapprove:upstfi_clickable="true"
+                iapprove:upstfi_label="@string/upst_sexUserProfileSettingFormItem_label" >
+            </com.futuo.iapprove.customwidget.UserProfileSettingFormItem>
+
+            <com.futuo.iapprove.customwidget.CommonFormSeparator
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
+            <com.futuo.iapprove.customwidget.UserProfileSettingFormItem
+                android:id="@+id/upst_birthday_userProfileSettingFormItem"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/common_form_multiplemiddle_item_bg"
+                iapprove:upstfi_clickable="true"
+                iapprove:upstfi_label="@string/upst_birthdayUserProfileSettingFormItem_label" >
+            </com.futuo.iapprove.customwidget.UserProfileSettingFormItem>
+
+            <com.futuo.iapprove.customwidget.CommonFormSeparator
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
+            <com.futuo.iapprove.customwidget.UserProfileSettingFormItem
+                android:id="@+id/upst_department_userProfileSettingFormItem"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/common_form_multiplebottom_item_bg"
+                iapprove:upstfi_clickable="true"
+                iapprove:upstfi_label="@string/upst_departmentUserProfileSettingFormItem_label" >
+            </com.futuo.iapprove.customwidget.UserProfileSettingFormItem>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/common_form_bg"
+            android:orientation="vertical"
+            android:padding="1.5dp" >
+
+            <com.futuo.iapprove.customwidget.UserProfileSettingFormItem
+                android:id="@+id/upst_mobilePhone_userProfileSettingFormItem"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/common_form_multipletop_item_bg"
+                iapprove:upstfi_clickable="true"
+                iapprove:upstfi_label="@string/upst_mobilePhoneUserProfileSettingFormItem_label" >
+            </com.futuo.iapprove.customwidget.UserProfileSettingFormItem>
+
+            <com.futuo.iapprove.customwidget.CommonFormSeparator
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
+            <com.futuo.iapprove.customwidget.UserProfileSettingFormItem
+                android:id="@+id/upst_officePhone_userProfileSettingFormItem"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/common_form_multiplemiddle_item_bg"
+                iapprove:upstfi_clickable="true"
+                iapprove:upstfi_label="@string/upst_officePhoneUserProfileSettingFormItem_label" >
+            </com.futuo.iapprove.customwidget.UserProfileSettingFormItem>
+
+            <com.futuo.iapprove.customwidget.CommonFormSeparator
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
+            <com.futuo.iapprove.customwidget.UserProfileSettingFormItem
+                android:id="@+id/upst_email_userProfileSettingFormItem"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/common_form_multiplebottom_item_bg"
+                iapprove:upstfi_clickable="true"
+                iapprove:upstfi_label="@string/upst_emailUserProfileSettingFormItem_label" >
+            </com.futuo.iapprove.customwidget.UserProfileSettingFormItem>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/common_form_bg"
+            android:orientation="vertical"
+            android:padding="1.5dp" >
+
+            <com.futuo.iapprove.customwidget.UserProfileSettingFormItem
+                android:id="@+id/upst_note_userProfileSettingFormItem"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/common_form_single_item_bg"
+                iapprove:upstfi_clickable="true"
+                iapprove:upstfi_label="@string/upst_noteUserProfileSettingFormItem_label"
+                iapprove:upstfi_singleline="false" >
+            </com.futuo.iapprove.customwidget.UserProfileSettingFormItem>
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

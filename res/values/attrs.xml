@@ -3,9 +3,21 @@
 
     <!-- account login form item -->
     <declare-styleable name="account_login_form_item">
-        <attr name="label" format="string" />
-        <attr name="inputEditTextHint" format="string" />
-        <attr name="inputEditTextType" format="string" />
+        <attr name="alfi_label" format="string" />
+        <attr name="alfi_inputEditTextHint" format="string" />
+        <attr name="alfi_inputEditTextType" format="string" />
+    </declare-styleable>
+
+    <!-- setting form item -->
+    <declare-styleable name="setting_form_item">
+        <attr name="stfi_label" format="string" />
+    </declare-styleable>
+
+    <!-- user profile setting form item -->
+    <declare-styleable name="user_profile_setting_form_item">
+        <attr name="upstfi_label" format="string" />
+        <attr name="upstfi_clickable" format="boolean" />
+        <attr name="upstfi_singleline" format="boolean" />
     </declare-styleable>
 
 </resources>

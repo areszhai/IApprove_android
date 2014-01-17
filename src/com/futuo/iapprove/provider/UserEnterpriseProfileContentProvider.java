@@ -219,6 +219,10 @@ public class UserEnterpriseProfileContentProvider extends
 			public static final String USER_ENTERPRISEPROFILES_WITHLOGINNAME_CONDITION = APPROVE_NUMBER
 					+ "=?";
 
+			// user enterprise profile condition
+			public static final String USER_ENTERPRISEPROFILE_WITHENTERPRISEID7LOGINNAME_CONDITION = ENTERPRISE_ID
+					+ "=?" + _AND_SELECTION + APPROVE_NUMBER + "=?";
+
 		}
 
 	}

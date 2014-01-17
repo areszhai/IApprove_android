@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.futuo.iapprove"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="2"
+    android:versionName="0.0.2" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -86,8 +86,8 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".tab7tabcontent.task.TodoTaskDetailInfoActivity"
-            android:label="@string/title_activity_todo_task_detail_info"
+            android:name=".tab7tabcontent.task.TodoTaskApproveActivity"
+            android:label="@string/title_activity_todo_task_approve"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -113,6 +113,26 @@
         <activity
             android:name=".tab7tabcontent.SettingsTabContentActivity"
             android:label="@string/title_activity_settings_tab_content"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".setting.UserProfileSettingActivity"
+            android:label="@string/title_activity_user_profile_setting"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".assistant.SupportActivity"
+            android:label="@string/title_activity_support"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".assistant.FeedbackActivity"
+            android:label="@string/title_activity_feedback"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".assistant.AboutActivity"
+            android:label="@string/title_activity_about"
             android:screenOrientation="portrait" >
         </activity>
 
