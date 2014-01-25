@@ -13,7 +13,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems.FormItem;
+import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskAttachments.TodoTaskAttachment;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskFormItems.TodoTaskFormItem;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTaskAdvice;
@@ -54,6 +54,20 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 				.addURI(AUTHORITY,
 						TodoTaskFormItems.PATH + "/todoTaskFormItem/#",
 						UserEnterpriseTodoTaskFormItemInfoTableAccessType.TODOTASKFORMITEM_ID);
+
+		// to-do task attachment
+		URI_MATCHER
+				.addURI(AUTHORITY,
+						TodoTaskAttachments.PATH + "/todoTaskAttachments",
+						UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENTS);
+		URI_MATCHER
+				.addURI(AUTHORITY,
+						TodoTaskAttachments.PATH + "/todoTaskAttachment",
+						UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT);
+		URI_MATCHER
+				.addURI(AUTHORITY,
+						TodoTaskAttachments.PATH + "/todoTaskAttachment/#",
+						UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT_ID);
 	}
 
 	@Override
@@ -81,6 +95,16 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 		case UserEnterpriseTodoTaskFormItemInfoTableAccessType.TODOTASKFORMITEM:
 		case UserEnterpriseTodoTaskFormItemInfoTableAccessType.TODOTASKFORMITEM_ID:
 			_contentType = TodoTaskFormItem.TODOTASKFORMITEM_CONTENT_TYPE;
+			break;
+
+		// to-do task attachment
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENTS:
+			_contentType = TodoTaskAttachment.TODOTASKATTACHMENTS_CONTENT_TYPE;
+			break;
+
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT:
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT_ID:
+			_contentType = TodoTaskAttachment.TODOTASKATTACHMENT_CONTENT_TYPE;
 			break;
 
 		default:
@@ -130,6 +154,21 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 
 			Log.d(LOG_TAG,
 					"Insert user enterprise to-do list task form item with values = "
+							+ values);
+			break;
+
+		// to-do task attachment
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENTS:
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT_ID:
+			// nothing to do
+			break;
+
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT:
+			// set user enterprise to-do task attachment table as insert table
+			_insertTableName = TodoTaskAttachments.TODOTASKATTACHMENTS_TABLE;
+
+			Log.d(LOG_TAG,
+					"Insert user enterprise to-do list task attachment with values = "
 							+ values);
 			break;
 
@@ -206,8 +245,8 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 				_lswDB.endTransaction();
 			}
 		} else {
-			// insert to-do list task form item into to-do list task form item
-			// info table and return new insert row id
+			// insert object into its local storage table and return new insert
+			// row id
 			long _newInsertRowId = _lswDB.insert(_insertTableName,
 					TodoTaskFormItem._ID, values);
 
@@ -222,7 +261,7 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 						null);
 			} else {
 				Log.d(LOG_TAG,
-						"Insert to-do list task form item to local storage database error, values = "
+						"Insert object to local storage database error, values = "
 								+ values);
 			}
 		}
@@ -295,7 +334,7 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 
 				// check and update selection
 				if (null != selection && !"".equalsIgnoreCase(selection)) {
-					selection += FormItem._AND_SELECTION + _where;
+					selection += TodoTaskFormItem._AND_SELECTION + _where;
 				} else {
 					selection = _where;
 				}
@@ -309,6 +348,34 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 			// table and to-do list task form item notification uri
 			_queryTableName = TodoTaskFormItems.TODOTASKFORMITEMINFOS_TABLE;
 			_notificationUri = TodoTaskFormItem.TODOTASKFORMITEMS_NOTIFICATION_CONTENT_URI;
+			break;
+
+		// to-do task attachment
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENTS:
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT:
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT_ID:
+			// get query to-do task attachment id and generate where condition
+			if (UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT_ID == URI_MATCHER
+					.match(uri)) {
+				_where = TodoTaskAttachment._ID + "="
+						+ ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += TodoTaskAttachment._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG,
+					"Query user enterprise to-do list task attachment with selection = "
+							+ selection);
+
+			// set user enterprise to-do list task attachment table as query
+			// table and to-do list task attachment notification uri
+			_queryTableName = TodoTaskAttachments.TODOTASKATTACHMENTS_TABLE;
+			_notificationUri = TodoTaskAttachment.TODOTASKATTACHMENTS_NOTIFICATION_CONTENT_URI;
 			break;
 
 		default:
@@ -330,14 +397,329 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
+		int _updateNumber = 0;
+
+		// get local storage database writable instance
+		SQLiteDatabase _lswDB = _mLocalStorageDBHelper.getWritableDatabase();
+
+		// define where condition string and update table name
+		String _where = null;
+		String _updateTableName = null;
+
+		// define to-do list task and its advice selection
+		String _todoTaskSelection = selection;
+		String _todoTaskAdviceSelection = selection;
+
+		// check uri
+		switch (URI_MATCHER.match(uri)) {
+		// to-do task
+		case UserEnterpriseTodoTaskTableAccessType.TODOTASKS:
+		case UserEnterpriseTodoTaskTableAccessType.TODOTASK:
+			// nothing to do
+			break;
+
+		case UserEnterpriseTodoTaskTableAccessType.TODOTASK_ID:
+		case UserEnterpriseTodoTaskTableAccessType.TODOTASK_ENTERPRISEID:
+			// define and get lookup key
+			String _lookupKey = null;
+			if (UserEnterpriseTodoTaskTableAccessType.TODOTASK_ID == URI_MATCHER
+					.match(uri)) {
+				_lookupKey = TodoTask._ID;
+			} else if (UserEnterpriseTodoTaskTableAccessType.TODOTASK_ENTERPRISEID == URI_MATCHER
+					.match(uri)) {
+				_lookupKey = TodoTask.ENTERPRISE_ID;
+			}
+
+			// check lookup key
+			if (null != _lookupKey) {
+				// get update to-do task id or enterprise id and generate where
+				// condition
+				_where = _lookupKey + "=" + ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					_todoTaskSelection += SimpleBaseColumns._AND_SELECTION
+							+ _where;
+				} else {
+					_todoTaskSelection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG,
+					"Update user enterprise to-do list task with selection = "
+							+ _todoTaskSelection + " and update values = "
+							+ values);
+
+			// set user enterprise to-do task table as update table
+			_updateTableName = TodoTasks.TODOTASKS_TABLE;
+			break;
+
+		// to-do task form item
+		case UserEnterpriseTodoTaskFormItemInfoTableAccessType.TODOTASKFORMITEMS:
+		case UserEnterpriseTodoTaskFormItemInfoTableAccessType.TODOTASKFORMITEM:
+			// nothing to do
+			break;
+
+		case UserEnterpriseTodoTaskFormItemInfoTableAccessType.TODOTASKFORMITEM_ID:
+			// get update to-do task form item id and generate where condition
+			if (UserEnterpriseTodoTaskFormItemInfoTableAccessType.TODOTASKFORMITEM_ID == URI_MATCHER
+					.match(uri)) {
+				_where = TodoTaskFormItem._ID + "=" + ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += TodoTaskFormItem._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG,
+					"Update user enterprise to-do list task form item with selection = "
+							+ selection + " and update values = " + values);
+
+			// set user enterprise to-do list task form item table as update
+			// table
+			_updateTableName = TodoTaskFormItems.TODOTASKFORMITEMINFOS_TABLE;
+			break;
+
+		// to-do task attachment
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENTS:
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT:
+			// nothing to do
+			break;
+
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT_ID:
+			// get update to-do task attachment id and generate where condition
+			if (UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT_ID == URI_MATCHER
+					.match(uri)) {
+				_where = TodoTaskAttachment._ID + "="
+						+ ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += TodoTaskAttachment._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG,
+					"Update user enterprise to-do list task attachment with selection = "
+							+ selection + " and update values = " + values);
+
+			// set user enterprise to-do list task attachment table as update
+			// table
+			_updateTableName = TodoTaskAttachments.TODOTASKATTACHMENTS_TABLE;
+			break;
+
+		default:
+			throw new UnknownCPContentUriException(uri);
+		}
+
+		// check uri again, only for to-do list task insert
+		if (UserEnterpriseTodoTaskTableAccessType.TODOTASK_ID == URI_MATCHER
+				.match(uri)
+				|| UserEnterpriseTodoTaskTableAccessType.TODOTASK_ENTERPRISEID == URI_MATCHER
+						.match(uri)) {
+			// begin transaction
+			_lswDB.beginTransaction();
+
+			try {
+				// get to-do list task and its advice content values list map
+				Map<String, List<ContentValues>> _todoListTaskAndAdviceContentValuesMap = getTodoListTaskAndAdviceContentValuesMap(values);
+
+				// get to-do list task content values
+				ContentValues _todoListTaskContentValues = _todoListTaskAndAdviceContentValuesMap
+						.get(TodoTasks.TODOTASKS_TABLE).get(0);
+
+				// update to-do list task into to-do list tasks table with
+				// selection
+				_updateNumber = _lswDB.update(_updateTableName,
+						_todoListTaskContentValues, _todoTaskSelection,
+						selectionArgs);
+
+				// check uri again
+				if (UserEnterpriseTodoTaskTableAccessType.TODOTASK_ID == URI_MATCHER
+						.match(uri)) {
+					// get to-do list task id and generate where condition
+					_where = TodoTaskAdvice.TODOTASK_ROWID + "="
+							+ ContentUris.parseId(uri);
+
+					// check and update selection
+					if (null != selection && !"".equalsIgnoreCase(selection)) {
+						_todoTaskAdviceSelection += TodoTaskAdvice._AND_SELECTION
+								+ _where;
+					} else {
+						_todoTaskAdviceSelection = _where;
+					}
+				}
+
+				for (ContentValues todoListTaskAdviceContentValues : _todoListTaskAndAdviceContentValuesMap
+						.get(TodoTasks.TODOTASK_ADVICES_TABLE)) {
+
+					Log.d(LOG_TAG,
+							"Update to-do list task advice with selection = "
+									+ todoListTaskAdviceContentValues);
+
+					// update to-do list task advice from to-do list task advice
+					// table with selection
+					_lswDB.update(TodoTasks.TODOTASK_ADVICES_TABLE,
+							todoListTaskAdviceContentValues,
+							_todoTaskAdviceSelection, selectionArgs);
+				}
+
+				// set transaction successful
+				_lswDB.setTransactionSuccessful();
+			} catch (Exception e) {
+				Log.e(LOG_TAG,
+						"Update to-do list task to local storage database error, exception message = "
+								+ e.getMessage());
+
+				e.printStackTrace();
+			} finally {
+				// end transaction
+				_lswDB.endTransaction();
+			}
+		} else {
+			// update object from its local storage table with selection
+			_updateNumber = _lswDB.update(_updateTableName, values, selection,
+					selectionArgs);
+		}
+
+		// notify data has been changed
+		getContext().getContentResolver().notifyChange(uri, null);
+
+		return _updateNumber;
 	}
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
+		int _deleteNumber = 0;
+
+		// get local storage database writable instance
+		SQLiteDatabase _lswDB = _mLocalStorageDBHelper.getWritableDatabase();
+
+		// define where condition string and delete table name
+		String _where = null;
+		String _deleteTableName = null;
+
+		// check uri
+		switch (URI_MATCHER.match(uri)) {
+		// to-do task
+		case UserEnterpriseTodoTaskTableAccessType.TODOTASKS:
+		case UserEnterpriseTodoTaskTableAccessType.TODOTASK:
+			// nothing to do
+			break;
+
+		case UserEnterpriseTodoTaskTableAccessType.TODOTASK_ID:
+		case UserEnterpriseTodoTaskTableAccessType.TODOTASK_ENTERPRISEID:
+			// define and get lookup key
+			String _lookupKey = null;
+			if (UserEnterpriseTodoTaskTableAccessType.TODOTASK_ID == URI_MATCHER
+					.match(uri)) {
+				_lookupKey = TodoTask._ID;
+			} else if (UserEnterpriseTodoTaskTableAccessType.TODOTASK_ENTERPRISEID == URI_MATCHER
+					.match(uri)) {
+				_lookupKey = TodoTask.ENTERPRISE_ID;
+			}
+
+			// check lookup key
+			if (null != _lookupKey) {
+				// get delete to-do task id or enterprise id and generate where
+				// condition
+				_where = _lookupKey + "=" + ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += SimpleBaseColumns._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG,
+					"Delete user enterprise to-do list task with selection = "
+							+ selection);
+
+			// set user enterprise to-do task table as delete table
+			_deleteTableName = TodoTasks.TODOTASKS_TABLE;
+			break;
+
+		// to-do task form item
+		case UserEnterpriseTodoTaskFormItemInfoTableAccessType.TODOTASKFORMITEMS:
+		case UserEnterpriseTodoTaskFormItemInfoTableAccessType.TODOTASKFORMITEM:
+			// nothing to do
+			break;
+
+		case UserEnterpriseTodoTaskFormItemInfoTableAccessType.TODOTASKFORMITEM_ID:
+			// get delete to-do task form item id and generate where condition
+			if (UserEnterpriseTodoTaskFormItemInfoTableAccessType.TODOTASKFORMITEM_ID == URI_MATCHER
+					.match(uri)) {
+				_where = TodoTaskFormItem._ID + "=" + ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += TodoTaskFormItem._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG,
+					"Delete user enterprise to-do list task form item with selection = "
+							+ selection);
+
+			// set user enterprise to-do list task form item table as delete
+			// table
+			_deleteTableName = TodoTaskFormItems.TODOTASKFORMITEMINFOS_TABLE;
+			break;
+
+		// to-do task attachment
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENTS:
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT:
+			// nothing to do
+			break;
+
+		case UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT_ID:
+			// get delete to-do task attachment id and generate where condition
+			if (UserEnterpriseTodoTaskAttachmentTableAccessType.TODOTASKATTACHMENT_ID == URI_MATCHER
+					.match(uri)) {
+				_where = TodoTaskAttachment._ID + "="
+						+ ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += TodoTaskAttachment._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG,
+					"Delete user enterprise to-do list task attachment with selection = "
+							+ selection);
+
+			// set user enterprise to-do list task attachment table as query
+			// table
+			_deleteTableName = TodoTaskAttachments.TODOTASKATTACHMENTS_TABLE;
+			break;
+
+		default:
+			throw new UnknownCPContentUriException(uri);
+		}
+
+		Log.d(LOG_TAG, "Delete enterprise address book with selection = "
+				+ selection);
+
+		// delete object from its local storage table with selection
+		_deleteNumber = _lswDB.delete(_deleteTableName, selection,
+				selectionArgs);
+
+		// notify data has been changed
+		getContext().getContentResolver().notifyChange(uri, null);
+
+		return _deleteNumber;
 	}
 
 	// get to-do list task and its advice content values list map with given
@@ -604,7 +986,7 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 	// user enterprise to-do task form item info table access type
 	static class UserEnterpriseTodoTaskFormItemInfoTableAccessType {
 
-		// enterprise form item table access type
+		// user enterprise to-do task form item info table access type
 		private static final int TODOTASKFORMITEMS = 30;
 		private static final int TODOTASKFORMITEM = 31;
 		private static final int TODOTASKFORMITEM_ID = 32;
@@ -652,6 +1034,70 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 
 			// user enterprise to-do list task form item condition
 			public static final String USER_ENTERPRISETODOLISTTASK_FORMITEMS_WITHSENDERFAKEID7LOGINNAME_CONDITION = ENTERPRISE_ID
+					+ "=?"
+					+ _AND_SELECTION
+					+ SENDER_FAKEID
+					+ "=?"
+					+ _AND_SELECTION + APPROVE_NUMBER + "=?";
+
+		}
+
+	}
+
+	// user enterprise to-do task attachment table access type
+	static class UserEnterpriseTodoTaskAttachmentTableAccessType {
+
+		// user enterprise to-do task attachment table access type
+		private static final int TODOTASKATTACHMENTS = 40;
+		private static final int TODOTASKATTACHMENT = 41;
+		private static final int TODOTASKATTACHMENT_ID = 42;
+
+	}
+
+	// user enterprise to-do list task attachments
+	public static final class TodoTaskAttachments {
+
+		// user enterprise to-do list task attachment path
+		private static final String PATH = TodoTaskAttachments.class
+				.getCanonicalName();
+
+		// user enterprise to-do list task attachment table name
+		public static final String TODOTASKATTACHMENTS_TABLE = "ia_todotask_attachment";
+
+		// inner class
+		// user enterprise to-do list task attachment
+		public static final class TodoTaskAttachment implements
+				SimpleBaseColumns {
+
+			// user enterprise to-do list task content provider to-do task
+			// attachment process data columns
+			public static final String ATTACHMENT_ID = "attachmentId";
+			public static final String SENDER_FAKEID = "taskSenderFakeId";
+			public static final String ENTERPRISE_ID = "enterpriseId";
+			public static final String APPROVE_NUMBER = "approveNumber";
+			public static final String NAME = "taskAttachmentName";
+			public static final String ORIGINNAME = "taskAttachmentOriginName";
+			public static final String Type = "taskAttachmentType";
+			public static final String URL = "taskAttachmentUrl";
+
+			// content uri
+			private static final Uri TODOTASKATTACHMENTS_NOTIFICATION_CONTENT_URI = Uri
+					.parse("content://" + AUTHORITY + '/' + PATH);
+			public static final Uri TODOTASKATTACHMENTS_CONTENT_URI = Uri
+					.parse("content://" + AUTHORITY + '/' + PATH
+							+ "/todoTaskAttachments");
+			public static final Uri TODOTASKATTACHMENT_CONTENT_URI = Uri
+					.parse("content://" + AUTHORITY + '/' + PATH
+							+ "/todoTaskAttachment");
+
+			// content type
+			private static final String TODOTASKATTACHMENTS_CONTENT_TYPE = "vnd.android.cursor.dir/"
+					+ TodoTaskAttachments.class.getCanonicalName();
+			private static final String TODOTASKATTACHMENT_CONTENT_TYPE = "vnd.android.cursor.item/"
+					+ TodoTaskAttachments.class.getCanonicalName();
+
+			// user enterprise to-do list task attachment condition
+			public static final String USER_ENTERPRISETODOLISTTASK_ATTACHMENTS_WITHSENDERFAKEID7LOGINNAME_CONDITION = ENTERPRISE_ID
 					+ "=?"
 					+ _AND_SELECTION
 					+ SENDER_FAKEID

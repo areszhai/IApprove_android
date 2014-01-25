@@ -14,9 +14,10 @@ public enum PersonSex {
 
 	private static final String LOG_TAG = PersonSex.class.getCanonicalName();
 
-	// sex rbgServer return value, value and icon drawable
+	// sex rbgServer return value, value, name and icon drawable
 	private Integer rbgServerRetValue;
 	private Integer sexValue;
+	private String sexName;
 	private Drawable sexIconDrawable;
 
 	// private constructor
@@ -24,7 +25,8 @@ public enum PersonSex {
 		// get application context
 		Context _appContext = CTApplication.getContext();
 
-		// save sex rbgServer return value, value and initialize icon drawable
+		// save sex rbgServer return value, value and initialize name and icon
+		// drawable
 		sexValue = value;
 		if (-1 == value) {
 			rbgServerRetValue = Integer
@@ -38,6 +40,8 @@ public enum PersonSex {
 							.getResources()
 							.getString(
 									R.string.rbgServer_getEnterpriseABReqResp_employee_maleSex));
+			sexName = _appContext.getResources().getString(
+					R.string.abc_male_sex_name);
 			sexIconDrawable = _appContext.getResources().getDrawable(
 					R.drawable.img_sex_male);
 		} else if (1 == value) {
@@ -46,6 +50,8 @@ public enum PersonSex {
 							.getResources()
 							.getString(
 									R.string.rbgServer_getEnterpriseABReqResp_employee_femaleSex));
+			sexName = _appContext.getResources().getString(
+					R.string.abc_female_sex_name);
 			sexIconDrawable = _appContext.getResources().getDrawable(
 					R.drawable.img_sex_female);
 		}
@@ -53,6 +59,10 @@ public enum PersonSex {
 
 	public Integer getValue() {
 		return sexValue;
+	}
+
+	public String getName() {
+		return null != sexName ? sexName : "";
 	}
 
 	public Drawable getIcon() {

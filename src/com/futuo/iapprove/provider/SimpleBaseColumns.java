@@ -10,4 +10,8 @@ public interface SimpleBaseColumns extends BaseColumns {
 	// data count projection
 	public static final String _COUNT_PROJECTION = "count(*) as " + _COUNT;
 
+	// data order asc and desc
+	public static final String _ORDER_ASC = " asc";
+	public static final String _ORDER_DESC = " desc";
+
 }

@@ -300,7 +300,7 @@ public class TodoTaskBean extends IApproveTaskBean implements
 							.setAgreed(0 == Short.parseShort(_adviceStateList
 									.get(i)) ? false : true);
 				}
-				if (null != _adviceContentList) {
+				if (null != _adviceContentList && 0 < _adviceContentList.size()) {
 					// get and check advice content value
 					String _adviceContentValue = _adviceContentList.get(i);
 					if (null != _adviceContentValue

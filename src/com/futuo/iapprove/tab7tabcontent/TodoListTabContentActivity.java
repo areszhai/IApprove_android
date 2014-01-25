@@ -583,13 +583,16 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 			TodoTaskBean _clickedTodoTask = (TodoTaskBean) _mTodoListTaskListCursorAdapter
 					.getDataList().get(position);
 
-			// put user enterprise to-do list task title and sender fake id to
-			// extra data map as param
+			// put user enterprise to-do list task title, sender fake id and
+			// advice list to extra data map as param
 			_extraMap.put(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKTITLE,
 					_clickedTodoTask.getTaskTitle());
 			_extraMap.put(
 					TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKSENDERFAKEID,
 					_clickedTodoTask.getSenderFakeId());
+			_extraMap.put(
+					TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKADVICES,
+					_clickedTodoTask.getAdvices());
 
 			// go to to-do list task approve activity with extra data map
 			pushActivity(TodoTaskApproveActivity.class, _extraMap);

@@ -1,11 +1,15 @@
 package com.futuo.iapprove.tab7tabcontent;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -117,10 +121,29 @@ public class SettingsTabContentActivity extends IApproveTabContentActivity {
 			_cursor.close();
 		}
 
-		// get user profile avatar and set as user profile setting user avatar
-		// imageView image
-		// test by ares
-		_mAvatarImageView.setImageResource(R.drawable.img_dot_large_avatar);
+		// get user profile avatar data and set as user profile setting user
+		// avatar imageView image
+		byte[] _avatarData = _mUserProfile.getAvatar();
+		if (null != _avatarData) {
+			try {
+				// get avatar data stream
+				InputStream _avatarDataStream = new ByteArrayInputStream(
+						_avatarData);
+
+				// set avatar
+				_mAvatarImageView.setImageBitmap(BitmapFactory
+						.decodeStream(_avatarDataStream));
+
+				// close photo data stream
+				_avatarDataStream.close();
+			} catch (IOException e) {
+				Log.e(LOG_TAG,
+						"Get user profile avatar data stream error, exception message = "
+								+ e.getMessage());
+
+				e.printStackTrace();
+			}
+		}
 
 		// get user profile employee name and set as user profile setting user
 		// employee name textView text
@@ -164,6 +187,7 @@ public class SettingsTabContentActivity extends IApproveTabContentActivity {
 		public void onClick(View v) {
 			Log.d(LOG_TAG, "Rate iApprove in android market");
 
+			// test by ares
 			//
 		}
 
@@ -209,6 +233,7 @@ public class SettingsTabContentActivity extends IApproveTabContentActivity {
 		public void onClick(View v) {
 			Log.d(LOG_TAG, "IApprove check for update");
 
+			// test by ares
 			//
 		}
 

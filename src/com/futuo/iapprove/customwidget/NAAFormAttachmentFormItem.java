@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.futuo.iapprove.R;
+import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormAttachmentType;
 import com.richitec.commontoolkit.CTApplication;
 
 public class NAAFormAttachmentFormItem extends FrameLayout {
@@ -27,7 +28,7 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 			.getCanonicalName();
 
 	// new approve application form attachment type
-	private NAAFormAttachmentType _mAttachmentType;
+	private TaskFormAttachmentType _mAttachmentType;
 
 	// new approve application form attachment info object
 	private Object _mAttachmentInfo;
@@ -75,7 +76,7 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 		_mVoiceAttachmentPlayImgView = (ImageView) findViewById(R.id.naafafi_voiceAttachment_play_imageView);
 
 		// set new approve application form attachment type default value
-		_mAttachmentType = NAAFormAttachmentType.TEXT_ATTACHMENT;
+		_mAttachmentType = TaskFormAttachmentType.TEXT_ATTACHMENT;
 	}
 
 	@Override
@@ -139,7 +140,7 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 		}
 	}
 
-	public NAAFormAttachmentType getAttachmentType() {
+	public TaskFormAttachmentType getAttachmentType() {
 		return _mAttachmentType;
 	}
 
@@ -166,7 +167,7 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 		String _textAttachmentText = null;
 
 		// check new approve application form attachment type
-		if (NAAFormAttachmentType.TEXT_ATTACHMENT == _mAttachmentType) {
+		if (TaskFormAttachmentType.TEXT_ATTACHMENT == _mAttachmentType) {
 			// get text attachment text
 			_textAttachmentText = null != _mAttachmentInfo ? _mAttachmentInfo
 					.toString() : "";
@@ -180,7 +181,7 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 		Bitmap _imageAttachmentImgBitmap = null;
 
 		// check new approve application form attachment type
-		if (NAAFormAttachmentType.IMAGE_ATTACHMENT == _mAttachmentType) {
+		if (TaskFormAttachmentType.IMAGE_ATTACHMENT == _mAttachmentType) {
 			// convert attachment info object to bitmap
 			try {
 				_imageAttachmentImgBitmap = (Bitmap) _mAttachmentInfo;
@@ -201,7 +202,7 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 		String _voiceAttachmentVoiceFilePath = null;
 
 		// check new approve application form attachment type
-		if (NAAFormAttachmentType.VOICE_ATTACHMENT == _mAttachmentType) {
+		if (TaskFormAttachmentType.VOICE_ATTACHMENT == _mAttachmentType) {
 			// convert attachment info object to map
 			try {
 				@SuppressWarnings("unchecked")
@@ -227,7 +228,7 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 		Integer _voiceAttachmentVoiceDuration = null;
 
 		// check new approve application form attachment type
-		if (NAAFormAttachmentType.VOICE_ATTACHMENT == _mAttachmentType) {
+		if (TaskFormAttachmentType.VOICE_ATTACHMENT == _mAttachmentType) {
 			// convert attachment info object to map
 			try {
 				@SuppressWarnings("unchecked")
@@ -251,7 +252,7 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 	// generate new approve application form attachment form item with type and
 	// info
 	public static NAAFormAttachmentFormItem generateNAAFormAttachmentFormItem(
-			NAAFormAttachmentType type, Object info) {
+			TaskFormAttachmentType type, Object info) {
 		// get application context
 		Context _appContext = CTApplication.getContext();
 
@@ -363,14 +364,6 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 	}
 
 	// inner class
-	// new approve application form attachment type
-	public static enum NAAFormAttachmentType {
-
-		// text, image, voice and application attachment
-		TEXT_ATTACHMENT, IMAGE_ATTACHMENT, VOICE_ATTACHMENT, APPLICATION_ATTACHMENT
-
-	}
-
 	// new approve application form voice attachment info data keys
 	public static class NAAFormVoiceAttachmentInfoDataKeys {
 
@@ -390,7 +383,7 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 			// check new approve application form attachment type and set text
 			// attachment textView or image attachment imageView as text or
 			// image attachment form item on click response view
-			if (NAAFormAttachmentType.TEXT_ATTACHMENT == _mAttachmentType) {
+			if (TaskFormAttachmentType.TEXT_ATTACHMENT == _mAttachmentType) {
 				_mAttachmentFormItemOnClickListener
 						.onClick(_mTextAttachmentTextView);
 			} else {
@@ -440,7 +433,7 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 				// get and check each voice attachment form item
 				NAAFormAttachmentFormItem _formAttachmentFormItem = (NAAFormAttachmentFormItem) _rarentViewGroup
 						.getChildAt(i);
-				if (NAAFormAttachmentType.VOICE_ATTACHMENT == _formAttachmentFormItem._mAttachmentType
+				if (TaskFormAttachmentType.VOICE_ATTACHMENT == _formAttachmentFormItem._mAttachmentType
 						&& NAAFormAttachmentFormItem.this != _formAttachmentFormItem
 						&& _formAttachmentFormItem.isVoicePlaying()) {
 					// click voice attachment play imageView container

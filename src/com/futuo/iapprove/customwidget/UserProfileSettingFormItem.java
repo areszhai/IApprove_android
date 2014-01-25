@@ -18,7 +18,8 @@ public class UserProfileSettingFormItem extends LinearLayout {
 	private static final String LOG_TAG = UserProfileSettingFormItem.class
 			.getCanonicalName();
 
-	// user profile setting form item info textView
+	// user profile setting form item label and info textView
+	private TextView _mLabelTextView;
 	private TextView _mInfoTextView;
 
 	public UserProfileSettingFormItem(Context context, AttributeSet attrs,
@@ -86,11 +87,13 @@ public class UserProfileSettingFormItem extends LinearLayout {
 		LayoutInflater.from(context).inflate(
 				R.layout.userprofile_setting_form_item_layout, this);
 
+		// get user profile setting form item label textView
+		_mLabelTextView = (TextView) findViewById(R.id.upstfi_label_textView);
+
 		// check user profile setting form item label and set its text
 		if (null != _label) {
 			// set user profile setting form item label textView text
-			((TextView) findViewById(R.id.upstfi_label_textView))
-					.setText(_label);
+			_mLabelTextView.setText(_label);
 		}
 
 		// check user profile setting form item clickable then set its clickable
@@ -110,6 +113,10 @@ public class UserProfileSettingFormItem extends LinearLayout {
 			_mInfoTextView.setSingleLine(true);
 			_mInfoTextView.setEllipsize(TruncateAt.END);
 		}
+	}
+
+	public String getLabel() {
+		return _mLabelTextView.getText().toString();
 	}
 
 	public String getInfo() {

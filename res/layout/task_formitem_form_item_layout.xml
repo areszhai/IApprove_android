@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="12dp" >
+
+    <TextView
+        android:id="@+id/tfifi_label_textView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="27"
+        android:ellipsize="middle"
+        android:singleLine="true"
+        android:textColor="@color/gray"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/tfifi_info_textView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="20"
+        android:gravity="center_vertical|right"
+        android:textColor="@android:color/black"
+        android:textColorHint="@color/half_red_transparent"
+        android:textSize="16sp" />
+
+</LinearLayout>

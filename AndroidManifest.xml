@@ -38,17 +38,20 @@
         <activity
             android:name=".account.AccountRegisterActivity"
             android:label="@string/title_activity_account_register"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name=".account.AccountLoginActivity"
             android:label="@string/title_activity_account_login"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name=".account.AccountRetrievePwdActivity"
             android:label="@string/title_activity_account_retrieve_pwd"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name=".tab7tabcontent.IApproveTabActivity"
@@ -59,14 +62,12 @@
         <activity
             android:name=".tab7tabcontent.newapproveapplication.form.EnterpriseFormTypeListActivity"
             android:label="@string/title_activity_enterprise_form_type_list"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".tab7tabcontent.newapproveapplication.form.EnterpriseFormListActivity"
             android:label="@string/title_activity_enterprise_form_list"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".tab7tabcontent.newapproveapplication.NewApproveApplicationActivity"
@@ -88,7 +89,8 @@
         <activity
             android:name=".tab7tabcontent.task.TodoTaskApproveActivity"
             android:label="@string/title_activity_todo_task_approve"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustResize" >
         </activity>
         <activity
             android:name=".tab7tabcontent.AddressbookTabContentActivity"
@@ -121,6 +123,12 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name=".setting.UserProfileSettingFormItemEditorActivity"
+            android:label="@string/title_activity_user_profile_setting_form_item_editor"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
             android:name=".assistant.SupportActivity"
             android:label="@string/title_activity_support"
             android:screenOrientation="portrait" >
@@ -128,11 +136,17 @@
         <activity
             android:name=".assistant.FeedbackActivity"
             android:label="@string/title_activity_feedback"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name=".assistant.AboutActivity"
             android:label="@string/title_activity_about"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".assistant.PrivacyActivity"
+            android:label="@string/title_activity_privacy"
             android:screenOrientation="portrait" >
         </activity>
 

@@ -43,8 +43,8 @@ import com.futuo.iapprove.customwidget.EnterpriseFormItemFormItem.EnterpriseForm
 import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
 import com.futuo.iapprove.customwidget.NAAFormAttachmentFormItem;
-import com.futuo.iapprove.customwidget.NAAFormAttachmentFormItem.NAAFormAttachmentType;
 import com.futuo.iapprove.customwidget.NAAFormAttachmentFormItem.NAAFormVoiceAttachmentInfoDataKeys;
+import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormAttachmentType;
 import com.futuo.iapprove.form.FormItemBean;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems.FormItem;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NAAFormItemEditorActivity.NAAFormItemEditorExtraData;
@@ -301,6 +301,14 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		}
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		// stop play recorder audio if needed
+		AudioUtils.stopPlayRecorderAudio();
+	}
+
 	// refresh enterprise form item form
 	private void refreshFormItemForm() {
 		// query the enterprise form all items
@@ -457,7 +465,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 	// add new approve application attachment(text, image, voice and
 	// application) as attachment form item to attachment form linearLayout
 	private void addNAAFormAttachmentFormItem(
-			NAAFormAttachmentType attachmentType, Object attachmentInfo,
+			TaskFormAttachmentType attachmentType, Object attachmentInfo,
 			OnClickListener attachmentOnClickListener) {
 		// check enterprise form attachment form parent frameLayout visibility
 		if (View.VISIBLE != _mAttachmentFormParentFrameLayout.getVisibility()) {
@@ -823,7 +831,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 					// get and check each voice attachment form item
 					NAAFormAttachmentFormItem _formAttachmentFormItem = (NAAFormAttachmentFormItem) _mAttachmentFormLinearLayout
 							.getChildAt(i);
-					if (NAAFormAttachmentType.VOICE_ATTACHMENT == _formAttachmentFormItem
+					if (TaskFormAttachmentType.VOICE_ATTACHMENT == _formAttachmentFormItem
 							.getAttachmentType()
 							&& _formAttachmentFormItem.isVoicePlaying()) {
 						// fake click voice attachment play imageView container
@@ -1018,7 +1026,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 						// get the record voice and set as voice attachment,
 						// then add to form attachment form linearLayout
 						addNAAFormAttachmentFormItem(
-								NAAFormAttachmentType.VOICE_ATTACHMENT,
+								TaskFormAttachmentType.VOICE_ATTACHMENT,
 								_voiceAttachmentInfo,
 								new NAAFormVoiceAttachmentFormItemOnClickListener());
 					}
@@ -1215,7 +1223,8 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		public void onClick(View v) {
 			// get the ready to send note and set as text attachment, then add
 			// to form attachment form linearLayout
-			addNAAFormAttachmentFormItem(NAAFormAttachmentType.TEXT_ATTACHMENT,
+			addNAAFormAttachmentFormItem(
+					TaskFormAttachmentType.TEXT_ATTACHMENT,
 					_mNoteInputEditText.getText(),
 					new NAAFormTextAttachmentFormItemOnClickListener());
 

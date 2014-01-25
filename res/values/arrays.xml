@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- address book contact sexs -->
+    <string-array name="abc_sex_names" translatable="false">
+        <item>@string/abc_male_sex_name</item>
+        <item>@string/abc_female_sex_name</item>
+    </string-array>
+
     <!-- to-do list task submit timestamp days of week -->
     <string-array name="tdl_task_submitTimestamp_daysOfWeek" translatable="false">
         <item>@string/tdl_task_sundaySubmit_submitTimestamp</item>

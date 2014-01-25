@@ -1,5 +1,9 @@
 package com.futuo.iapprove.service;
 
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,14 +14,18 @@ import org.json.JSONObject;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyType;
+import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskAttachments.TodoTaskAttachment;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskFormItems.TodoTaskFormItem;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
+import com.futuo.iapprove.task.IApproveTaskAttachmentBean;
 import com.futuo.iapprove.task.IApproveTaskFormItemBean;
 import com.futuo.iapprove.task.TodoTaskBean;
 import com.futuo.iapprove.task.TodoTaskStatus;
@@ -242,36 +250,125 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 		return _mGetUserEnterpriseTodoListTaskFormInfoPostHttpReqParam;
 	}
 
-	// get local storage user enterprise to-do list task form item task form
-	// item id as key and bean as value map
-	private Map<Long, IApproveTaskFormItemBean> getLocalStorageUETodoTaskFormItemsItemIdAndBeanMap(
-			Cursor cursor) {
-		Map<Long, IApproveTaskFormItemBean> _localStorageUETodoTaskFormItemsItemIdAndBeanMap = new HashMap<Long, IApproveTaskFormItemBean>();
+	// get local storage user enterprise to-do list task form items(task form
+	// item id as key and bean as value map) or attachments(task attachment id
+	// as key and bean as value map) with cursor and bean class
+	private Map<Long, ?> getLocalStorageUETodoTaskFI6ASIdAndBeanMap(
+			Cursor cursor, Class<?> beanCls) {
+		Map<Long, Object> _localStorageUETodoTaskFI6ASIdAndBeanMap = new HashMap<Long, Object>();
 
 		// check the cursor
 		if (null != cursor) {
-			// set all local storage user enterprise to-do list task form item
-			// for deleting
+			// set all local storage user enterprise to-do list task form items
+			// or attachments for deleting
 			while (cursor.moveToNext()) {
-				// get for deleting to-do list task form item
-				IApproveTaskFormItemBean _4deletingTodoTaskFormItem = IApproveTaskFormItemBean
-						.getTaskFormItem(cursor);
+				// check bean class
+				if (IApproveTaskFormItemBean.class == beanCls) {
+					// get for deleting to-do list task form item
+					IApproveTaskFormItemBean _4deletingTodoTaskFormItem = IApproveTaskFormItemBean
+							.getTaskFormItem(cursor);
 
-				// set it for deleting
-				_4deletingTodoTaskFormItem
-						.setLocalStorageDataDirtyType(LocalStorageDataDirtyType.DELETE);
+					// set it for deleting
+					_4deletingTodoTaskFormItem
+							.setLocalStorageDataDirtyType(LocalStorageDataDirtyType.DELETE);
 
-				// put to-do task form item id and bean in
-				_localStorageUETodoTaskFormItemsItemIdAndBeanMap.put(
-						_4deletingTodoTaskFormItem.getItemId(),
-						_4deletingTodoTaskFormItem);
+					// put to-do task form item id and bean in
+					_localStorageUETodoTaskFI6ASIdAndBeanMap.put(
+							_4deletingTodoTaskFormItem.getItemId(),
+							_4deletingTodoTaskFormItem);
+				} else if (IApproveTaskAttachmentBean.class == beanCls) {
+					// get for deleting to-do list task attachment
+					IApproveTaskAttachmentBean _4deletingTodoTaskAttachment = IApproveTaskAttachmentBean
+							.getTaskAttachment(cursor);
+
+					// set it for deleting
+					_4deletingTodoTaskAttachment
+							.setLocalStorageDataDirtyType(LocalStorageDataDirtyType.DELETE);
+
+					// put to-do task attachment id and bean in
+					_localStorageUETodoTaskFI6ASIdAndBeanMap.put(
+							_4deletingTodoTaskAttachment.getAttachmentId(),
+							_4deletingTodoTaskAttachment);
+				} else {
+					Log.e(LOG_TAG, "Unrecognized bean class = " + beanCls);
+
+					// break immediately
+					break;
+				}
 			}
 
 			// close cursor
 			cursor.close();
 		}
 
-		return _localStorageUETodoTaskFormItemsItemIdAndBeanMap;
+		return _localStorageUETodoTaskFI6ASIdAndBeanMap;
+	}
+
+	// download to-do list task attachment to local file path with attachment
+	// url
+	private String downloadTodoTaskAttachment2LocalFilePath(
+			String attachmentRemoteUrl) {
+		String _attachmentLocalFilePath = null;
+
+		try {
+			// define to-do list task attachment local storage file name
+			StringBuilder _attachmentLocalStorageFileName = new StringBuilder();
+			_attachmentLocalStorageFileName.append(System.currentTimeMillis());
+			Log.d(LOG_TAG,
+					"To-do list task attachment local storage file name = "
+							+ _attachmentLocalStorageFileName
+							+ " and remote url = " + attachmentRemoteUrl);
+
+			// initialize to-do list task attachment url
+			URL _attachmentUrl = new URL(attachmentRemoteUrl);
+
+			// open to-do list task attachment download http url connection
+			HttpURLConnection _attachmentDownloadHttpUrlConnection = (HttpURLConnection) _attachmentUrl
+					.openConnection();
+
+			// get to-do list task attachment input stream
+			InputStream _is = _attachmentDownloadHttpUrlConnection
+					.getInputStream();
+
+			// get to-do list task attachment local storage file output stream
+			FileOutputStream _fos = _mContext.openFileOutput(
+					_attachmentLocalStorageFileName.toString(),
+					Context.MODE_PRIVATE);
+
+			// define stream read buffer byte array and has read flag
+			byte[] _buffer = new byte[1024];
+			int _hasRead = 0;
+
+			// read to-do list task attachment input stream and write to local
+			// storage file output stream
+			while (0 < (_hasRead = _is.read(_buffer))) {
+				_fos.write(_buffer, 0, _hasRead);
+			}
+
+			// get to-do list task attachment local storage file path
+			_attachmentLocalFilePath = _mContext.getFileStreamPath(
+					_attachmentLocalStorageFileName.toString())
+					.getAbsolutePath();
+
+			// close to-do list task attachment input stream and local storage
+			// file output stream
+			_is.close();
+			_fos.close();
+
+			Log.d(LOG_TAG,
+					"To-do list task attachment download finished, attachment remote url = "
+							+ _attachmentUrl
+							+ " and local storage file path = "
+							+ _attachmentLocalFilePath);
+		} catch (Exception e) {
+			Log.e(LOG_TAG,
+					"Download to-do list task attachment failed, exception message = "
+							+ e.getMessage());
+
+			e.printStackTrace();
+		}
+
+		return _attachmentLocalFilePath;
 	}
 
 	// inner class
@@ -590,15 +687,20 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 							// get local storage user enterprise to-do list task
 							// form items task form item id as key and bean as
 							// value map
-							Map<Long, IApproveTaskFormItemBean> _localStorageUETodoTaskFormItemsItemIdAndBeanMap = (Map<Long, IApproveTaskFormItemBean>) getLocalStorageUETodoTaskFormItemsItemIdAndBeanMap(_mContentResolver
-									.query(TodoTaskFormItem.TODOTASKFORMITEMS_CONTENT_URI,
-											null,
-											TodoTaskFormItem.USER_ENTERPRISETODOLISTTASK_FORMITEMS_WITHSENDERFAKEID7LOGINNAME_CONDITION,
-											new String[] {
-													_mEnterpriseId.toString(),
-													_mTaskSenderFakeId
-															.toString(),
-													_loginUserName }, null));
+							@SuppressWarnings("unchecked")
+							Map<Long, IApproveTaskFormItemBean> _localStorageUETodoTaskFormItemsItemIdAndBeanMap = (Map<Long, IApproveTaskFormItemBean>) getLocalStorageUETodoTaskFI6ASIdAndBeanMap(
+									_mContentResolver
+											.query(TodoTaskFormItem.TODOTASKFORMITEMS_CONTENT_URI,
+													null,
+													TodoTaskFormItem.USER_ENTERPRISETODOLISTTASK_FORMITEMS_WITHSENDERFAKEID7LOGINNAME_CONDITION,
+													new String[] {
+															_mEnterpriseId
+																	.toString(),
+															_mTaskSenderFakeId
+																	.toString(),
+															_loginUserName },
+													null),
+									IApproveTaskFormItemBean.class);
 
 							// define the to-do list task form item content
 							// values
@@ -708,6 +810,238 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 													.withAppendedId(
 															TodoTaskFormItem.TODOTASKFORMITEM_CONTENT_URI,
 															_4deletingTodoTaskFormItem
+																	.getRowId()),
+											null, null);
+								}
+							}
+
+							// get local storage user enterprise to-do list task
+							// attachments task attachment id as key and bean as
+							// value map
+							@SuppressWarnings("unchecked")
+							Map<Long, IApproveTaskAttachmentBean> _localStorageUETodoTaskAttachmentsAttachmentIdAndBeanMap = (Map<Long, IApproveTaskAttachmentBean>) getLocalStorageUETodoTaskFI6ASIdAndBeanMap(
+									_mContentResolver
+											.query(TodoTaskAttachment.TODOTASKATTACHMENTS_CONTENT_URI,
+													null,
+													TodoTaskAttachment.USER_ENTERPRISETODOLISTTASK_ATTACHMENTS_WITHSENDERFAKEID7LOGINNAME_CONDITION,
+													new String[] {
+															_mEnterpriseId
+																	.toString(),
+															_mTaskSenderFakeId
+																	.toString(),
+															_loginUserName },
+													null),
+									IApproveTaskAttachmentBean.class);
+
+							// define the to-do list task attachment content
+							// values
+							ContentValues _todoTaskAttachmentContentValues = new ContentValues();
+
+							// get and process to-do list task attachments
+							for (final IApproveTaskAttachmentBean todoTaskAttachment : IApproveTaskAttachmentBean
+									.getTaskAttachments(_respJsonData)) {
+								// clear the to-do list task attachment content
+								// values
+								_todoTaskAttachmentContentValues.clear();
+
+								// generate the to-do list task attachment
+								// content values with attachment id, name,
+								// origin name and type
+								_todoTaskAttachmentContentValues.put(
+										TodoTaskAttachment.ATTACHMENT_ID,
+										todoTaskAttachment.getAttachmentId());
+								_todoTaskAttachmentContentValues.put(
+										TodoTaskAttachment.NAME,
+										todoTaskAttachment.getAttachmentName());
+								_todoTaskAttachmentContentValues.put(
+										TodoTaskAttachment.ORIGINNAME,
+										todoTaskAttachment
+												.getAttachmentOriginName());
+								_todoTaskAttachmentContentValues.put(
+										TodoTaskAttachment.Type,
+										todoTaskAttachment.getAttachmentType()
+												.getValue());
+
+								// append task attachment form sender fake id,
+								// enterprise id and approve number
+								_todoTaskAttachmentContentValues.put(
+										TodoTaskAttachment.SENDER_FAKEID,
+										_mTaskSenderFakeId.toString());
+								_todoTaskAttachmentContentValues.put(
+										TodoTaskAttachment.ENTERPRISE_ID,
+										_mEnterpriseId);
+								_todoTaskAttachmentContentValues.put(
+										TodoTaskAttachment.APPROVE_NUMBER,
+										_loginUserName);
+
+								// insert the to-do list task attachment if not
+								// existed in local storage database or update
+								// if existed
+								if (!_localStorageUETodoTaskAttachmentsAttachmentIdAndBeanMap
+										.keySet().contains(
+												todoTaskAttachment
+														.getAttachmentId())) {
+									Log.d(LOG_TAG,
+											"The to-do list task attachment = "
+													+ todoTaskAttachment
+													+ " for inserting into local storage database, its content values = "
+													+ _todoTaskAttachmentContentValues);
+
+									final Uri _newInsertTodoTaskAttachmentUri = _mContentResolver
+											.insert(TodoTaskAttachment.TODOTASKATTACHMENT_CONTENT_URI,
+													_todoTaskAttachmentContentValues);
+
+									// download to-do list task attachment in
+									// work thread
+									new Thread(new Runnable() {
+
+										@Override
+										public void run() {
+											// download to-do list task
+											// attachment to local file path
+											String _attachmentLocalStorageFilePath = downloadTodoTaskAttachment2LocalFilePath(todoTaskAttachment
+													.getAttachmentRemoteUrl());
+
+											// check to-do list task attachment
+											// to local file path
+											if (null != _attachmentLocalStorageFilePath) {
+												// define the to-do list task
+												// attachment content values
+												ContentValues _todoTaskAttachmentContentValues = new ContentValues();
+
+												// generate the to-do list task
+												// attachment content values
+												// with attachment url
+												_todoTaskAttachmentContentValues
+														.put(TodoTaskAttachment.URL,
+																_attachmentLocalStorageFilePath);
+
+												Log.d(LOG_TAG,
+														"The to-do list task attachment for updating to local storage database, its content values = "
+																+ _todoTaskAttachmentContentValues);
+
+												_mContentResolver.update(
+														ContentUris
+																.withAppendedId(
+																		TodoTaskAttachment.TODOTASKATTACHMENT_CONTENT_URI,
+																		ContentUris
+																				.parseId(_newInsertTodoTaskAttachmentUri)),
+														_todoTaskAttachmentContentValues,
+														null, null);
+											}
+										}
+
+									}).start();
+								} else {
+									// get for updating to-do list task
+									// attachment
+									final IApproveTaskAttachmentBean _4updatingTodoTaskAttachment = _localStorageUETodoTaskAttachmentsAttachmentIdAndBeanMap
+											.get(todoTaskAttachment
+													.getAttachmentId());
+
+									// update local storage enterprise to-do
+									// list task attachment normal
+									_4updatingTodoTaskAttachment
+											.setLocalStorageDataDirtyType(LocalStorageDataDirtyType.NORMAL);
+
+									// compare the got to-do list task
+									// attachment with the for updating to-do
+									// list task attachment
+									if (0 != todoTaskAttachment
+											.compareTo(_4updatingTodoTaskAttachment)) {
+										Log.d(LOG_TAG,
+												"The to-do list task attachment whose id = "
+														+ _4updatingTodoTaskAttachment
+																.getAttachmentId()
+														+ " for updating to local storage database, its content values = "
+														+ _todoTaskAttachmentContentValues);
+
+										_mContentResolver.update(
+												ContentUris
+														.withAppendedId(
+																TodoTaskAttachment.TODOTASKATTACHMENT_CONTENT_URI,
+																_4updatingTodoTaskAttachment
+																		.getRowId()),
+												_todoTaskAttachmentContentValues,
+												null, null);
+									}
+
+									// check for updating to-do list task
+									// attachment url and download to-do list
+									// task attachment in work thread
+									if (null == _4updatingTodoTaskAttachment
+											.getAttachmentUrl()) {
+										new Thread(new Runnable() {
+
+											@Override
+											public void run() {
+												// download to-do list task
+												// attachment to local file path
+												String _attachmentLocalStorageFilePath = downloadTodoTaskAttachment2LocalFilePath(todoTaskAttachment
+														.getAttachmentRemoteUrl());
+
+												// check to-do list task
+												// attachment to local file path
+												if (null != _attachmentLocalStorageFilePath) {
+													// define the to-do list
+													// task attachment content
+													// values
+													ContentValues _todoTaskAttachmentContentValues = new ContentValues();
+
+													// generate the to-do list
+													// task attachment content
+													// values with attachment
+													// url
+													_todoTaskAttachmentContentValues
+															.put(TodoTaskAttachment.URL,
+																	_attachmentLocalStorageFilePath);
+
+													Log.d(LOG_TAG,
+															"The to-do list task attachment whose id = "
+																	+ _4updatingTodoTaskAttachment
+																			.getAttachmentId()
+																	+ " for updating to local storage database, its content values = "
+																	+ _todoTaskAttachmentContentValues);
+
+													_mContentResolver.update(
+															ContentUris
+																	.withAppendedId(
+																			TodoTaskAttachment.TODOTASKATTACHMENT_CONTENT_URI,
+																			_4updatingTodoTaskAttachment
+																					.getRowId()),
+															_todoTaskAttachmentContentValues,
+															null, null);
+												}
+											}
+
+										}).start();
+									}
+								}
+							}
+
+							// delete the local storage enterprise to-do list
+							// task attachment for synchronizing
+							for (Long _localStorageUETDTASAttachmentId : _localStorageUETodoTaskAttachmentsAttachmentIdAndBeanMap
+									.keySet()) {
+								// get the for deleting to-do list task
+								// attachment
+								IApproveTaskAttachmentBean _4deletingTodoTaskAttachment = _localStorageUETodoTaskAttachmentsAttachmentIdAndBeanMap
+										.get(_localStorageUETDTASAttachmentId);
+
+								// check its data dirty type
+								if (LocalStorageDataDirtyType.DELETE == _4deletingTodoTaskAttachment
+										.getLocalStorageDataDirtyType()) {
+									Log.d(LOG_TAG,
+											"The to-do list task attachment whose id = "
+													+ _4deletingTodoTaskAttachment
+															.getAttachmentId()
+													+ " will delete from local storage database");
+
+									_mContentResolver.delete(
+											ContentUris
+													.withAppendedId(
+															TodoTaskAttachment.TODOTASKATTACHMENT_CONTENT_URI,
+															_4deletingTodoTaskAttachment
 																	.getRowId()),
 											null, null);
 								}

@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 
 import com.futuo.iapprove.account.AccountSetting4FirstActivity;
 import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity;
-import com.futuo.iapprove.utils.AppDataSaveRestoreUtil;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.richitec.commontoolkit.activityextension.AppLaunchActivity;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
@@ -25,7 +25,7 @@ public class IApproveAppLaunchActivity extends AppLaunchActivity {
 				AccountSetting4FirstActivity.class);
 
 		// load login account
-		AppDataSaveRestoreUtil.loadAccount();
+		AppDataSaveRestoreUtils.loadAccount();
 
 		// get login user
 		UserBean _loginUser = UserManager.getInstance().getUser();

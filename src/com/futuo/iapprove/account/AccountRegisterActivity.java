@@ -15,9 +15,7 @@ public class AccountRegisterActivity extends IApproveNavigationActivity {
 		setContentView(R.layout.account_register_activity_layout);
 
 		// set subViews
-		// set title
-		//
-
+		// test by ares
 		//
 	}
 

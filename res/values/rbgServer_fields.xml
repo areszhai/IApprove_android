@@ -9,6 +9,12 @@
     <string name="rbgServer_userSigReqParam_userName" translatable="false">logname</string>
     <string name="rbgServer_userSigReqParam_userKey" translatable="false">logpassword</string>
 
+    <!-- approve image and audio file -->
+    <string name="rbgServer_fileReqParam_enterpriseId" translatable="false">enterpriseid</string>
+    <string name="rbgServer_fileReqParam_name" translatable="false">name</string>
+    <string name="rbgServer_fileReqParam_originName" translatable="false">originalname</string>
+    <string name="rbgServer_fileReqParam_suffix" translatable="false">suffix</string>
+
     <!-- account -->
     <!-- account login -->
     <string name="rbgServer_accountLoginReqParam_action" translatable="false">LoginValidationPass</string>
@@ -56,7 +62,13 @@
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_item_physicalName" translatable="false">physicsname</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_itemValueList" translatable="false">tablefieldvalue</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachmentList" translatable="false">fileinfolist</string>
-    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_currentState" translatable="false">currentState</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_id" translatable="false">id</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_name" translatable="false">name</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_originName" translatable="false">originalname</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_suffix" translatable="false">suffix</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_armSuffix" translatable="false">arm</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_wavSuffix" translatable="false">wav</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_jpgSuffix" translatable="false">jpg</string>
 
     <!-- to-do list -->
     <string name="rbgServer_getUserEnterpriseTodoListTaskReqParam_action" translatable="false">getAllProcessInfo</string>

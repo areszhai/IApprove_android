@@ -15,9 +15,7 @@ public class AccountRetrievePwdActivity extends IApproveNavigationActivity {
 		setContentView(R.layout.account_retrieve_pwd_activity_layout);
 
 		// set subViews
-		// set title
-		//
-
+		// test by ares
 		//
 	}
 

@@ -8,28 +8,37 @@
     <WebView
         android:id="@+id/support_webView"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:visibility="gone" />
+        android:layout_height="fill_parent" />
 
-    <LinearLayout
-        android:id="@+id/support_loading_linearLayout"
+    <FrameLayout
+        android:id="@+id/support_loading_frameLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:gravity="center"
-        android:orientation="vertical" >
+        android:background="@color/half_white_transparent" >
 
-        <TextView
-            android:id="@+id/support_loading_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_gravity="center"
+            android:background="@drawable/webview_loading_bg"
+            android:gravity="center"
+            android:orientation="vertical" >
 
-        <ProgressBar
-            android:id="@+id/support_loading_progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:max="100"
-            android:progress="0" />
-    </LinearLayout>
+            <ProgressBar
+                android:id="@+id/support_loading_progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="0" />
+
+            <TextView
+                android:id="@+id/support_loading_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </FrameLayout>
 
 </FrameLayout>

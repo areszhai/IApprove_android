@@ -380,6 +380,7 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 				dismiss();
 
 				// set address book contact alias
+				// test by ares
 				//
 			}
 

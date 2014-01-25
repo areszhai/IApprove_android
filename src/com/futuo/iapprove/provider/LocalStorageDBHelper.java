@@ -14,6 +14,7 @@ import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormTypes;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.Forms;
 import com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider.EnterpriseProfiles;
+import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskAttachments;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskFormItems;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks;
 
@@ -43,11 +44,12 @@ public class LocalStorageDBHelper extends SQLiteOpenHelper {
 		// create user enterprise profile table
 		db.execSQL(getSqlStatementFromAssets(EnterpriseProfiles.ENTERPRISE_PROFILES_TABLE));
 
-		// create user enterprise to-do list task, task advice and task form
-		// item info table
+		// create user enterprise to-do list task, task advice, task form item
+		// info and task attachment table
 		db.execSQL(getSqlStatementFromAssets(TodoTasks.TODOTASKS_TABLE));
 		db.execSQL(getSqlStatementFromAssets(TodoTasks.TODOTASK_ADVICES_TABLE));
 		db.execSQL(getSqlStatementFromAssets(TodoTaskFormItems.TODOTASKFORMITEMINFOS_TABLE));
+		db.execSQL(getSqlStatementFromAssets(TodoTaskAttachments.TODOTASKATTACHMENTS_TABLE));
 
 		// create user enterprise to-do list task advice view
 		db.execSQL(getSqlStatementFromAssets(TodoTasks.USERENTERPRISE_TODOTASK_ADVICE_VIEW));

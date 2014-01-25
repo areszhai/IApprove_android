@@ -65,6 +65,11 @@
     <string name="naa_morePlus_cameraInput_label">Camera</string>
     <string name="naa_morePlus_applicationsInput_label">Apps</string>
 
+    <!-- new approve application or to-do list task approve submit contacts slidingDrawer -->
+    <string name="naa6tdt_submitContactSelect_slidingDrawer_handleNav_cancelSelectSubmitConatcts_imageButton_contentDescription" translatable="false">new approve application or to-do list task approve cancel select contacts imageButton</string>
+    <string name="naa6tdt_submitContactSelect_slidingDrawer_handleNav_title">Select approve submit contact</string>
+    <string name="naa6tdt_submitContactSelect_slidingDrawer_handleNav_doneSelectSubmitContacts_button_title">Done</string>
+
     <!-- new approve application form item editor activity -->
     <string name="title_activity_naa_form_item_editor" translatable="false">NAAFormItemEditorActivity</string>
     <string name="naafie_saveInfo_barButtonItem_title">Save</string>
@@ -92,7 +97,11 @@
     <string name="title_activity_todo_task_approve" translatable="false">TodoTaskApproveActivity</string>
     <string name="tdta_form_info_label">Form Info</string>
     <string name="tdta_attachment_info_label">Attachment Info</string>
+    <string name="task_imageAttachment_imageView_contentDescription" translatable="false">iApprove task image attachment imageView</string>
+    <string name="task_voiceAttachment_play_imageView_contentDescription" translatable="false">iApprove task image attachment play imageView</string>
+    <string name="task_voiceAttachment_voiceDuration_format" translatable="false">%d\"</string>
     <string name="tdta_advice_info_label">Advice Info</string>
+    <string name="task_advice_advisorAvatar_imageView_contentDescription" translatable="false">iApprove task advice advisor avatar imageView</string>
     <string name="tdta_submitContact_label_textView_text">Recipient:</string>
     <string name="tdta_add_submitContact_imageButton_contentDescription" translatable="false">to-do list task approve add new submit contact imageButton</string>
     <string name="tdta_adviceSwitch_onText">Agree</string>
@@ -110,6 +119,10 @@
     <string name="abc_mobilePhone_type_name">Mobile</string>
     <string name="abc_officePhone_type_name">Office</string>
     <string name="abc_othersPhone_type_name">Others</string>
+
+    <!-- address book contact sex -->
+    <string name="abc_male_sex_name">Male</string>
+    <string name="abc_female_sex_name">Female</string>
 
     <!-- address book contact detail info activity -->
     <string name="title_activity_abcontact_detail_info" translatable="false">ABContactDetailInfoActivity</string>
@@ -129,10 +142,10 @@
     <!-- popup window -->
     <string name="common_popupWindow_cancelButton_title">Cancel</string>
 
-    <!-- address book contact more operation popup window -->
+    <!-- address book contact more operation select popup window -->
     <string name="abcmospw_moreOperationSelect_aliasOperationButton_title">Alias</string>
 
-    <!-- address book contact phone operation popup window -->
+    <!-- address book contact phone operation select popup window -->
     <string name="abcpospw_phoneOperationSelect_title_format">Select operation with %d</string>
     <string name="abcpospw_phoneOperationSelect_callOperationButton_title">Call</string>
     <string name="abcpospw_phoneOperationSelect_smsOperationButton_title">SMS</string>
@@ -178,14 +191,42 @@
     <string name="upst_emailUserProfileSettingFormItem_label">Email</string>
     <string name="upst_noteUserProfileSettingFormItem_label">What\'s up</string>
 
+    <!-- user avatar setting photo source select popup window -->
+    <string name="uaspsspw_photoSourceSelect_takePhotoOperationButton_title">Take photo</string>
+    <string name="uaspsspw_photoSourceSelect_choosePhotoOperationButton_title">Choose photo</string>
+
+    <!-- user profile setting form item editor activity -->
+    <string name="title_activity_user_profile_setting_form_item_editor" translatable="false">UserProfileSettingFormItemEditorActivity</string>
+    <string name="upsfie_saveInfo_barButtonItem_title">Save</string>
+
     <!-- support activity -->
     <string name="title_activity_support" translatable="false">SupportActivity</string>
+    <string name="support_nav_title">Support</string>
+    <string name="supportLoading_textView_text_format">Loading&#8230;, %d%%</string>
 
     <!-- feedback activity -->
     <string name="title_activity_feedback" translatable="false">FeedbackActivity</string>
+    <string name="feedback_nav_title">Feedback</string>
+    <string name="feedback_send_barButtonItem_title">Send</string>
 
     <!-- about activity -->
     <string name="title_activity_about" translatable="false">AboutActivity</string>
+    <string name="about_nav_title">About</string>
+    <!-- product -->
+    <string name="ab_productSmallIcon_imageView_contentDescription" translatable="false">iApprove small icon imageView</string>
+    <string name="ab_productName">Walkwork</string>
+    <string name="ab_productDescription">Intelligent Choice For Highly Efficient People</string>
+    <string name="ab_productVersion_label">Version:</string>
+    <!-- privacy -->
+    <string name="ab_termsAndPrivacy">Terms and Privacy</string>
+    <!-- copyright -->
+    <string name="ab_copyright" translatable="false">Copyright © 2013</string>
+    <string name="ab_copyright_ownership">Nanjing Futuo Network Tech Ltd., All Rights Reserved</string>
+
+    <!-- privacy activity -->
+    <string name="title_activity_privacy" translatable="false">PrivacyActivity</string>
+    <string name="privacy_nav_title">Terms and Privacy</string>
+    <string name="tp_bottomToolbar_operation_imageButton_contentDescription" translatable="false">terms and privacy bottom toolbar operation imageButton</string>
 
     <!-- iApprove exit alert dialog -->
     <string name="iApprove_exitAlertDialog_title">IApprove remind</string>

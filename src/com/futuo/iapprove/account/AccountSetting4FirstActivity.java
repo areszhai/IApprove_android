@@ -74,6 +74,7 @@ public class AccountSetting4FirstActivity extends NavigationActivity {
 				break;
 
 			case AccountSetting4FirstRequestCode.ACCOUNT_REGISTER_REQCODE:
+				// test by ares
 				//
 				break;
 			}

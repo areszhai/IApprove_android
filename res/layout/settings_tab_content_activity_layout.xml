@@ -143,7 +143,7 @@
             android:id="@+id/st_user_logout_button"
             android:layout_width="fill_parent"
             android:layout_height="44dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/user_logout_button_bg"
             android:shadowColor="@android:color/black"
             android:shadowDx="0"

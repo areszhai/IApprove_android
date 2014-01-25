@@ -3,8 +3,12 @@
 
     <!-- approve remote background server url -->
     <string name="server_url" translatable="false">http://sync.walkwork.net/TouchRemoting_IF_Super</string>
-    <!-- <string name="server_url" translatable="false">http://192.168.1.117:8080/TouchRemoting_IF_Super</string> -->
+    <!-- <string name="server_url" translatable="false">http://192.168.1.118:8080/TouchRemoting_IF_Super</string> -->
 
+
+    <!-- approve image and audio file url -->
+    <string name="imageFile_url" translatable="false">/enterpries/imgMobile</string>
+    <string name="audioFile_url" translatable="false">/enterpries/fileMobile</string>
 
     <!-- account -->
     <!-- account login -->
@@ -24,5 +28,8 @@
     <string name="get_enterpriseFormType_url" translatable="false">/enterpries/manageMobile</string>
     <string name="get_enterpriseForm_url" translatable="false">/enterpries/manageMobile</string>
     <string name="get_enterpriseFormInfo_url" translatable="false">/enterpries/fieldMobile</string>
+
+    <!-- support -->
+    <string name="support_url" translatable="false">/help</string>
 
 </resources>

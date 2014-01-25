@@ -151,15 +151,17 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 	}
 
 	// get local storage enterprise form types(form type id as key and bean as
-	// value map) or forms(form id as key and bean as value map) with cursor and
-	// bean class
-	private Map<Long, ?> getLocalStorageEFT6FSIdAndBeanMap(Cursor cursor,
+	// value map) or forms(form id as key and bean as value map) or form
+	// items(form item id as key and bean as value map) with cursor and bean
+	// class
+	private Map<Long, ?> getLocalStorageEFT6F6FISIdAndBeanMap(Cursor cursor,
 			Class<?> beanCls) {
-		Map<Long, Object> _localStorageEFT6FSIdAndBeanMap = new HashMap<Long, Object>();
+		Map<Long, Object> _localStorageEFT6F6FISIdAndBeanMap = new HashMap<Long, Object>();
 
 		// check the cursor
 		if (null != cursor) {
-			// set all local storage enterprise form types or forms for deleting
+			// set all local storage enterprise form types or forms or form
+			// items for deleting
 			while (cursor.moveToNext()) {
 				// check bean class
 				if (FormTypeBean.class == beanCls) {
@@ -171,7 +173,7 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 							.setLocalStorageDataDirtyType(LocalStorageDataDirtyType.DELETE);
 
 					// put form type id and bean in
-					_localStorageEFT6FSIdAndBeanMap.put(
+					_localStorageEFT6F6FISIdAndBeanMap.put(
 							_4deletingFormType.getTypeId(), _4deletingFormType);
 				} else if (FormBean.class == beanCls) {
 					// get for deleting form
@@ -182,7 +184,7 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 							.setLocalStorageDataDirtyType(LocalStorageDataDirtyType.DELETE);
 
 					// put form id and bean in
-					_localStorageEFT6FSIdAndBeanMap.put(
+					_localStorageEFT6F6FISIdAndBeanMap.put(
 							_4deletingForm.getFormId(), _4deletingForm);
 				} else if (FormItemBean.class == beanCls) {
 					// get for deleting form item
@@ -193,7 +195,7 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 							.setLocalStorageDataDirtyType(LocalStorageDataDirtyType.DELETE);
 
 					// put form item id and bean in
-					_localStorageEFT6FSIdAndBeanMap.put(
+					_localStorageEFT6F6FISIdAndBeanMap.put(
 							_4deletingFormItem.getItemId(), _4deletingFormItem);
 				} else {
 					Log.e(LOG_TAG, "Unrecognized bean class = " + beanCls);
@@ -207,7 +209,7 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 			cursor.close();
 		}
 
-		return _localStorageEFT6FSIdAndBeanMap;
+		return _localStorageEFT6F6FISIdAndBeanMap;
 	}
 
 	// generate get enterprise form post http request param with form type id
@@ -358,7 +360,7 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 							// get local storage enterprise form types form type
 							// id as key and bean as value map
 							@SuppressWarnings("unchecked")
-							Map<Long, FormTypeBean> _localStorageEFTSFormTypeIdAndBeanMap = (Map<Long, FormTypeBean>) getLocalStorageEFT6FSIdAndBeanMap(
+							Map<Long, FormTypeBean> _localStorageEFTSFormTypeIdAndBeanMap = (Map<Long, FormTypeBean>) getLocalStorageEFT6F6FISIdAndBeanMap(
 									_mContentResolver.query(
 											ContentUris
 													.withAppendedId(
@@ -556,7 +558,7 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 							// get local storage enterprise forms form id as key
 							// and bean as value map
 							@SuppressWarnings("unchecked")
-							Map<Long, FormBean> _localStorageEFSFormIdAndBeanMap = (Map<Long, FormBean>) getLocalStorageEFT6FSIdAndBeanMap(
+							Map<Long, FormBean> _localStorageEFSFormIdAndBeanMap = (Map<Long, FormBean>) getLocalStorageEFT6F6FISIdAndBeanMap(
 									_mContentResolver
 											.query(Form.FORMS_CONTENT_URI,
 													null,
@@ -742,7 +744,7 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 							// get local storage enterprise form items form item
 							// id as key and bean as value map
 							@SuppressWarnings("unchecked")
-							Map<Long, FormItemBean> _localStorageEFISFormItemIdAndBeanMap = (Map<Long, FormItemBean>) getLocalStorageEFT6FSIdAndBeanMap(
+							Map<Long, FormItemBean> _localStorageEFISFormItemIdAndBeanMap = (Map<Long, FormItemBean>) getLocalStorageEFT6F6FISIdAndBeanMap(
 									_mContentResolver
 											.query(FormItem.FORMITEMS_CONTENT_URI,
 													null,

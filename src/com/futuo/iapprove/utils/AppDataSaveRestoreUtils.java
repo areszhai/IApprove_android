@@ -8,7 +8,8 @@ import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
 import com.richitec.commontoolkit.utils.DataStorageUtils;
 
-public class AppDataSaveRestoreUtil {
+public class AppDataSaveRestoreUtils {
+
 	public static void onSaveInstanceState(Bundle outState) {
 		UserBean user = UserManager.getInstance().getUser();
 		outState.putString(IAUserLocalStorageAttributes.USER_LOGINNAME.name(),
@@ -24,7 +25,6 @@ public class AppDataSaveRestoreUtil {
 		} else if (user.getName() == null || user.getName().equals("")) {
 			loadAccount();
 		}
-
 	}
 
 	public static void loadAccount() {
@@ -42,4 +42,5 @@ public class AppDataSaveRestoreUtil {
 
 		UserManager.getInstance().setUser(user);
 	}
+
 }

@@ -122,7 +122,8 @@ public class NAAFormItemEditorActivity extends IApproveNavigationActivity {
 			// set its input type if needed
 			if (FormItemType.TEXTEDIT_NUMBER == _mEditorFormItemType) {
 				_mEditorFormItemEditText
-						.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+						.setInputType(InputType.TYPE_CLASS_NUMBER
+								| InputType.TYPE_NUMBER_FLAG_DECIMAL);
 			}
 
 			// check editor form item info value and set its text

@@ -453,10 +453,10 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseFormTypeTableAccessType {
 
 		// enterprise form type table access type
-		private static final int FORMTYPES = 50;
-		private static final int FORMTYPE = 51;
-		private static final int FORMTYPE_ID = 52;
-		private static final int FORMTYPE_ENTERPRISEID = 53;
+		private static final int FORMTYPES = 60;
+		private static final int FORMTYPE = 61;
+		private static final int FORMTYPE_ID = 62;
+		private static final int FORMTYPE_ENTERPRISEID = 63;
 
 	}
 
@@ -503,9 +503,9 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseFormTableAccessType {
 
 		// enterprise form table access type
-		private static final int FORMS = 60;
-		private static final int FORM = 61;
-		private static final int FORM_ID = 62;
+		private static final int FORMS = 70;
+		private static final int FORM = 71;
+		private static final int FORM_ID = 72;
 
 	}
 
@@ -554,9 +554,9 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseFormItemTableAccessType {
 
 		// enterprise form item table access type
-		private static final int FORMITEMS = 70;
-		private static final int FORMITEM = 71;
-		private static final int FORMITEM_ID = 72;
+		private static final int FORMITEMS = 80;
+		private static final int FORMITEM = 81;
+		private static final int FORMITEM_ID = 82;
 
 	}
 

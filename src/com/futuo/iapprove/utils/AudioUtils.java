@@ -98,6 +98,27 @@ public class AudioUtils {
 		return _audioPlayerSingletonInstance;
 	}
 
+	// get recorded audio duration with audio file path
+	public static int getRecorderAudioDuration(String audioFilePath) {
+		int _audioDuration = 0;
+
+		// check audio file path
+		if (null != audioFilePath && !"".equalsIgnoreCase(audioFilePath)) {
+			// get audio duration
+			try {
+				_audioDuration = getAudioPlayerInstance().getAudioDuration(
+						audioFilePath);
+			} catch (Exception e) {
+				Log.e(LOG_TAG, "Get recorded audio duration = " + audioFilePath
+						+ " error, exception message = " + e.getMessage());
+
+				e.printStackTrace();
+			}
+		}
+
+		return _audioDuration;
+	}
+
 	// play recorded audio with audio file path
 	public static void playRecorderAudio(String audioFilePath) {
 		// check audio file path
@@ -183,6 +204,9 @@ public class AudioUtils {
 	// audio player
 	static class AudioPlayer {
 
+		// milliseconds per second
+		private static Long MILLISECONDS_PER_SECOND = 1000L;
+
 		// media player
 		private MediaPlayer _mMediaPlayer;
 
@@ -191,6 +215,24 @@ public class AudioUtils {
 
 			// initialized media player
 			_mMediaPlayer = new MediaPlayer();
+		}
+
+		// get audio duration
+		public int getAudioDuration(String audioDataSource)
+				throws IllegalArgumentException, SecurityException,
+				IllegalStateException, IOException {
+			// reset media player
+			_mMediaPlayer.reset();
+
+			// set audio stream type and data source
+			_mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			_mMediaPlayer.setDataSource(audioDataSource);
+
+			// prepare media player
+			_mMediaPlayer.prepare();
+
+			// return audio duration
+			return (int) (_mMediaPlayer.getDuration() / MILLISECONDS_PER_SECOND);
 		}
 
 		// play audio

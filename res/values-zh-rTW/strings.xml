@@ -45,6 +45,10 @@
     <string name="naa_morePlus_cameraInput_label">拍摄</string>
     <string name="naa_morePlus_applicationsInput_label">程序</string>
 
+    <!-- new approve application or to-do list task approve submit contacts slidingDrawer -->
+    <string name="naa6tdt_submitContactSelect_slidingDrawer_handleNav_title">选择审批人</string>
+    <string name="naa6tdt_submitContactSelect_slidingDrawer_handleNav_doneSelectSubmitContacts_button_title">完成</string>
+
     <!-- new approve application form item editor activity -->
     <string name="naafie_saveInfo_barButtonItem_title">保存</string>
 
@@ -80,6 +84,10 @@
     <string name="abc_officePhone_type_name">工作</string>
     <string name="abc_othersPhone_type_name">其他</string>
 
+    <!-- address book contact sex -->
+    <string name="abc_male_sex_name">男</string>
+    <string name="abc_female_sex_name">女</string>
+
     <!-- address book contact detail info activity -->
     <string name="abcontact_detailInfo_nav_title">详细信息</string>
     <string name="abcdi_approveNumber_text_format">审批号：%d</string>
@@ -94,10 +102,10 @@
     <!-- popup window -->
     <string name="common_popupWindow_cancelButton_title">取消</string>
 
-    <!-- address book contact more operation popup window -->
+    <!-- address book contact more operation select popup window -->
     <string name="abcmospw_moreOperationSelect_aliasOperationButton_title">备注名</string>
 
-    <!-- address book contact phone operation popup window -->
+    <!-- address book contact phone operation select popup window -->
     <string name="abcpospw_phoneOperationSelect_title_format">选择对 %d 的操作</string>
     <string name="abcpospw_phoneOperationSelect_callOperationButton_title">呼叫</string>
     <string name="abcpospw_phoneOperationSelect_smsOperationButton_title">短信息</string>
@@ -111,8 +119,8 @@
     <string name="settings_tab7nav_title">设置</string>
     <string name="st_userProfileSetting_userApproveNumber_format">审批号：%d</string>
     <string name="st_rateSettingFormItem_label">去评分</string>
-    <string name="st_supportSettingFormItem_label">支持</string>
-    <string name="st_feedbackSettingFormItem_label">反馈</string>
+    <string name="st_supportSettingFormItem_label">帮助与支持</string>
+    <string name="st_feedbackSettingFormItem_label">意见反馈</string>
     <string name="st_aboutSettingFormItem_label">关于</string>
     <string name="st_check4updateSettingFormItem_label">检查新版本</string>
     <string name="st_user_logout_button_title">退出登录</string>
@@ -130,6 +138,35 @@
     <string name="upst_officePhoneUserProfileSettingFormItem_label">工作电话</string>
     <string name="upst_emailUserProfileSettingFormItem_label">邮件</string>
     <string name="upst_noteUserProfileSettingFormItem_label">个性签名</string>
+
+    <!-- user avatar setting photo source select popup window -->
+    <string name="uaspsspw_photoSourceSelect_takePhotoOperationButton_title">拍照</string>
+    <string name="uaspsspw_photoSourceSelect_choosePhotoOperationButton_title">选择本地图片</string>
+
+    <!-- user profile setting form item editor activity -->
+    <string name="upsfie_saveInfo_barButtonItem_title">保存</string>
+
+    <!-- support activity -->
+    <string name="support_nav_title">帮助与支持</string>
+    <string name="supportLoading_textView_text_format">正在加载&#8230;，%d%%</string>
+
+    <!-- feedback activity -->
+    <string name="feedback_nav_title">意见反馈</string>
+    <string name="feedback_send_barButtonItem_title">发送</string>
+
+    <!-- about activity -->
+    <string name="about_nav_title">关于</string>
+    <!-- product -->
+    <string name="ab_productName">审批</string>
+    <string name="ab_productDescription">高效能人士的智慧选择</string>
+    <string name="ab_productVersion_label">版本号：</string>
+    <!-- privacy -->
+    <string name="ab_termsAndPrivacy">使用条款和隐私政策</string>
+    <!-- copyright -->
+    <string name="ab_copyright_ownership">南京富拓网络科技有限公司 保留所有权利</string>
+
+    <!-- privacy activity -->
+    <string name="privacy_nav_title">使用条款和隐私政策</string>
 
     <!-- iApprove exit alert dialog -->
     <string name="iApprove_exitAlertDialog_title">审批提醒</string>
