@@ -227,19 +227,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 		// set to-do list task approve submit contact list cursor adapter
 		_mSubmitContactListView
-				.setAdapter(new SimpleCursorAdapter(
-						this,
-						android.R.layout.simple_list_item_multiple_choice,
-						getContentResolver()
-								.query(ContentUris
-										.withAppendedId(
-												Employee.ENTERPRISE_CONTENT_URI,
-												IAUserExtension
-														.getUserLoginEnterpriseId(_mLoginUser)),
-										null, null, null, null),
-						new String[] { Employee.NAME },
-						new int[] { android.R.id.text1 },
-						CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER));
+				.setAdapter(new SubmitContactListCursorAdapter());
 
 		// set its choice mode
 		_mSubmitContactListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -285,6 +273,9 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 			// show navigation bar
 			((RelativeLayout) findViewById(R.id.navBar_relativeLayout))
 					.setVisibility(View.VISIBLE);
+
+			// clear choices
+			_mSubmitContactListView.clearChoices();
 
 			// close submit contact list sliding drawer
 			_mSubmitContactListSlidingDrawer.animateClose();
@@ -683,6 +674,42 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 	}
 
+	// submit contact list cursor adapter
+	class SubmitContactListCursorAdapter extends SimpleCursorAdapter {
+
+		public SubmitContactListCursorAdapter() {
+			super(
+					TodoTaskApproveActivity.this,
+					android.R.layout.simple_list_item_multiple_choice,
+					getContentResolver()
+							.query(ContentUris
+									.withAppendedId(
+											Employee.ENTERPRISE_CONTENT_URI,
+											IAUserExtension
+													.getUserLoginEnterpriseId(_mLoginUser)),
+									null, null, null, null),
+					new String[] { Employee.NAME },
+					new int[] { android.R.id.text1 },
+					CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+		}
+
+		@Override
+		protected void onContentChanged() {
+			// auto requery
+			super.onContentChanged();
+
+			// need to change to-do task approve submit contact query cursor
+			// change
+			// to-do task approve submit contact query cursor
+			this.changeCursor(getContentResolver().query(
+					ContentUris.withAppendedId(Employee.ENTERPRISE_CONTENT_URI,
+							IAUserExtension
+									.getUserLoginEnterpriseId(_mLoginUser)),
+					null, null, null, null));
+		}
+
+	}
+
 	// core service connection
 	class CoreServiceConnection implements ServiceConnection {
 
@@ -724,6 +751,9 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 			((RelativeLayout) findViewById(R.id.navBar_relativeLayout))
 					.setVisibility(View.VISIBLE);
 
+			// clear choices
+			_mSubmitContactListView.clearChoices();
+
 			// close submit contact list sliding drawer
 			_mSubmitContactListSlidingDrawer.animateClose();
 		}
@@ -743,6 +773,9 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 			// show navigation bar
 			((RelativeLayout) findViewById(R.id.navBar_relativeLayout))
 					.setVisibility(View.VISIBLE);
+
+			// clear choices
+			_mSubmitContactListView.clearChoices();
 
 			// close submit contact list sliding drawer
 			_mSubmitContactListSlidingDrawer.animateClose();

@@ -190,18 +190,8 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 			_mTitleDataFetchingRelativeLayout = (RelativeLayout) findViewById(R.id.tdlt_fetchingData_relativeLayout);
 
 			// init title enterprises spinner cursor adapter
-			_mTitleEnterprisesSpinnerCursorAdapter = new SimpleCursorAdapter(
-					context,
-					R.layout.todo_list_tab_content_activity_title_spinner_item_layout,
-					context.getContentResolver()
-							.query(EnterpriseProfile.ENTERPRISEPROFILES_CONTENT_URI,
-									null,
-									EnterpriseProfile.USER_ENTERPRISEPROFILES_WITHLOGINNAME_CONDITION,
-									new String[] { _mLoginUser.getName() },
-									null),
-					new String[] { EnterpriseProfile.ENTERPRISE_ABBREVIATION },
-					new int[] { android.R.id.text1 },
-					CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+			_mTitleEnterprisesSpinnerCursorAdapter = new TitleEnterprisesSpinnerCursorAdapter(
+					context);
 
 			// set title enterprises spinner drop down view resource
 			_mTitleEnterprisesSpinnerCursorAdapter
@@ -247,6 +237,40 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 		}
 
 		// inner class
+		// title enterprises spinner cursor adapter
+		class TitleEnterprisesSpinnerCursorAdapter extends SimpleCursorAdapter {
+
+			public TitleEnterprisesSpinnerCursorAdapter(Context context) {
+				super(
+						context,
+						R.layout.todo_list_tab_content_activity_title_spinner_item_layout,
+						context.getContentResolver()
+								.query(EnterpriseProfile.ENTERPRISEPROFILES_CONTENT_URI,
+										null,
+										EnterpriseProfile.USER_ENTERPRISEPROFILES_WITHLOGINNAME_CONDITION,
+										new String[] { _mLoginUser.getName() },
+										null),
+						new String[] { EnterpriseProfile.ENTERPRISE_ABBREVIATION },
+						new int[] { android.R.id.text1 },
+						CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+			}
+
+			@Override
+			protected void onContentChanged() {
+				// auto requery
+				super.onContentChanged();
+
+				// need to change title enterprises spinner query cursor change
+				// title enterprises spinner query cursor
+				this.changeCursor(getContentResolver()
+						.query(EnterpriseProfile.ENTERPRISEPROFILES_CONTENT_URI,
+								null,
+								EnterpriseProfile.USER_ENTERPRISEPROFILES_WITHLOGINNAME_CONDITION,
+								new String[] { _mLoginUser.getName() }, null));
+			}
+
+		}
+
 		// title enterprises spinner on item selected listener
 		class TitleEnterprisesSpinnerOnItemSelectedListener implements
 				OnItemSelectedListener {

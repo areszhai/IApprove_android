@@ -1,280 +1,392 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".tab7tabcontent.newapproveapplication.NewApproveApplicationActivity" >
 
     <RelativeLayout
-        android:id="@+id/naa_footer_relativeLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
-
-        <RelativeLayout
-            android:id="@+id/naa_bottomToolbar_relativeLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="54dp"
-            android:background="@drawable/img_naa_bottomtoolbar_bg"
-            android:paddingBottom="4dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:paddingTop="4dp" >
-
-            <FrameLayout
-                android:id="@+id/naa_textAudio_inputModeChange_frameLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true" >
-
-                <ImageButton
-                    android:id="@+id/naa_change2textInputMode_imageButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@null"
-                    android:contentDescription="@string/naa_textAudio_inputModeChange_imageButton_contentDescription"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/naa_change2textinput_imgbtn" />
-
-                <ImageButton
-                    android:id="@+id/naa_change2voiceInputMode_imageButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@null"
-                    android:contentDescription="@string/naa_textAudio_inputModeChange_imageButton_contentDescription"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/naa_change2voiceinput_imgbtn"
-                    android:visibility="gone" />
-            </FrameLayout>
-
-            <ImageButton
-                android:id="@+id/naa_morePlusInput_imageButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/naa_textAudio_inputModeChange_frameLayout"
-                android:background="@null"
-                android:contentDescription="@string/naa_morePlusInput_imageButton_contentDescription"
-                android:scaleType="centerCrop"
-                android:src="@drawable/naa_moreplusinput_imgbtn" />
-
-            <FrameLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="2dp"
-                android:layout_toRightOf="@id/naa_morePlusInput_imageButton"
-                android:paddingBottom="2dp"
-                android:paddingTop="2dp" >
-
-                <RelativeLayout
-                    android:id="@+id/naa_note_parent_relativeLayout"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" >
-
-                    <Button
-                        android:id="@+id/naa_note_send_button"
-                        android:layout_width="56dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="2dp"
-                        android:background="@drawable/naa_textvoiceinput_btn_bg"
-                        android:enabled="false"
-                        android:text="@string/naa_noteSend_button_title"
-                        android:textColor="@color/naa_note_send_button_title_textcolor"
-                        android:textSize="16sp" />
-
-                    <EditText
-                        android:id="@+id/naa_note_editText"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_centerVertical="true"
-                        android:layout_marginBottom="2dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_toLeftOf="@id/naa_note_send_button"
-                        android:background="@drawable/naa_note_edittext_bg"
-                        android:inputType="text"
-                        android:textSize="16sp" >
-
-                        <requestFocus />
-                    </EditText>
-                </RelativeLayout>
-
-                <Button
-                    android:id="@+id/naa_toggleAudioRecording_button"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/naa_textvoiceinput_btn_bg"
-                    android:shadowColor="@android:color/white"
-                    android:shadowDx="0"
-                    android:shadowDy="1"
-                    android:shadowRadius="1"
-                    android:text="@string/naa_toggleAudioRecording_button_normal_title" />
-            </FrameLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/naa_morePlusInput_parent_relativeLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="216dp"
-            android:layout_below="@id/naa_bottomToolbar_relativeLayout"
-            android:background="@drawable/img_naa_moreplus_bg"
-            android:visibility="gone" >
-
-            <LinearLayout
-                android:id="@+id/naa_morePlusInput_pageStatus_linearLayout"
-                android:layout_width="fill_parent"
-                android:layout_height="22dp"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal" >
-            </LinearLayout>
-
-            <GridView
-                android:id="@+id/naa_morePlusInput_gridView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_above="@id/naa_morePlusInput_pageStatus_linearLayout"
-                android:cacheColorHint="@android:color/transparent"
-                android:fadingEdge="none"
-                android:gravity="center"
-                android:horizontalSpacing="4dp"
-                android:listSelector="@android:color/transparent"
-                android:numColumns="4"
-                android:paddingBottom="8dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="8dp"
-                android:scrollbars="none"
-                android:verticalSpacing="2dp" >
-            </GridView>
-        </RelativeLayout>
-    </RelativeLayout>
-
-    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/naa_footer_relativeLayout"
-        android:padding="12dp"
-        android:scrollbars="none" >
+        android:background="@android:color/transparent" >
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/naa_footer_relativeLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_alignParentBottom="true" >
 
-            <FrameLayout
+            <RelativeLayout
+                android:id="@+id/naa_bottomToolbar_relativeLayout"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="54dp"
+                android:background="@drawable/img_naa_bottomtoolbar_bg"
+                android:paddingBottom="4dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:paddingTop="4dp" >
+
+                <FrameLayout
+                    android:id="@+id/naa_textAudio_inputModeChange_frameLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true" >
+
+                    <ImageButton
+                        android:id="@+id/naa_change2textInputMode_imageButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@null"
+                        android:contentDescription="@string/naa_textAudio_inputModeChange_imageButton_contentDescription"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/naa_change2textinput_imgbtn" />
+
+                    <ImageButton
+                        android:id="@+id/naa_change2voiceInputMode_imageButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@null"
+                        android:contentDescription="@string/naa_textAudio_inputModeChange_imageButton_contentDescription"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/naa_change2voiceinput_imgbtn"
+                        android:visibility="gone" />
+                </FrameLayout>
+
+                <ImageButton
+                    android:id="@+id/naa_morePlusInput_imageButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/naa_textAudio_inputModeChange_frameLayout"
+                    android:background="@null"
+                    android:contentDescription="@string/naa_morePlusInput_imageButton_contentDescription"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/naa_moreplusinput_imgbtn" />
 
                 <FrameLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/common_form_bg" >
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="2dp"
+                    android:layout_toRightOf="@id/naa_morePlusInput_imageButton"
+                    android:paddingBottom="2dp"
+                    android:paddingTop="2dp" >
 
-                    <LinearLayout
-                        android:id="@+id/naa_formItemForm_linearLayout"
+                    <RelativeLayout
+                        android:id="@+id/naa_note_parent_relativeLayout"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:layout_marginTop="16dp"
-                        android:orientation="vertical"
-                        android:paddingBottom="1.5dp"
-                        android:paddingLeft="1.5dp"
-                        android:paddingRight="1.5dp" >
-                    </LinearLayout>
+                        android:visibility="gone" >
+
+                        <Button
+                            android:id="@+id/naa_note_send_button"
+                            android:layout_width="56dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="2dp"
+                            android:background="@drawable/naa_textvoiceinput_btn_bg"
+                            android:enabled="false"
+                            android:text="@string/naa_noteSend_button_title"
+                            android:textColor="@color/naa_note_send_button_title_textcolor"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/naa_note_editText"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_toLeftOf="@id/naa_note_send_button"
+                            android:background="@drawable/naa_note_edittext_bg"
+                            android:inputType="text"
+                            android:textSize="16sp" >
+
+                            <requestFocus />
+                        </EditText>
+                    </RelativeLayout>
+
+                    <Button
+                        android:id="@+id/naa_toggleAudioRecording_button"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/naa_textvoiceinput_btn_bg"
+                        android:shadowColor="@android:color/white"
+                        android:shadowDx="0"
+                        android:shadowDy="1"
+                        android:shadowRadius="1"
+                        android:text="@string/naa_toggleAudioRecording_button_normal_title" />
                 </FrameLayout>
+            </RelativeLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="20dp"
-                    android:gravity="center"
-                    android:text="@string/naa_form_info_label"
-                    android:textColor="@color/gray"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/naa_attachmentForm_parent_frameLayout"
+            <RelativeLayout
+                android:id="@+id/naa_morePlusInput_parent_relativeLayout"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_height="216dp"
+                android:layout_below="@id/naa_bottomToolbar_relativeLayout"
+                android:background="@drawable/img_naa_moreplus_bg"
                 android:visibility="gone" >
 
+                <LinearLayout
+                    android:id="@+id/naa_morePlusInput_pageStatus_linearLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="22dp"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal" >
+                </LinearLayout>
+
+                <GridView
+                    android:id="@+id/naa_morePlusInput_gridView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_above="@id/naa_morePlusInput_pageStatus_linearLayout"
+                    android:cacheColorHint="@android:color/transparent"
+                    android:fadingEdge="none"
+                    android:gravity="center"
+                    android:horizontalSpacing="4dp"
+                    android:listSelector="@android:color/transparent"
+                    android:numColumns="4"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="8dp"
+                    android:scrollbars="none"
+                    android:verticalSpacing="2dp" >
+                </GridView>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@id/naa_footer_relativeLayout"
+            android:padding="12dp"
+            android:scrollbars="none" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
                 <FrameLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/common_form_bg" >
+                    android:layout_height="wrap_content" >
 
-                    <LinearLayout
-                        android:id="@+id/naa_attachmentForm_linearLayout"
+                    <FrameLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:layout_marginTop="16dp"
-                        android:background="@android:color/transparent"
-                        android:orientation="vertical"
-                        android:paddingBottom="1.5dp"
-                        android:paddingLeft="1.5dp"
-                        android:paddingRight="1.5dp" >
+                        android:background="@drawable/common_form_bg" >
 
-                        <com.futuo.iapprove.customwidget.CommonFormSeparator
+                        <LinearLayout
+                            android:id="@+id/naa_formItemForm_linearLayout"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="6dp" />
-                    </LinearLayout>
+                            android:layout_gravity="bottom"
+                            android:layout_marginTop="16dp"
+                            android:orientation="vertical"
+                            android:paddingBottom="1.5dp"
+                            android:paddingLeft="1.5dp"
+                            android:paddingRight="1.5dp" >
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_gravity="left"
+                        android:layout_marginLeft="20dp"
+                        android:gravity="center"
+                        android:text="@string/naa_form_info_label"
+                        android:textColor="@color/gray"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </FrameLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="20dp"
-                    android:gravity="center"
-                    android:text="@string/naa_attachment_info_label"
-                    android:textColor="@color/gray"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/naa_attachmentForm_parent_frameLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:visibility="gone" >
+
+                    <FrameLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/common_form_bg" >
+
+                        <LinearLayout
+                            android:id="@+id/naa_attachmentForm_linearLayout"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginTop="16dp"
+                            android:background="@android:color/transparent"
+                            android:orientation="vertical"
+                            android:paddingBottom="1.5dp"
+                            android:paddingLeft="1.5dp"
+                            android:paddingRight="1.5dp" >
+
+                            <com.futuo.iapprove.customwidget.CommonFormSeparator
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="6dp" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_gravity="left"
+                        android:layout_marginLeft="20dp"
+                        android:gravity="center"
+                        android:text="@string/naa_attachment_info_label"
+                        android:textColor="@color/gray"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </FrameLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/common_form_bg"
+                    android:padding="12dp" >
+
+                    <RelativeLayout
+                        android:id="@+id/naa_submitContact_tip7operate_relativeLayout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:id="@+id/naa_submitContact_label_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/naa_submitContact_label_textView_text"
+                            android:textColor="@color/gray"
+                            android:textSize="15sp" />
+
+                        <ImageButton
+                            android:id="@+id/naa_add_submitContact_imageButton"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginLeft="4dp"
+                            android:layout_toRightOf="@id/naa_submitContact_label_textView"
+                            android:background="@null"
+                            android:contentDescription="@string/naa_add_submitContact_imageButton_contentDescription"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img_add_submitcontact_button" />
+                    </RelativeLayout>
+
+                    <GridLayout
+                        android:id="@+id/naa_selectedSubmitContacts_gridLayout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/naa_submitContact_tip7operate_relativeLayout"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="6dp"
+                        android:columnCount="4"
+                        android:orientation="horizontal"
+                        android:useDefaultMargins="true"
+                        android:visibility="gone" >
+                    </GridLayout>
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+    <SlidingDrawer
+        android:id="@+id/naa_submitContactList_slidingDrawer"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:content="@+id/naa_submitContactList_slidingDrawer_content"
+        android:handle="@+id/handle" >
+
+        <Button
+            android:id="@+id/handle"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp" />
+
+        <LinearLayout
+            android:id="@+id/naa_submitContactList_slidingDrawer_content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@android:color/white"
+            android:orientation="vertical" >
 
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/common_form_bg"
-                android:padding="12dp" >
+                android:layout_height="48dp"
+                android:background="@drawable/img_iapprove_navbar_bg"
+                android:orientation="horizontal" >
 
-                <TextView
-                    android:id="@+id/naa_submitContact_label_textView"
+                <ImageButton
+                    android:id="@+id/naa_cancelSelect_submitContacts_imageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:text="@string/naa_submitContact_label_textView_text"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
-
-                <ImageButton
-                    android:id="@+id/naa_add_submitContact_imageButton"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_toRightOf="@id/naa_submitContact_label_textView"
                     android:background="@null"
-                    android:contentDescription="@string/naa_add_submitContact_imageButton_contentDescription"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/img_add_submitcontact_button" />
-            </RelativeLayout>
-        </LinearLayout>
-    </ScrollView>
+                    android:contentDescription="@string/naa6tdt_submitContactSelect_slidingDrawer_handleNav_cancelSelectSubmitConatcts_imageButton_contentDescription"
+                    android:paddingBottom="9dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="6dp"
+                    android:paddingTop="10dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/img_nav_backbarbtnitem" />
 
-</RelativeLayout>
+                <Button
+                    android:id="@+id/naa_doneSelect_submitContacts_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:paddingBottom="1dp"
+                    android:paddingLeft="4dp"
+                    android:paddingTop="2dp"
+                    android:text="@string/naa6tdt_submitContactSelect_slidingDrawer_handleNav_doneSelectSubmitContacts_button_title"
+                    android:textColor="@color/done_select_newapproveapplication6todotaskapprove_submitcontacts_button_title_textcolor" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_toLeftOf="@id/naa_doneSelect_submitContacts_button"
+                    android:layout_toRightOf="@id/naa_cancelSelect_submitContacts_imageButton"
+                    android:ellipsize="middle"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="@string/naa6tdt_submitContactSelect_slidingDrawer_handleNav_title"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@android:color/white" />
+            </RelativeLayout>
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
+
+                <ListView
+                    android:id="@+id/naa_submitContact_listView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:cacheColorHint="@android:color/transparent"
+                    android:fadingEdge="none"
+                    android:headerDividersEnabled="false"
+                    android:listSelector="@android:color/transparent"
+                    android:scrollbars="none" >
+                </ListView>
+            </FrameLayout>
+        </LinearLayout>
+    </SlidingDrawer>
+
+</FrameLayout>

@@ -33,6 +33,9 @@ public class TodoTaskAdvice extends FrameLayout {
 
 		// get to-do list task advisor name textView
 		_mTodoTaskAdvisorNameTextView = (TextView) findViewById(R.id.tdlta_advisorName_textView);
+
+		// set to-do task advice clickable default
+		setClickable(true);
 	}
 
 	private TodoTaskAdvice(Context context,

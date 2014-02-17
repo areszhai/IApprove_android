@@ -226,8 +226,8 @@
 
                     <ImageButton
                         android:id="@+id/tdta_add_submitContact_imageButton"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_marginLeft="4dp"
                         android:layout_toRightOf="@id/tdta_submitContact_label_textView"
                         android:background="@null"
