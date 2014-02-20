@@ -18,6 +18,7 @@ import android.widget.TabHost.TabSpec;
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.UserEnterpriseProfileBean;
 import com.futuo.iapprove.service.CoreService;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.richitec.commontoolkit.customcomponent.CTTabSpecIndicator;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
@@ -161,6 +162,29 @@ public class IApproveTabActivity extends TabActivity {
 
 		// stop core service
 		stopService(new Intent(this, CoreService.class));
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		int currentTabIndex = savedInstanceState.getInt("current_tab");
+		if (currentTabIndex != 0) {
+			super.onRestoreInstanceState(savedInstanceState);
+		} else {
+			TabHost tabHost = getTabHost();
+			tabHost.setCurrentTab(currentTabIndex);
+		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
+		TabHost tabHost = getTabHost();
+		int currentTabIndex = tabHost.getCurrentTab();
+		outState.putInt("current_tab", currentTabIndex);
 	}
 
 	// inner class

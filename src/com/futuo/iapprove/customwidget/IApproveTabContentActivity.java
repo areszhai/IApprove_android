@@ -14,6 +14,7 @@ import com.futuo.iapprove.R;
 import com.futuo.iapprove.receiver.UserEnterpriseBroadcastReceiver;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.service.CoreService.LocalBinder;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.richitec.commontoolkit.activityextension.NavigationActivity;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
@@ -93,6 +94,20 @@ public class IApproveTabContentActivity extends NavigationActivity {
 
 			_mUserEnterpriseBroadcastReceiver = null;
 		}
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
 	}
 
 	// get core service

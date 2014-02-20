@@ -9,6 +9,7 @@ import java.util.TimerTask;
 
 import android.content.ComponentName;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -42,6 +43,7 @@ import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
@@ -59,10 +61,12 @@ import com.futuo.iapprove.form.FormItemBean;
 import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees.Employee;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems.FormItem;
 import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyType;
+import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATasks.GeneratingNAATask;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.service.CoreService.LocalBinder;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NAAFormItemEditorActivity.NAAFormItemEditorExtraData;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationActivity.NAAMorePlusInputListAdapter.NAAMorePlusInputListAdapterIconItemDataKey;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.futuo.iapprove.utils.AudioUtils;
 import com.futuo.iapprove.utils.CalculateStringUtils;
 import com.richitec.commontoolkit.customadapter.CTListAdapter;
@@ -79,6 +83,9 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 	// enterprise form type id and form id
 	private Long _mFormTypeId;
 	private Long _mFormId;
+
+	// enterprise form name
+	private String _mFormName;
 
 	// new approve application submit contact list
 	private List<ABContactBean> _mSubmitContactList;
@@ -148,9 +155,6 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		// get the extra data
 		final Bundle _extraData = getIntent().getExtras();
 
-		// define the enterprise form name
-		String _enterpriseFormName = "";
-
 		// initialize new approve application submit contact list
 		_mSubmitContactList = new ArrayList<ABContactBean>();
 
@@ -162,7 +166,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 					.getLong(NewApproveApplicationExtraData.ENTERPRISE_FROM_TYPE_ID);
 			_mFormId = _extraData
 					.getLong(NewApproveApplicationExtraData.ENTERPRISE_FROM_ID);
-			_enterpriseFormName = _extraData
+			_mFormName = _extraData
 					.getString(NewApproveApplicationExtraData.ENTERPRISE_FROM_NAME);
 			ABContactBean _submitContact = (ABContactBean) _extraData
 					.getSerializable(NewApproveApplicationExtraData.NEW_APPROVEAPPLICATION_SUBMIT_CONTACT);
@@ -179,7 +183,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 		// set subViews
 		// set title
-		setTitle(_enterpriseFormName);
+		setTitle(_mFormName);
 
 		// set new approve application submit bar button item as right bar
 		// button item
@@ -407,6 +411,20 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		getApplicationContext().unbindService(_mCoreServiceConnection);
 	}
 
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
+	}
+
 	// refresh enterprise form item form
 	private void refreshFormItemForm() {
 		// query the enterprise form all items
@@ -600,9 +618,6 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 			_mSelectedSubmitContactsGridLayout = (GridLayout) findViewById(R.id.naa_selectedSubmitContacts_gridLayout);
 		}
 
-		// remove selected submit contacts gridLayout all subviews
-		_mSelectedSubmitContactsGridLayout.removeAllViews();
-
 		// check submit contact list again
 		if (null != _mSubmitContactList && 0 < _mSubmitContactList.size()) {
 			// show selected submit contacts gridLayout if needed
@@ -611,14 +626,67 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 				_mSelectedSubmitContactsGridLayout.setVisibility(View.VISIBLE);
 			}
 
-			// generate submit contact and add to selected submit contact
-			// gridLayout
+			// define and initialize new approve application submit contact
+			// list user id list
+			List<Long> _naaSubmitContactListUserIdList = new ArrayList<Long>();
 			for (ABContactBean _submitContact : _mSubmitContactList) {
-				_mSelectedSubmitContactsGridLayout.addView(SubmitContact
-						.generateNAA6TodoTaskSubmitContact(_submitContact));
+				_naaSubmitContactListUserIdList.add(_submitContact.getUserId());
+			}
+
+			// traversal new approve application submit contacts gridLayout all
+			// subviews
+			int _submitContactGridLayoutSubviewIndex = 0;
+			while (_submitContactGridLayoutSubviewIndex < _mSelectedSubmitContactsGridLayout
+					.getChildCount()) {
+				// get new approve application submit contacts gridLayout
+				// subview submit contact user id
+				Long _naaSubmitContactsGridLayoutSubviewSubmitContactUserId = ((SubmitContact) _mSelectedSubmitContactsGridLayout
+						.getChildAt(_submitContactGridLayoutSubviewIndex))
+						.getSubmitContact().getUserId();
+				if (_naaSubmitContactListUserIdList
+						.contains(_naaSubmitContactsGridLayoutSubviewSubmitContactUserId)) {
+					// set the new approve application submit contacts
+					// gridLayout subview submit contact which contains in
+					// submit contact list for delete
+					_mSubmitContactList
+							.get(_naaSubmitContactListUserIdList
+									.indexOf(_naaSubmitContactsGridLayoutSubviewSubmitContactUserId))
+							.setLocalStorageDataDirtyType(
+									LocalStorageDataDirtyType.DELETE);
+
+					// next subview
+					_submitContactGridLayoutSubviewIndex++;
+				} else {
+					// remove the selected submit contact from submit contacts
+					// gridLayout
+					_mSelectedSubmitContactsGridLayout
+							.removeViewAt(_submitContactGridLayoutSubviewIndex);
+				}
+			}
+
+			// traversal new approve application submit contact list, generate
+			// the submit contact and add to submit contacts gridLayout
+			for (ABContactBean _submitContact : _mSubmitContactList) {
+				// check submit contact dirty type
+				if (LocalStorageDataDirtyType.DELETE != _submitContact
+						.getLocalStorageDataDirtyType()) {
+					// generate new added submit contact
+					SubmitContact _newAddedSubmitContact = SubmitContact
+							.generateNAA6TodoTaskSubmitContact(_submitContact);
+
+					// set its on long click listener
+					_newAddedSubmitContact
+							.setOnLongClickListener(new SubmitContactOnLongClickListener());
+
+					// add to submit contacts gridLayout
+					_mSelectedSubmitContactsGridLayout
+							.addView(_newAddedSubmitContact);
+				}
 			}
 		} else {
+			// remove selected submit contacts gridLayout all subviews and then
 			// hide selected submit contacts gridLayout
+			_mSelectedSubmitContactsGridLayout.removeAllViews();
 			_mSelectedSubmitContactsGridLayout.setVisibility(View.GONE);
 		}
 	}
@@ -645,7 +713,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 	static class NewApproveApplicationRequestCode {
 
 		// new approve application form item editor request code
-		private static final int NAA_FORMITEM_EDITOR_REQCODE = 200;
+		private static final int NAA_FORMITEM_EDITOR_REQCODE = 400;
 
 	}
 
@@ -654,11 +722,86 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(LOG_TAG, "Click submit new approve application");
+			// check submit contact list
+			if (null != _mSubmitContactList && 0 < _mSubmitContactList.size()) {
+				// define new approve application form item value string builder
+				StringBuilder _naaFormItemValueStringBuilder = new StringBuilder();
 
-			//
+				// get and check form item form linearLayout subviews count
+				int _formItemFormLinearLayoutSubviewsCount = _mFormItemFormLinearLayout
+						.getChildCount();
+				if (1 < _formItemFormLinearLayoutSubviewsCount) {
+					// traversal form item form linearLayout all subviews
+					for (int i = 1; i < _formItemFormLinearLayoutSubviewsCount; i++) {
+						// get and check new approve application form item form
+						// linearLayout subview
+						View _naaFormItemFormLinearLayoutSubview = _mFormItemFormLinearLayout
+								.getChildAt(i);
+						if (_naaFormItemFormLinearLayoutSubview instanceof EnterpriseFormItemFormItem) {
+							// get new approve application form item form item
+							EnterpriseFormItemFormItem _naaFormItemFormItem = (EnterpriseFormItemFormItem) _naaFormItemFormLinearLayoutSubview;
+
+							// add enterprise form item physical name, value and
+							// separate character to form item value string
+							// builder
+							_naaFormItemValueStringBuilder
+									.append("[$zy$")
+									.append(_naaFormItemFormItem.getFormItem()
+											.getItemPhysicalName()).append(':')
+									.append(_naaFormItemFormItem.getInfo())
+									.append(']');
+						}
+					}
+				}
+
+				// define and initialize submit contacts name string builder
+				StringBuilder _submitContactsNameStringBuilder = new StringBuilder();
+				for (ABContactBean _submitContact : _mSubmitContactList) {
+					_submitContactsNameStringBuilder.append(_submitContact
+							.getApproveNumber());
+					if (_mSubmitContactList.size() - 1 != _mSubmitContactList
+							.indexOf(_submitContact)) {
+						_submitContactsNameStringBuilder.append(',');
+					}
+				}
+
+				// insert the new approve application for generating to local
+				// storage
+				// define and initialize the new approve application approving
+				// for inserting content values
+				ContentValues _insertContentValues = new ContentValues();
+				_insertContentValues.put(GeneratingNAATask.FORM_ID,
+						_mFormId.toString());
+				_insertContentValues.put(GeneratingNAATask.ENTERPRISE_ID,
+						IAUserExtension.getUserLoginEnterpriseId(_mLoginUser));
+				_insertContentValues.put(GeneratingNAATask.APPROVE_NUMBER,
+						_mLoginUser.getName());
+				_insertContentValues.put(GeneratingNAATask.SUBMITCONTACTS,
+						_submitContactsNameStringBuilder.toString());
+				_insertContentValues.put(GeneratingNAATask.FORM_NAME,
+						_mFormName);
+				_insertContentValues.put(GeneratingNAATask.FORMITEM_VALUE,
+						_naaFormItemValueStringBuilder.toString());
+				_insertContentValues.put(GeneratingNAATask.FORM_ATTACHMENTPATH,
+						"");
+
+				// insert the new approve application for generating to local
+				// storage
+				getContentResolver().insert(
+						GeneratingNAATask.GENERATINGNAATASKS_CONTENT_URI,
+						_insertContentValues);
+
+				// popup to-do task approve activity with result
+				popActivityWithResult(RESULT_OK, null);
+			} else {
+				Log.d(LOG_TAG, "Please select at least one submit contact");
+
+				// show select at least one submit contact toast
+				Toast.makeText(NewApproveApplicationActivity.this,
+						R.string.toast_select_submitContact, Toast.LENGTH_SHORT)
+						.show();
+			}
 		}
-
 	}
 
 	// new approve application form item form item on click listener
@@ -821,6 +964,40 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 	}
 
+	// submit contact on long click listener
+	class SubmitContactOnLongClickListener implements OnLongClickListener {
+
+		@Override
+		public boolean onLongClick(View v) {
+			// remove the selected submit contact from submit contacts
+			// gridLayout
+			_mSelectedSubmitContactsGridLayout.removeView(v);
+
+			// check submit contacts gridLayout subviews count and hide it if
+			// needed
+			if (0 == _mSelectedSubmitContactsGridLayout.getChildCount()) {
+				_mSelectedSubmitContactsGridLayout.setVisibility(View.GONE);
+			}
+
+			// remove the selected submit contact's submit contact object from
+			// submit contact list
+			for (ABContactBean _submitContact : _mSubmitContactList) {
+				// check the selected submit contact user id and delete the
+				// selected submit contact from submit contact list
+				if (_submitContact.getUserId().longValue() == ((SubmitContact) v)
+						.getSubmitContact().getUserId().longValue()) {
+					_mSubmitContactList.remove(_submitContact);
+
+					// break immediately
+					break;
+				}
+			}
+
+			return false;
+		}
+
+	}
+
 	// add submit contact image button on click listener
 	class AddSubmitContactImgBtnOnClickListener implements OnClickListener {
 
@@ -828,8 +1005,9 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		public void onClick(View v) {
 			// check submit contact list
 			if (null != _mSubmitContactList && 0 < _mSubmitContactList.size()) {
-				// define new approve application submit contact user id list
-				List<Long> _naaSubmitContactUserIds = new ArrayList<Long>();
+				// define new approve application submit contact list user id
+				// list
+				List<Long> _naaSubmitContactListUserIdList = new ArrayList<Long>();
 
 				// get new approve application submit contact list cursor and
 				// move to first
@@ -837,20 +1015,23 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 						.getAdapter()).getCursor();
 				_naaSubmitContactListCursor.moveToFirst();
 
+				// traversal new approve application submit contacts and add
+				// user id to list
 				do {
-					// get new approve application submit contact user id and
-					// add to list
-					_naaSubmitContactUserIds.add(_naaSubmitContactListCursor
-							.getLong(_naaSubmitContactListCursor
-									.getColumnIndex(Employee.USER_ID)));
+					_naaSubmitContactListUserIdList.add(new ABContactBean(
+							_naaSubmitContactListCursor).getUserId());
 				} while (_naaSubmitContactListCursor.moveToNext());
 
+				// traversal new approve application submit contact list
 				for (ABContactBean _submitContact : _mSubmitContactList) {
-					if (_naaSubmitContactUserIds.contains(_submitContact
-							.getUserId())) {
+					// get, check new approve application submit contact user id
+					// and set the submit contact item checked
+					Long _submitContactUserId = _submitContact.getUserId();
+					if (_naaSubmitContactListUserIdList
+							.contains(_submitContactUserId)) {
 						_mSubmitContactListView.setItemChecked(
-								_naaSubmitContactUserIds.indexOf(_submitContact
-										.getUserId()), true);
+								_naaSubmitContactListUserIdList
+										.indexOf(_submitContactUserId), true);
 					}
 				}
 			}
@@ -966,47 +1147,27 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		@Override
 		public void onClick(View v) {
 			// done select new approve application submit contacts
-			// get new approve application selected submit contact item ids
+			// clear submit contact list
+			_mSubmitContactList.clear();
+
+			// get and check new approve application selected submit contact
+			// item id array
 			long[] _naaSelectedSubmitContactItemIds = _mSubmitContactListView
 					.getCheckedItemIds();
+			if (null != _naaSelectedSubmitContactItemIds
+					&& 0 < _naaSelectedSubmitContactItemIds.length) {
+				// get new approve application submit contact list cursor
+				Cursor _naaSubmitContactListCursor = ((NAASubmitContactListCursorAdapter) _mSubmitContactListView
+						.getAdapter()).getCursor();
 
-			// get new approve application submit contact list cursor
-			Cursor _naaSubmitContactListCursor = ((NAASubmitContactListCursorAdapter) _mSubmitContactListView
-					.getAdapter()).getCursor();
-
-			// define new approve application selected submit contact user id
-			// list and initialize
-			List<Long> _naaSelectedSubmitContactUserIds = new ArrayList<Long>();
-			for (ABContactBean _selectedSubmitContact : _mSubmitContactList) {
-				_naaSelectedSubmitContactUserIds.add(_selectedSubmitContact
-						.getUserId());
-				_selectedSubmitContact
-						.setLocalStorageDataDirtyType(LocalStorageDataDirtyType.DELETE);
-			}
-
-			for (int i = 0; i < _naaSelectedSubmitContactItemIds.length; i++) {
-				// move to the position, get selected address book contact and
-				// check
-				_naaSubmitContactListCursor
-						.moveToPosition((int) _naaSelectedSubmitContactItemIds[i] - 1);
-				ABContactBean _selectedSubmitContact = new ABContactBean(
-						_naaSubmitContactListCursor);
-				if (!_naaSelectedSubmitContactUserIds
-						.contains(_selectedSubmitContact.getUserId())) {
-					_mSubmitContactList.add(_selectedSubmitContact);
-				} else {
-					_mSubmitContactList
-							.get(_naaSelectedSubmitContactUserIds
-									.indexOf(_selectedSubmitContact.getUserId()))
-							.setLocalStorageDataDirtyType(
-									LocalStorageDataDirtyType.NORMAL);
-				}
-			}
-
-			for (int i = 0; i < _mSubmitContactList.size(); i++) {
-				if (LocalStorageDataDirtyType.DELETE == _mSubmitContactList
-						.get(i).getLocalStorageDataDirtyType()) {
-					_mSubmitContactList.remove(i);
+				// traversal new approve application selected contact items
+				for (int i = 0; i < _naaSelectedSubmitContactItemIds.length; i++) {
+					// move the cursor to the position, get the selected address
+					// book contact and add to submit contact list
+					_naaSubmitContactListCursor
+							.moveToPosition(((int) _naaSelectedSubmitContactItemIds[i]) - 1);
+					_mSubmitContactList.add(new ABContactBean(
+							_naaSubmitContactListCursor));
 				}
 			}
 

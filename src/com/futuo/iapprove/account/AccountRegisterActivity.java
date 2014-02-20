@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 
 public class AccountRegisterActivity extends IApproveNavigationActivity {
 
@@ -17,6 +18,20 @@ public class AccountRegisterActivity extends IApproveNavigationActivity {
 		// set subViews
 		// test by ares
 		//
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -85,7 +86,37 @@ public class EnterpriseFormTypeListActivity extends
 				.setOnItemClickListener(new EnterpriseFormTypeListOnItemClickListener());
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		// check result code
+		switch (resultCode) {
+		case RESULT_OK:
+			// check request code
+			switch (requestCode) {
+			case EnterpriseFormTypeListRequestCode.ENTERPRISEFORMTYPELIST_ITEMONCLICK_REQCODE:
+				// finish enterprise form type list activity
+				finish();
+				break;
+			}
+			break;
+
+		default:
+			// nothing to do
+			break;
+		}
+	}
+
 	// inner class
+	// enterprise form type list request code
+	static class EnterpriseFormTypeListRequestCode {
+
+		// enterprise form type list item on click request code
+		private static final int ENTERPRISEFORMTYPELIST_ITEMONCLICK_REQCODE = 200;
+
+	}
+
 	// enterprise form type list cursor adapter
 	class EnterpriseFormTypeListCursorAdapter extends
 			EnterpriseFormTypeAndFormListCursorAdapter {
@@ -187,7 +218,10 @@ public class EnterpriseFormTypeListActivity extends
 			}
 
 			// go to user enterprise form list activity with extra data map
-			pushActivity(EnterpriseFormListActivity.class, _extraMap);
+			pushActivityForResult(
+					EnterpriseFormListActivity.class,
+					_extraMap,
+					EnterpriseFormTypeListRequestCode.ENTERPRISEFORMTYPELIST_ITEMONCLICK_REQCODE);
 		}
 
 	}

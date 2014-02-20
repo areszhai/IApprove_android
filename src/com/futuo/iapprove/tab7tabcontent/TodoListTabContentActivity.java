@@ -105,7 +105,7 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 												IAUserExtension
 														.getUserLoginEnterpriseId(_mLoginUser)),
 										null,
-										TodoTask.USER_ENTERPRISETODOLISTTASKS_WITHLOGINNAME_CONDITION,
+										TodoTask.USER_ENTERPRISETODOLISTTASKS_WITHLOGINNAME7WITHOUTHIDDEN_CONDITION,
 										new String[] { _mLoginUser.getName() },
 										null),
 						new String[] {
@@ -133,6 +133,9 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 		// start get user login enterprise to-do list task
 		coreService.startGetUserEnterpriseTodoListTask();
+
+		// start approve user enterprise task task
+		coreService.startApproveUserEnterpriseTask();
 	}
 
 	@Override
@@ -155,7 +158,7 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 								IAUserExtension
 										.getUserLoginEnterpriseId(_mLoginUser)),
 								null,
-								TodoTask.USER_ENTERPRISETODOLISTTASKS_WITHLOGINNAME_CONDITION,
+								TodoTask.USER_ENTERPRISETODOLISTTASKS_WITHLOGINNAME7WITHOUTHIDDEN_CONDITION,
 								new String[] { _mLoginUser.getName() }, null));
 	}
 
@@ -165,6 +168,9 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 		// stop get user login enterprise to-do list task
 		coreService.stopGetUserEnterpriseTodolistTask();
+
+		// stop approve user enterprise task task
+		coreService.stopApproveUserEnterpriseTask();
 	}
 
 	// inner class
@@ -341,7 +347,19 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 			// auto requery
 			super.onContentChanged();
 
-			//
+			// need to change to-do list task query cursor change
+			// to-do list task query cursor
+			_mTodoListTaskListCursorAdapter
+					.changeCursor(getContentResolver()
+							.query(ContentUris
+									.withAppendedId(
+											TodoTask.ENTERPRISE_CONTENT_URI,
+											IAUserExtension
+													.getUserLoginEnterpriseId(_mLoginUser)),
+									null,
+									TodoTask.USER_ENTERPRISETODOLISTTASKS_WITHLOGINNAME7WITHOUTHIDDEN_CONDITION,
+									new String[] { _mLoginUser.getName() },
+									null));
 		}
 
 		@Override
@@ -383,7 +401,7 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 					_dataValue = formatTodoTaskSubmitTime(_todoTaskObject
 							.getSubmitTimestamp());
 				} else if (TASKAPPROVEADVICES_KEY.equalsIgnoreCase(dataKey)) {
-					// submit timestamp
+					// advice
 					_dataValue = _todoTaskObject.getAdvices();
 				} else {
 					Log.e(LOG_TAG, "Recombination data error, data key = "
@@ -446,6 +464,10 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 					@SuppressWarnings("unchecked")
 					List<IApproveTaskAdviceBean> _itemDataList = (List<IApproveTaskAdviceBean>) _itemData;
 
+					// remove all subviews from to-do list task advice
+					// linearLayout
+					((LinearLayout) view).removeAllViews();
+
 					// check to-do list task advices
 					if (null != _itemDataList && !_itemDataList.isEmpty()) {
 						// show to-do list task advice parent view if needed
@@ -456,10 +478,6 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 							_todoTaskAdviceParentView
 									.setVisibility(View.VISIBLE);
 						}
-
-						// remove all subviews from to-do list task advice
-						// linearLayout
-						((LinearLayout) view).removeAllViews();
 
 						for (int i = 0; i < _itemDataList.size(); i++) {
 							// generate new to-do list task advice
@@ -607,13 +625,17 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 			TodoTaskBean _clickedTodoTask = (TodoTaskBean) _mTodoListTaskListCursorAdapter
 					.getDataList().get(position);
 
-			// put user enterprise to-do list task title, sender fake id and
-			// advice list to extra data map as param
+			// put user enterprise to-do list task id, title, sender fake id,
+			// status and advice list to extra data map as param
+			_extraMap.put(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKID,
+					_clickedTodoTask.getTaskId());
 			_extraMap.put(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKTITLE,
 					_clickedTodoTask.getTaskTitle());
 			_extraMap.put(
 					TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKSENDERFAKEID,
 					_clickedTodoTask.getSenderFakeId());
+			_extraMap.put(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKSTATUS,
+					_clickedTodoTask.getTaskStatus());
 			_extraMap.put(
 					TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKADVICES,
 					_clickedTodoTask.getAdvices());

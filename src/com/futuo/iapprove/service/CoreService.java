@@ -31,7 +31,9 @@ public class CoreService extends Service {
 			{ GetEnterpriseABTask.class, new GetEnterpriseABTask(),
 					R.integer.cstp_getEnterpriseAB_period },
 			{ GetEnterpriseFormTask.class, new GetEnterpriseFormTask(),
-					R.integer.cstp_getEnterpriseForm_period } };
+					R.integer.cstp_getEnterpriseForm_period },
+			{ ApproveEnterpriseTaskTask.class, new ApproveEnterpriseTaskTask(),
+					R.integer.cstp_approveEnterpriseTask_period } };
 
 	@Override
 	public void onCreate() {
@@ -207,6 +209,30 @@ public class CoreService extends Service {
 		if (null != _getEnterpriseFormTask) {
 			// clear enterprise id
 			_getEnterpriseFormTask.clearEnterpriseId();
+		}
+	}
+
+	// start approve user enterprise task
+	public void startApproveUserEnterpriseTask() {
+		Log.d(LOG_TAG, "Start approve user enterprise task");
+
+		// get and check approve user enterprise task task
+		CoreServiceTask _approveUserEnterpriseTaskTask = getCoreServiceTask(ApproveEnterpriseTaskTask.class);
+		if (null != _approveUserEnterpriseTaskTask) {
+			// set enterprise id
+			_approveUserEnterpriseTaskTask.setEnterpriseId();
+		}
+	}
+
+	// stop approve user enterprise task
+	public void stopApproveUserEnterpriseTask() {
+		Log.d(LOG_TAG, "Stop approve user enterprise task");
+
+		// get and check approve user enterprise task task
+		CoreServiceTask _approveUserEnterpriseTaskTask = getCoreServiceTask(ApproveEnterpriseTaskTask.class);
+		if (null != _approveUserEnterpriseTaskTask) {
+			// clear enterprise id
+			_approveUserEnterpriseTaskTask.clearEnterpriseId();
 		}
 	}
 

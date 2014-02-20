@@ -27,6 +27,7 @@ import com.futuo.iapprove.customwidget.AccountLoginFormItem;
 import com.futuo.iapprove.customwidget.AccountLoginFormItem.AccountLoginFormItemInputEditTextTextWatcher;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
 import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity.IApproveTabExtraData;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.richitec.commontoolkit.customcomponent.BarButtonItem;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
@@ -117,6 +118,20 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 
 		// set account login user phone item as focus
 		_mAccountLoginUserPhoneItem.setAsFocus();
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
 	}
 
 	// set soft input visibility

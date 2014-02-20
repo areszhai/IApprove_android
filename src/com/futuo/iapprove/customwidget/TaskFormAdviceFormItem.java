@@ -33,6 +33,9 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 	private FrameLayout _mAdviceInfoParentFrameLayout;
 	private TextView _mAdviceInfoTextView;
 
+	// iApprove task form advice type
+	private TaskFormAdviceType _mAdviceType;
+
 	// iApprove task form advice form item on click and long click listener
 	private OnClickListener _mAdviceFormItemOnClickListener;
 	private OnLongClickListener _mAdviceFormItemOnLongClickListener;
@@ -43,6 +46,9 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 		// inflate iApprove task form advice form item layout
 		LayoutInflater.from(context).inflate(
 				R.layout.task_formadvice_form_item_layout, this);
+
+		// set iApprove task form advice type default value
+		_mAdviceType = TaskFormAdviceType.MY_ADVICE;
 
 		// get iApprove task form my advice relativeLayout, advisor avatar
 		// imageView, advisor name textView, advice info parent frameLayout,
@@ -79,6 +85,9 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 	private void setAdviceType(TaskFormAdviceType adviceType) {
 		// check advice type and set iApprove task form advice type
 		if (null != adviceType) {
+			// save iApprove task form advice type
+			_mAdviceType = adviceType;
+
 			switch (adviceType) {
 			case MY_ADVICE:
 				// get iApprove task form my advice relativeLayout, advisor
@@ -103,6 +112,10 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 				break;
 			}
 		}
+	}
+
+	public TaskFormAdviceType getAdviceType() {
+		return _mAdviceType;
 	}
 
 	private void setAdvisorInfo(PersonBean advisor) {
@@ -135,6 +148,10 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 			// set advisor name textView text
 			_mAdvisorNameTextView.setText(advisor.getEmployeeName());
 		}
+	}
+
+	public String getAdviceInfo() {
+		return (String) _mAdviceInfoTextView.getText();
 	}
 
 	// generate iApprove task form advice form item with type, advisor and info

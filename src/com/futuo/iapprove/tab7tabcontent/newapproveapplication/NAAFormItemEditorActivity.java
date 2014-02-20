@@ -34,6 +34,7 @@ import com.futuo.iapprove.customwidget.IApproveBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
 import com.futuo.iapprove.form.FormItemType;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationActivity.NewApproveApplicationExtraData;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.futuo.iapprove.utils.DateStringUtils;
 
 public class NAAFormItemEditorActivity extends IApproveNavigationActivity {
@@ -243,6 +244,20 @@ public class NAAFormItemEditorActivity extends IApproveNavigationActivity {
 				backBarBtnItem.getWindowToken(), 0);
 
 		super.onBackBarButtonItemClick(backBarBtnItem);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
 	}
 
 	// inner class

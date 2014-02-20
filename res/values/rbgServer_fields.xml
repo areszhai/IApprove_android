@@ -77,6 +77,28 @@
     <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_unreadStatus" translatable="false">0</string>
     <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_readStatus" translatable="false">1</string>
     <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_submitTimestamp" translatable="false">datetime</string>
+    <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_enterpriseId" translatable="false">enterpriseid</string>
+    <string name="rbgServer_userEnterpriseTodoListTaskApproveReqParam_action" translatable="false">InsertOpinionInfo</string>
+    <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_taskId" translatable="false">infoid</string>
+    <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_submitContacts" translatable="false">receives</string>
+    <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myJudge" translatable="false">isopinion</string>
+    <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myDisAgreedJudge" translatable="false">0</string>
+    <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myAgreedJudge" translatable="false">1</string>
+    <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myAdvices" translatable="false">opinion</string>
+    <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_taskSenderFakeId" translatable="false">interflowid</string>
+    <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_taskStatus" translatable="false">interflowdetailstate</string>
+    <string name="rbgServer_userEnterpriseTodoListTaskFinishApproveReqParam_action" translatable="false">FinishOpinionInfo</string>
+    <string name="rbgServer_newUserEnterpriseApproveApplicationReqParam_action" translatable="false">SaveInfo</string>
+    <string name="rbgServer_newUserEnterpriseApproveApplicationReqParam_enterpriseId" translatable="false">enterpriseid</string>
+    <string name="rbgServer_newUserEnterpriseApproveApplicationReqParam_submitContacts" translatable="false">receives</string>
+    <string name="rbgServer_newUserEnterpriseApproveApplicationReqParam_formId" translatable="false">manageid</string>
+    <string name="rbgServer_newUserEnterpriseApproveApplicationReqParam_formName" translatable="false">title</string>
+    <string name="rbgServer_newUserEnterpriseApproveApplicationReqParam_formItemValue" translatable="false">formsetValue</string>
+    <string name="rbgServer_newUserEnterpriseApproveApplicationReqResp_taskId" translatable="false">infoid</string>
+    <string name="rbgServer_newUserEnterpriseApproveApplicationReqParam_taskId" translatable="false">infoid</string>
+    <string name="rbgServer_synchronizedNewEnterpriseApproveApplicationAttachmentReqParam_action" translatable="false">UpdateState</string>
+    <string name="rbgServer_synchronizedNewEnterpriseApproveApplicationAttachmentReqParam_taskId" translatable="false">id</string>
+    <string name="rbgServer_synchronizedEnterpriseServerDataReqParam_enterpriseId" translatable="false">number</string>
 
     <!-- checked list -->
     <string name="rbgServer_getCheckedListReqParam_action" translatable="false">getProcessInfo</string>

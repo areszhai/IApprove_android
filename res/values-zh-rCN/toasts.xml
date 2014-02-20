@@ -7,4 +7,7 @@
     <string name="toast_request_exception">连接远程服务器异常，请尽快联系管理员！</string>
     <string name="toast_requestResp_unrecognized">远程服务器返回异常，请尽快联系管理员！</string>
 
+    <!-- new approve application or to-do task approve submit contact -->
+    <string name="toast_select_submitContact">请至少选择一个审批提交人</string>
+
 </resources>

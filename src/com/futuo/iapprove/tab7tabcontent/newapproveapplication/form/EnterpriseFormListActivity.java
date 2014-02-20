@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -113,6 +114,28 @@ public class EnterpriseFormListActivity extends
 				.setOnItemClickListener(new EnterpriseFormListOnItemClickListener());
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		// check result code
+		switch (resultCode) {
+		case RESULT_OK:
+			// check request code
+			switch (requestCode) {
+			case EnterpriseFormListRequestCode.ENTERPRISEFORMLIST_ITEMONCLICK_REQCODE:
+				// popup enterprise form list activity with result
+				popActivityWithResult(RESULT_OK, null);
+				break;
+			}
+			break;
+
+		default:
+			// nothing to do
+			break;
+		}
+	}
+
 	// inner class
 	// enterprise form extra data constant
 	public static final class EnterpriseFormExtraData {
@@ -123,6 +146,14 @@ public class EnterpriseFormListActivity extends
 		// enterprise form type id and name
 		public static final String ENTERPRISE_FROM_TYPE_ID = "enterprise_form_type_id";
 		public static final String ENTERPRISE_FROM_TYPE_NAME = "enterprise_form_type_name";
+
+	}
+
+	// enterprise form list request code
+	static class EnterpriseFormListRequestCode {
+
+		// enterprise form list item on click request code
+		private static final int ENTERPRISEFORMLIST_ITEMONCLICK_REQCODE = 300;
 
 	}
 
@@ -230,7 +261,10 @@ public class EnterpriseFormListActivity extends
 			}
 
 			// go to new approve application activity with extra data map
-			pushActivity(NewApproveApplicationActivity.class, _extraMap);
+			pushActivityForResult(
+					NewApproveApplicationActivity.class,
+					_extraMap,
+					EnterpriseFormListRequestCode.ENTERPRISEFORMLIST_ITEMONCLICK_REQCODE);
 		}
 
 	}

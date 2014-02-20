@@ -14,6 +14,7 @@ import android.widget.EditText;
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.customwidget.IApproveBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 
 public class FeedbackActivity extends IApproveNavigationActivity {
 
@@ -79,6 +80,20 @@ public class FeedbackActivity extends IApproveNavigationActivity {
 				backBarBtnItem.getWindowToken(), 0);
 
 		super.onBackBarButtonItemClick(backBarBtnItem);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
 	}
 
 	// inner class

@@ -4,8 +4,8 @@ import android.util.Log;
 
 public enum TodoTaskStatus {
 
-	// unread and read
-	UNREAD(0), READ(1);
+	// unread, read and ended
+	UNREAD(0), READ(1), ENDED(2);
 
 	private static final String LOG_TAG = TodoTaskStatus.class
 			.getCanonicalName();
@@ -35,6 +35,9 @@ public enum TodoTaskStatus {
 			} else if (READ.statusValue.intValue() == value.intValue()) {
 				// read
 				_status = READ;
+			} else if (ENDED.statusValue.intValue() == value.intValue()) {
+				// ended
+				_status = ENDED;
 			} else {
 				Log.e(LOG_TAG,
 						"Unrecognized user enterprise to-do list task status value = "

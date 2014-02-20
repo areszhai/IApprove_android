@@ -8,6 +8,7 @@ import java.util.Map;
 
 import android.content.ComponentName;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -23,9 +24,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -33,13 +37,17 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SlidingDrawer;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
+import com.futuo.iapprove.addressbook.ABContactBean;
 import com.futuo.iapprove.addressbook.person.PersonBean;
 import com.futuo.iapprove.customwidget.CommonFormSeparator;
 import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
+import com.futuo.iapprove.customwidget.SubmitContact;
 import com.futuo.iapprove.customwidget.TaskFormAdviceFormItem;
 import com.futuo.iapprove.customwidget.TaskFormAdviceFormItem.TaskFormAdviceType;
 import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem;
@@ -47,14 +55,19 @@ import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormAttach
 import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormVoiceAttachmentInfoDataKeys;
 import com.futuo.iapprove.customwidget.TaskFormItemFormItem;
 import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees.Employee;
+import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyType;
 import com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider.EnterpriseProfiles.EnterpriseProfile;
+import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.ApprovingTodoTasks.ApprovingTodoTask;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskAttachments.TodoTaskAttachment;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskFormItems.TodoTaskFormItem;
+import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.service.CoreService.LocalBinder;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentBean;
 import com.futuo.iapprove.task.IApproveTaskFormItemBean;
+import com.futuo.iapprove.task.TodoTaskStatus;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.futuo.iapprove.utils.AudioUtils;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
@@ -65,8 +78,10 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 	private static final String LOG_TAG = TodoTaskApproveActivity.class
 			.getCanonicalName();
 
-	// user enterprise to-do list task sender fake id
+	// user enterprise to-do list task id, sender fake id and status
+	private Long _mTodoTaskId;
 	private Long _mTodoTaskSenderFakeId;
+	private TodoTaskStatus _mTodoTaskStatus;
 
 	// to-do list task form item form linearLayout
 	private LinearLayout _mFormItemFormLinearLayout;
@@ -90,6 +105,12 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 	private FrameLayout _mAdviceFormParentFrameLayout;
 	private LinearLayout _mAdviceFormLinearLayout;
 
+	// to-do task submit contact list
+	private List<ABContactBean> _mSubmitContactList;
+
+	// to-do task selected submit contacts gridLayout
+	private GridLayout _mSelectedSubmitContactsGridLayout;
+
 	// core service connection
 	private CoreServiceConnection _mCoreServiceConnection;
 
@@ -102,6 +123,9 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 	// my advice advisor
 	private PersonBean _mMyAdviceAdvisor;
+
+	// my advice judge
+	private Boolean _mMyAdviceJudge;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -118,13 +142,21 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		String _todoTaskTitle = "";
 		List<IApproveTaskAdviceBean> _todoTaskAdvices = new ArrayList<IApproveTaskAdviceBean>();
 
+		// initialize to-do task submit contact list
+		_mSubmitContactList = new ArrayList<ABContactBean>();
+
 		// check the data
 		if (null != _extraData) {
-			// get to-do list task title, sender fake id and advice list
+			// get to-do list task id, title, sender fake id, status and advice
+			// list
+			_mTodoTaskId = _extraData
+					.getLong(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKID);
 			_todoTaskTitle = _extraData
 					.getString(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKTITLE);
 			_mTodoTaskSenderFakeId = _extraData
 					.getLong(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKSENDERFAKEID);
+			_mTodoTaskStatus = (TodoTaskStatus) _extraData
+					.getSerializable(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKSTATUS);
 			_todoTaskAdvices
 					.addAll((Collection<? extends IApproveTaskAdviceBean>) _extraData
 							.getSerializable(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKADVICES));
@@ -232,6 +264,13 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		// set its choice mode
 		_mSubmitContactListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
+		// set my advice judge default value
+		_mMyAdviceJudge = false;
+
+		// set my advice switch toggle button on checked change listener
+		((ToggleButton) findViewById(R.id.tdta_adviceSwitch_toggleButton))
+				.setOnCheckedChangeListener(new TodoTaskApproveAdviceSwitchToggleBtnOnCheckedChangeListener());
+
 		// get advice input editText
 		_mAdviceInputEditText = (EditText) findViewById(R.id.tdta_advice_editText);
 
@@ -290,6 +329,20 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 		// unbind core service
 		getApplicationContext().unbindService(_mCoreServiceConnection);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
 	}
 
 	// refresh enterprise form item form
@@ -519,13 +572,95 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 						LayoutParams.WRAP_CONTENT, 1));
 	}
 
+	// refresh to-do task submit contacts
+	private void refreshSubmitContacts() {
+		// check and initialize selected submit contacts gridLayout
+		if (null == _mSelectedSubmitContactsGridLayout) {
+			// get to-do task selected submit contacts gridLayout
+			_mSelectedSubmitContactsGridLayout = (GridLayout) findViewById(R.id.tdta_selectedSubmitContacts_gridLayout);
+		}
+
+		// check submit contact list again
+		if (null != _mSubmitContactList && 0 < _mSubmitContactList.size()) {
+			// show selected submit contacts gridLayout if needed
+			if (View.VISIBLE != _mSelectedSubmitContactsGridLayout
+					.getVisibility()) {
+				_mSelectedSubmitContactsGridLayout.setVisibility(View.VISIBLE);
+			}
+
+			// define and initialize to-do task submit contact list user id list
+			List<Long> _tdtaSubmitContactListUserIdList = new ArrayList<Long>();
+			for (ABContactBean _submitContact : _mSubmitContactList) {
+				_tdtaSubmitContactListUserIdList
+						.add(_submitContact.getUserId());
+			}
+
+			// traversal to-do task submit contacts gridLayout all subviews
+			int _submitContactGridLayoutSubviewIndex = 0;
+			while (_submitContactGridLayoutSubviewIndex < _mSelectedSubmitContactsGridLayout
+					.getChildCount()) {
+				// get to-do task submit contacts gridLayout subview submit
+				// contact user id
+				Long _tdtaSubmitContactsGridLayoutSubviewSubmitContactUserId = ((SubmitContact) _mSelectedSubmitContactsGridLayout
+						.getChildAt(_submitContactGridLayoutSubviewIndex))
+						.getSubmitContact().getUserId();
+				if (_tdtaSubmitContactListUserIdList
+						.contains(_tdtaSubmitContactsGridLayoutSubviewSubmitContactUserId)) {
+					// set the to-do task submit contacts gridLayout subview
+					// submit contact which contains in submit contact list for
+					// delete
+					_mSubmitContactList
+							.get(_tdtaSubmitContactListUserIdList
+									.indexOf(_tdtaSubmitContactsGridLayoutSubviewSubmitContactUserId))
+							.setLocalStorageDataDirtyType(
+									LocalStorageDataDirtyType.DELETE);
+
+					// next subview
+					_submitContactGridLayoutSubviewIndex++;
+				} else {
+					// remove the selected submit contact from submit contacts
+					// gridLayout
+					_mSelectedSubmitContactsGridLayout
+							.removeViewAt(_submitContactGridLayoutSubviewIndex);
+				}
+			}
+
+			// traversal to-do task submit contact list, generate the submit
+			// contact and add to submit contacts gridLayout
+			for (ABContactBean _submitContact : _mSubmitContactList) {
+				// check submit contact dirty type
+				if (LocalStorageDataDirtyType.DELETE != _submitContact
+						.getLocalStorageDataDirtyType()) {
+					// generate new added submit contact
+					SubmitContact _newAddedSubmitContact = SubmitContact
+							.generateNAA6TodoTaskSubmitContact(_submitContact);
+
+					// set its on long click listener
+					_newAddedSubmitContact
+							.setOnLongClickListener(new SubmitContactOnLongClickListener());
+
+					// add to submit contacts gridLayout
+					_mSelectedSubmitContactsGridLayout
+							.addView(_newAddedSubmitContact);
+				}
+			}
+		} else {
+			// remove selected submit contacts gridLayout all subviews and then
+			// hide selected submit contacts gridLayout
+			_mSelectedSubmitContactsGridLayout.removeAllViews();
+			_mSelectedSubmitContactsGridLayout.setVisibility(View.GONE);
+		}
+	}
+
 	// inner class
 	// to-do list task approve extra data constant
 	public static final class TodoTaskApproveExtraData {
 
-		// to-do list task title and sender fake id
+		// to-do list task id, title, sender fake id, status and advice
+		public static final String TODOTASK_APPROVE_TASKID = "todo_task_approve_taskid";
 		public static final String TODOTASK_APPROVE_TASKTITLE = "todo_task_approve_tasktitle";
 		public static final String TODOTASK_APPROVE_TASKSENDERFAKEID = "todo_task_approve_tasksenderfakeid";
+		public static final String TODOTASK_APPROVE_TASKSTATUS = "todo_task_approve_taskstatus";
 		public static final String TODOTASK_APPROVE_TASKADVICES = "todo_task_approve_taskadvices";
 
 	}
@@ -536,11 +671,110 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(LOG_TAG, "Click submit the to-do list task approve");
+			// check submit contact list
+			if (null != _mSubmitContactList && 0 < _mSubmitContactList.size()) {
+				// get my advice
+				// define my advice string builder
+				StringBuilder _myAdviceStringBuilder = new StringBuilder();
 
-			//
+				// get and check advice form linearLayout subviews count
+				int _adviceFormLinearLayoutSubviewsCount = _mAdviceFormLinearLayout
+						.getChildCount();
+				if (1 < _adviceFormLinearLayoutSubviewsCount) {
+					// traversal advice form linearLayout all subviews
+					for (int i = 1; i < _adviceFormLinearLayoutSubviewsCount; i++) {
+						// get to-do task advice form item
+						TaskFormAdviceFormItem _todoTaskAdviceFormItem = (TaskFormAdviceFormItem) _mAdviceFormLinearLayout
+								.getChildAt(i);
+
+						// check to-do task advice type and get my advice
+						if (TaskFormAdviceType.MY_ADVICE == _todoTaskAdviceFormItem
+								.getAdviceType()) {
+							// add my advice and separate character to my advice
+							// string builder
+							_myAdviceStringBuilder
+									.append(_todoTaskAdviceFormItem
+											.getAdviceInfo());
+							if (_adviceFormLinearLayoutSubviewsCount - 1 != i) {
+								_myAdviceStringBuilder.append("\n");
+							}
+						}
+					}
+				}
+
+				// define and initialize submit contacts name string builder
+				StringBuilder _submitContactsNameStringBuilder = new StringBuilder();
+				for (ABContactBean _submitContact : _mSubmitContactList) {
+					_submitContactsNameStringBuilder.append(_submitContact
+							.getApproveNumber());
+					if (_mSubmitContactList.size() - 1 != _mSubmitContactList
+							.indexOf(_submitContact)) {
+						_submitContactsNameStringBuilder.append(',');
+					}
+				}
+
+				// hide the to-do task local storage
+				// define and initialize the update content values
+				ContentValues _updateContentValues = new ContentValues();
+				_updateContentValues.put(TodoTask.TASK_STATUS,
+						TodoTask.HIDDEN_STATUS.toString());
+
+				// update user enterprise to-do list task local storage
+				getContentResolver()
+						.update(ContentUris.withAppendedId(
+								TodoTask.ENTERPRISE_CONTENT_URI,
+								IAUserExtension
+										.getUserLoginEnterpriseId(_mLoginUser)),
+								_updateContentValues,
+								TodoTask.APPROVE_USER_ENTERPRISETODOLISTTASK_WITHSENDERFAKEID_CONDITION,
+								new String[] { _mTodoTaskSenderFakeId
+										.toString() });
+
+				// insert the to-do task for approving to local storage
+				// define and initialize the to-do task approving for inserting
+				// content values
+				ContentValues _insertContentValues = new ContentValues();
+				_insertContentValues.put(ApprovingTodoTask.TASK_ID,
+						_mTodoTaskId.toString());
+				_insertContentValues.put(ApprovingTodoTask.ENTERPRISE_ID,
+						IAUserExtension.getUserLoginEnterpriseId(_mLoginUser));
+				_insertContentValues.put(ApprovingTodoTask.APPROVE_NUMBER,
+						_mLoginUser.getName());
+				_insertContentValues.put(ApprovingTodoTask.SUBMITCONTACTS,
+						_submitContactsNameStringBuilder.toString());
+				_insertContentValues
+						.put(ApprovingTodoTask.JUDGE,
+								_mMyAdviceJudge ? getResources()
+										.getString(
+												R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myAgreedJudge)
+										: getResources()
+												.getString(
+														R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myDisAgreedJudge));
+				_insertContentValues.put(ApprovingTodoTask.ADVICE_INFO,
+						_myAdviceStringBuilder.toString());
+				_insertContentValues.put(ApprovingTodoTask.SENDER_FAKEID,
+						_mTodoTaskSenderFakeId.toString());
+				_insertContentValues.put(ApprovingTodoTask.TASK_STATUS,
+						_mTodoTaskStatus.getValue());
+				_insertContentValues.put(ApprovingTodoTask.TASK_OPERATESTATE,
+						ApprovingTodoTask.TASK_OPERATESTATE_NOTENDED);
+
+				// insert the to-do task for approving to local storage
+				getContentResolver().insert(
+						ApprovingTodoTask.APPROVINGTODOTASKS_CONTENT_URI,
+						_insertContentValues);
+
+				// popup to-do task approve activity
+				popActivity();
+			} else {
+				Log.d(LOG_TAG, "Please select at least one submit contact");
+
+				// show select at least one submit contact toast
+				Toast.makeText(TodoTaskApproveActivity.this,
+						R.string.toast_select_submitContact, Toast.LENGTH_SHORT)
+						.show();
+			}
 		}
-
 	}
 
 	// to-do list task approve submit bar button item on long click listener
@@ -549,9 +783,116 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 		@Override
 		public boolean onLongClick(View v) {
-			Log.d(LOG_TAG, "Long click end the to-do list task approve");
+			// check to-do task status
+			if (TodoTaskStatus.ENDED != _mTodoTaskStatus) {
+				// check submit contact list
+				if (null != _mSubmitContactList
+						&& 0 < _mSubmitContactList.size()) {
+					// get my advice
+					// define my advice string builder
+					StringBuilder _myAdviceStringBuilder = new StringBuilder();
 
-			//
+					// get and check advice form linearLayout subviews count
+					int _adviceFormLinearLayoutSubviewsCount = _mAdviceFormLinearLayout
+							.getChildCount();
+					if (1 < _adviceFormLinearLayoutSubviewsCount) {
+						// traversal advice form linearLayout all subviews
+						for (int i = 1; i < _adviceFormLinearLayoutSubviewsCount; i++) {
+							// get to-do task advice form item
+							TaskFormAdviceFormItem _todoTaskAdviceFormItem = (TaskFormAdviceFormItem) _mAdviceFormLinearLayout
+									.getChildAt(i);
+
+							// check to-do task advice type and get my advice
+							if (TaskFormAdviceType.MY_ADVICE == _todoTaskAdviceFormItem
+									.getAdviceType()) {
+								// add my advice and separate character to my
+								// advice string builder
+								_myAdviceStringBuilder
+										.append(_todoTaskAdviceFormItem
+												.getAdviceInfo());
+								if (_adviceFormLinearLayoutSubviewsCount - 1 != i) {
+									_myAdviceStringBuilder.append("\n");
+								}
+							}
+						}
+					}
+
+					// define and initialize submit contacts name string builder
+					StringBuilder _submitContactsNameStringBuilder = new StringBuilder();
+					for (ABContactBean _submitContact : _mSubmitContactList) {
+						_submitContactsNameStringBuilder.append(_submitContact
+								.getApproveNumber());
+						if (_mSubmitContactList.size() - 1 != _mSubmitContactList
+								.indexOf(_submitContact)) {
+							_submitContactsNameStringBuilder.append(',');
+						}
+					}
+
+					// hide the to-do task local storage
+					// define and initialize the update content values
+					ContentValues _updateContentValues = new ContentValues();
+					_updateContentValues.put(TodoTask.TASK_STATUS,
+							TodoTask.HIDDEN_STATUS.toString());
+
+					// update user enterprise to-do list task local storage
+					getContentResolver()
+							.update(ContentUris
+									.withAppendedId(
+											TodoTask.ENTERPRISE_CONTENT_URI,
+											IAUserExtension
+													.getUserLoginEnterpriseId(_mLoginUser)),
+									_updateContentValues,
+									TodoTask.APPROVE_USER_ENTERPRISETODOLISTTASK_WITHSENDERFAKEID_CONDITION,
+									new String[] { _mTodoTaskSenderFakeId
+											.toString() });
+
+					// insert the to-do task for approving to local storage
+					// define and initialize the to-do task approving for
+					// inserting content values
+					ContentValues _insertContentValues = new ContentValues();
+					_insertContentValues.put(ApprovingTodoTask.TASK_ID,
+							_mTodoTaskId.toString());
+					_insertContentValues.put(ApprovingTodoTask.ENTERPRISE_ID,
+							IAUserExtension
+									.getUserLoginEnterpriseId(_mLoginUser));
+					_insertContentValues.put(ApprovingTodoTask.APPROVE_NUMBER,
+							_mLoginUser.getName());
+					_insertContentValues.put(ApprovingTodoTask.SUBMITCONTACTS,
+							_submitContactsNameStringBuilder.toString());
+					_insertContentValues
+							.put(ApprovingTodoTask.JUDGE,
+									_mMyAdviceJudge ? getResources()
+											.getString(
+													R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myAgreedJudge)
+											: getResources()
+													.getString(
+															R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myDisAgreedJudge));
+					_insertContentValues.put(ApprovingTodoTask.ADVICE_INFO,
+							_myAdviceStringBuilder.toString());
+					_insertContentValues.put(ApprovingTodoTask.SENDER_FAKEID,
+							_mTodoTaskSenderFakeId.toString());
+					_insertContentValues.put(ApprovingTodoTask.TASK_STATUS,
+							_mTodoTaskStatus.getValue());
+					_insertContentValues.put(
+							ApprovingTodoTask.TASK_OPERATESTATE,
+							ApprovingTodoTask.TASK_OPERATESTATE_ENDED);
+
+					// insert the to-do task for approving to local storage
+					getContentResolver().insert(
+							ApprovingTodoTask.APPROVINGTODOTASKS_CONTENT_URI,
+							_insertContentValues);
+
+					// popup to-do task approve activity
+					popActivity();
+				} else {
+					Log.d(LOG_TAG, "Please select at least one submit contact");
+
+					// show select at least one submit contact toast
+					Toast.makeText(TodoTaskApproveActivity.this,
+							R.string.toast_select_submitContact,
+							Toast.LENGTH_SHORT).show();
+				}
+			}
 
 			return true;
 		}
@@ -648,14 +989,74 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 	}
 
+	// submit contact on long click listener
+	class SubmitContactOnLongClickListener implements OnLongClickListener {
+
+		@Override
+		public boolean onLongClick(View v) {
+			// remove the selected submit contact from submit contacts
+			// gridLayout
+			_mSelectedSubmitContactsGridLayout.removeView(v);
+
+			// check submit contacts gridLayout subviews count and hide it if
+			// needed
+			if (0 == _mSelectedSubmitContactsGridLayout.getChildCount()) {
+				_mSelectedSubmitContactsGridLayout.setVisibility(View.GONE);
+			}
+
+			// remove the selected submit contact's submit contact object from
+			// submit contact list
+			for (ABContactBean _submitContact : _mSubmitContactList) {
+				// check the selected submit contact user id and delete the
+				// selected submit contact from submit contact list
+				if (_submitContact.getUserId().longValue() == ((SubmitContact) v)
+						.getSubmitContact().getUserId().longValue()) {
+					_mSubmitContactList.remove(_submitContact);
+
+					// break immediately
+					break;
+				}
+			}
+
+			return false;
+		}
+
+	}
+
 	// add submit contact image button on click listener
 	class AddSubmitContactImgBtnOnClickListener implements OnClickListener {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(LOG_TAG, "Click add submit contact");
+			// check submit contact list
+			if (null != _mSubmitContactList && 0 < _mSubmitContactList.size()) {
+				// define to-do task submit contact list user id list
+				List<Long> _tdtaSubmitContactListUserIdList = new ArrayList<Long>();
 
-			//
+				// get to-do task submit contact list cursor and move to first
+				Cursor _tdtaSubmitContactListCursor = ((SubmitContactListCursorAdapter) _mSubmitContactListView
+						.getAdapter()).getCursor();
+				_tdtaSubmitContactListCursor.moveToFirst();
+
+				// traversal to-do task submit contacts and add user id to list
+				do {
+					_tdtaSubmitContactListUserIdList.add(new ABContactBean(
+							_tdtaSubmitContactListCursor).getUserId());
+				} while (_tdtaSubmitContactListCursor.moveToNext());
+
+				// traversal to-do task submit contact list
+				for (ABContactBean _submitContact : _mSubmitContactList) {
+					// get, check to-do task submit contact user id and set the
+					// submit contact item checked
+					Long _submitContactUserId = _submitContact.getUserId();
+					if (_tdtaSubmitContactListUserIdList
+							.contains(_submitContactUserId)) {
+						_mSubmitContactListView.setItemChecked(
+								_tdtaSubmitContactListUserIdList
+										.indexOf(_submitContactUserId), true);
+					}
+				}
+			}
 
 			// open submit contact list sliding drawer
 			_mSubmitContactListSlidingDrawer.animateOpen();
@@ -768,7 +1169,31 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		@Override
 		public void onClick(View v) {
 			// done select to-do list task approve submit contacts
-			//
+			// clear submit contact list
+			_mSubmitContactList.clear();
+
+			// get and check to-do task selected submit contact item id array
+			long[] _tdtaSelectedSubmitContactItemIds = _mSubmitContactListView
+					.getCheckedItemIds();
+			if (null != _tdtaSelectedSubmitContactItemIds
+					&& 0 < _tdtaSelectedSubmitContactItemIds.length) {
+				// get to-do task submit contact list cursor
+				Cursor _tdtaSubmitContactListCursor = ((SubmitContactListCursorAdapter) _mSubmitContactListView
+						.getAdapter()).getCursor();
+
+				// traversal to-do task selected contact items
+				for (int i = 0; i < _tdtaSelectedSubmitContactItemIds.length; i++) {
+					// move the cursor to the position, get the selected address
+					// book contact and add to submit contact list
+					_tdtaSubmitContactListCursor
+							.moveToPosition(((int) _tdtaSelectedSubmitContactItemIds[i]) - 1);
+					_mSubmitContactList.add(new ABContactBean(
+							_tdtaSubmitContactListCursor));
+				}
+			}
+
+			// refresh submit contacts
+			refreshSubmitContacts();
 
 			// show navigation bar
 			((RelativeLayout) findViewById(R.id.navBar_relativeLayout))
@@ -779,6 +1204,24 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 			// close submit contact list sliding drawer
 			_mSubmitContactListSlidingDrawer.animateClose();
+		}
+
+	}
+
+	// to-do list task approve advice switch toggle button on checked change
+	// listener
+	class TodoTaskApproveAdviceSwitchToggleBtnOnCheckedChangeListener implements
+			OnCheckedChangeListener {
+
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView,
+				boolean isChecked) {
+			// check the checked flag and update my advice judge
+			if (isChecked) {
+				_mMyAdviceJudge = true;
+			} else {
+				_mMyAdviceJudge = false;
+			}
 		}
 
 	}

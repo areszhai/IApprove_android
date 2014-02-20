@@ -2,6 +2,7 @@ package com.futuo.iapprove;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 
 import com.futuo.iapprove.account.AccountSetting4FirstActivity;
 import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity;
@@ -47,6 +48,20 @@ public class IApproveAppLaunchActivity extends AppLaunchActivity {
 	public boolean didFinishLaunching() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
 	}
 
 }

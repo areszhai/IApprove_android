@@ -168,6 +168,10 @@
             android:name=".provider.EnterpriseFormContentProvider"
             android:authorities="com.futuo.iapprove.provider.EnterpriseFormContentProvider"
             android:exported="false" />
+        <provider
+            android:name=".provider.UserEnterpriseTaskApprovingContentProvider"
+            android:authorities="com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

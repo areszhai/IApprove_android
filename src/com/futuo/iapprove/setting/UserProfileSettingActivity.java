@@ -27,6 +27,7 @@ import com.futuo.iapprove.addressbook.person.PersonSex;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
 import com.futuo.iapprove.customwidget.UserProfileSettingFormItem;
 import com.futuo.iapprove.setting.UserProfileSettingFormItemEditorActivity.UserProfileSettingFormItemEditorExtraData;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.richitec.commontoolkit.customcomponent.CTPopupWindow;
 import com.richitec.commontoolkit.utils.CommonUtils;
 
@@ -297,6 +298,20 @@ public class UserProfileSettingActivity extends IApproveNavigationActivity {
 		}
 	}
 
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
+	}
+
 	// generate user profile setting form item editor extra data map with user
 	// profile setting form item
 	private Map<String, Object> generateUserProfileSettingFormItemEditorExtraDataMap(
@@ -333,13 +348,13 @@ public class UserProfileSettingActivity extends IApproveNavigationActivity {
 
 		// user sex, birthday, department, mobile phone, office phone, email and
 		// note profile setting form item editor request code
-		private static final int USER_SEX_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 300;
-		private static final int USER_BIRTHDAY_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 301;
-		private static final int USER_DEPARTMENT_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 302;
-		private static final int USER_MOBILEPHONE_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 303;
-		private static final int USER_OFFICEPHONE_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 304;
-		private static final int USER_EMAIL_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 305;
-		private static final int USER_NOTE_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 306;
+		private static final int USER_SEX_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 500;
+		private static final int USER_BIRTHDAY_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 501;
+		private static final int USER_DEPARTMENT_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 502;
+		private static final int USER_MOBILEPHONE_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 503;
+		private static final int USER_OFFICEPHONE_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 504;
+		private static final int USER_EMAIL_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 505;
+		private static final int USER_NOTE_PROFILESETTING_FORMITEM_EDITOR_REQCODE = 506;
 
 	}
 

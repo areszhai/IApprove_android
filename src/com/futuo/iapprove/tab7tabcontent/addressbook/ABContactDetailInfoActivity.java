@@ -28,6 +28,7 @@ import com.futuo.iapprove.customwidget.CommonFormSeparator;
 import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationGenerator;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.richitec.commontoolkit.customcomponent.CTPopupWindow;
 import com.richitec.commontoolkit.utils.CommonUtils;
 
@@ -250,6 +251,20 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 		// bind new approve application button on click listener
 		((Button) findViewById(R.id.abcdi_new_approveApplication_button))
 				.setOnClickListener(new NewApproveApplicationBtnOnClickListener());
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
 	}
 
 	// add address book contact info(birthday, department, mobile phone, office

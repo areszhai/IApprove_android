@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.futuo.iapprove.R;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.richitec.commontoolkit.activityextension.NavigationActivity;
 
 public class EnterpriseFormTypeAndFormListActivity extends NavigationActivity {
@@ -42,6 +43,20 @@ public class EnterpriseFormTypeAndFormListActivity extends NavigationActivity {
 
 		// set navigation bar background drawable
 		setNavBarBackgroundResource(R.drawable.img_iapprove_navbar_bg);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
 	}
 
 }

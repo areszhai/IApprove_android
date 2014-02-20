@@ -1,0 +1,1 @@
+CREATE TABLE "ia_approveapplication_generating" ("_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, "formId" INTEGER NOT NULL, "enterpriseId" INTEGER NOT NULL, "approveNumber" INTEGER NOT NULL, "submitContacts" VARCHAR(100) NOT NULL, "formName" VARCHAR(40) NOT NULL, "formItemValue" VARCHAR(200) NOT NULL, "formAttachmentPath" VARCHAR(400))

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.richitec.commontoolkit.utils.VersionUtils;
 
 public class AboutActivity extends IApproveNavigationActivity {
@@ -30,6 +31,20 @@ public class AboutActivity extends IApproveNavigationActivity {
 		// bind terms and privacy button on click listener
 		((Button) findViewById(R.id.ab_termsAndPrivacy_button))
 				.setOnClickListener(new TermsAndPrivacyBtnOnClickListener());
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
 	}
 
 	// inner class

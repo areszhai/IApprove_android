@@ -13,6 +13,7 @@ import android.widget.Button;
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.AccountLoginActivity.AccountLoginExtraData;
 import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity;
+import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.richitec.commontoolkit.activityextension.NavigationActivity;
 
 public class AccountSetting4FirstActivity extends NavigationActivity {
@@ -84,6 +85,20 @@ public class AccountSetting4FirstActivity extends NavigationActivity {
 			// nothing to do
 			break;
 		}
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		AppDataSaveRestoreUtils.onRestoreInstanceState(savedInstanceState);
+
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		AppDataSaveRestoreUtils.onSaveInstanceState(outState);
+
+		super.onSaveInstanceState(outState);
 	}
 
 	// inner class

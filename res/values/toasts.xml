@@ -7,4 +7,7 @@
     <string name="toast_request_exception">Connect to remote background server exception, please contact with admin soon!</string>
     <string name="toast_requestResp_unrecognized">Remote background server response exception, please contact with admin soon!</string>
 
+    <!-- new approve application or to-do task approve submit contact -->
+    <string name="toast_select_submitContact">Please select at least one submit contact</string>
+
 </resources>

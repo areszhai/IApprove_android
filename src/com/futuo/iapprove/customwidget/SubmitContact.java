@@ -3,6 +3,7 @@ package com.futuo.iapprove.customwidget;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -21,6 +22,10 @@ public class SubmitContact extends FrameLayout {
 	// new approve application or to-do task submit contact name textView
 	private TextView _mSubmitContactNameTextView;
 
+	// new approve application or to-do task submit contact on long click
+	// listener
+	private OnLongClickListener _mSubmitContactOnLongClickListener;
+
 	private SubmitContact(Context context) {
 		super(context);
 
@@ -31,6 +36,10 @@ public class SubmitContact extends FrameLayout {
 		// get new approve application or to-do task submit contact name
 		// textView
 		_mSubmitContactNameTextView = (TextView) findViewById(R.id.naa6tdt_submit_contactName_textView);
+
+		// set its on long click listener
+		_mSubmitContactNameTextView
+				.setOnLongClickListener(new SubmitContactNameTextViewOnLongClickListener());
 	}
 
 	private SubmitContact(Context context, ABContactBean submitContact) {
@@ -44,8 +53,37 @@ public class SubmitContact extends FrameLayout {
 		_mSubmitContactNameTextView.setText(submitContact.getEmployeeName());
 	}
 
+	@Override
+	public void setOnLongClickListener(OnLongClickListener l) {
+		super.setOnLongClickListener(l);
+
+		// save submit contact on long click listener
+		_mSubmitContactOnLongClickListener = l;
+	}
+
 	public ABContactBean getSubmitContact() {
 		return _mSubmitContact;
+	}
+
+	// inner class
+	// new approve application or to-do task submit contact name textView on
+	// long click listener
+	class SubmitContactNameTextViewOnLongClickListener implements
+			OnLongClickListener {
+
+		@Override
+		public boolean onLongClick(View v) {
+			boolean _ret = false;
+
+			// check submit contact on long click listener
+			if (null != _mSubmitContactOnLongClickListener) {
+				_ret = _mSubmitContactOnLongClickListener
+						.onLongClick(SubmitContact.this);
+			}
+
+			return _ret;
+		}
+
 	}
 
 	// generate new approve application or to-do task submit contact with

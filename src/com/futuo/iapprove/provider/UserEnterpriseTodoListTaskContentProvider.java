@@ -709,8 +709,9 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 			throw new UnknownCPContentUriException(uri);
 		}
 
-		Log.d(LOG_TAG, "Delete enterprise address book with selection = "
-				+ selection);
+		Log.d(LOG_TAG,
+				"Delete user enterprise to-do list task with selection = "
+						+ selection);
 
 		// delete object from its local storage table with selection
 		_deleteNumber = _lswDB.delete(_deleteTableName, selection,
@@ -950,8 +951,19 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 			private static final String TODOTASK_CONTENT_TYPE = "vnd.android.cursor.item/"
 					+ TodoTasks.class.getCanonicalName();
 
+			// user enterprise to-do list task without hidden condition
+			public static final String USER_ENTERPRISETODOLISTTASKS_WITHLOGINNAME7WITHOUTHIDDEN_CONDITION = APPROVE_NUMBER
+					+ "=?" + _AND_SELECTION + TASK_STATUS + "!=10";
+
 			// user enterprise to-do list task condition
 			public static final String USER_ENTERPRISETODOLISTTASKS_WITHLOGINNAME_CONDITION = APPROVE_NUMBER
+					+ "=?";
+
+			// user enterprise to-do list task hidden status
+			public static final Integer HIDDEN_STATUS = 10;
+
+			// the approve user enterprise to-do task condition
+			public static final String APPROVE_USER_ENTERPRISETODOLISTTASK_WITHSENDERFAKEID_CONDITION = SENDERFAKEID
 					+ "=?";
 
 		}

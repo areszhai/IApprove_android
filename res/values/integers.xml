@@ -3,7 +3,8 @@
 
     <!-- core service task -->
     <item name="cstp_getUserEnterpriseTodoListTask_period" type="integer">1</item>
-    <item name="cstp_getEnterpriseAB_period" type="integer">1</item>
+    <item name="cstp_getEnterpriseAB_period" type="integer">10</item>
     <item name="cstp_getEnterpriseForm_period" type="integer">30</item>
+    <item name="cstp_approveEnterpriseTask_period" type="integer">1</item>
 
 </resources>
