@@ -162,6 +162,32 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 				.onClick(_mVoiceAttachmentPlayImgViewContainerRelativeLayout);
 	}
 
+	// get new approve application attachment path
+	public String getAttachmentPath() {
+		String _attachmentPath = null;
+
+		// check attachment type
+		switch (_mAttachmentType) {
+		case TEXT_ATTACHMENT:
+			// nothing to do
+			break;
+
+		case IMAGE_ATTACHMENT:
+			// nothing to do
+			break;
+
+		case VOICE_ATTACHMENT:
+			_attachmentPath = getVoiceAttachmentVoiceFilePath();
+			break;
+
+		case APPLICATION_ATTACHMENT:
+			// nothing to do
+			break;
+		}
+
+		return _attachmentPath;
+	}
+
 	// get text attachment text
 	private String getTextAttachmentText() {
 		String _textAttachmentText = null;

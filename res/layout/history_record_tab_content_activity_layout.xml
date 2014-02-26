@@ -6,15 +6,16 @@
     tools:context=".tab7tabcontent.HistoryRecordTabContentActivity" >
 
     <include
-        android:id="@+id/hr_myApplication_segment_view"
+        android:id="@+id/hr_checked_segment_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         layout="@layout/history_record_segment_content_layout" />
 
-    <ViewStub
-        android:id="@+id/hr_checked_segment_viewStub"
+    <include
+        android:id="@+id/hr_myApplication_segment_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout="@layout/history_record_segment_content_layout" />
+        layout="@layout/history_record_segment_content_layout"
+        android:visibility="gone" />
 
 </FrameLayout>

@@ -121,7 +121,7 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 											R.string.rbgServer_getUserEnterpriseTodoListTaskReqParam_action));
 			_mGetUserEnterpriseTodoListTaskPostHttpReqParam
 					.put(_mContext.getResources().getString(
-							R.string.rbgServer_getIApproveListReqParam_state),
+							R.string.rbgServer_getIApproveReqParam_state),
 							_mContext
 									.getResources()
 									.getString(

@@ -1,6 +1,9 @@
 package com.futuo.iapprove.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpRequest;
@@ -8,16 +11,21 @@ import org.apache.http.HttpResponse;
 import org.json.JSONObject;
 
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.ApprovingTodoTasks.ApprovingTodoTask;
+import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATaskAttachments.GeneratingNAATaskAttachment;
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATasks.GeneratingNAATask;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
 import com.futuo.iapprove.utils.HttpRequestParamUtils;
+import com.futuo.iapprove.utils.UploadFileUtils;
+import com.futuo.iapprove.utils.UploadFileUtils.UploadFileHttpRequestListener;
 import com.richitec.commontoolkit.user.UserManager;
+import com.richitec.commontoolkit.utils.CommonUtils;
 import com.richitec.commontoolkit.utils.HttpUtils;
 import com.richitec.commontoolkit.utils.HttpUtils.HttpRequestType;
 import com.richitec.commontoolkit.utils.HttpUtils.OnHttpRequestListener;
@@ -204,8 +212,8 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 								.getColumnIndex(GeneratingNAATask._ID));
 
 						// get new approve application for generating form id,
-						// enterprise id, submit contacts, form name and form
-						// item value
+						// enterprise id, submit contacts, form name, form item
+						// value and attachment path
 						Long _naaFormId = _cursor.getLong(_cursor
 								.getColumnIndex(GeneratingNAATask.FORM_ID));
 						Long _naaEnterpriseId = _cursor.getLong(_cursor
@@ -216,6 +224,8 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 								.getColumnIndex(GeneratingNAATask.FORM_NAME));
 						String _naaFormItemValue = _cursor.getString(_cursor
 								.getColumnIndex(GeneratingNAATask.FORMITEM_VALUE));
+						String _naaAttachmentPath = _cursor.getString(_cursor
+								.getColumnIndex(GeneratingNAATask.FORM_ATTACHMENTPATH));
 
 						// get new approve application generating post http
 						// request param
@@ -285,7 +295,115 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 										null,
 										HttpRequestType.ASYNCHRONOUS,
 										new GenerateUserEnterpriseNAAPostHttpRequestListener(
-												_naaLSRowId));
+												_naaLSRowId, _naaAttachmentPath));
+					}
+
+					// close cursor
+					_cursor.close();
+				}
+
+				// get local storage user enterprise new approve application
+				// attachments for generate
+				_cursor = _mContentResolver
+						.query(GeneratingNAATaskAttachment.GENERATINGNAATASKATTACHMENTS_CONTENT_URI,
+								null, null, null, null);
+
+				// check cursor
+				if (null != _cursor) {
+					// get and check user enterprise new approve application
+					// attachments for generating
+					while (_cursor.moveToNext()) {
+						// get new approve application attachment for generating
+						// local storage row id
+						Long _naaAttachmentLSRowId = _cursor.getLong(_cursor
+								.getColumnIndex(GeneratingNAATaskAttachment._ID));
+
+						// get new approve application attachment for generating
+						// task id, enterprise id, approve number and attachment
+						// path
+						Long _naaAttachmentTaskId = _cursor.getLong(_cursor
+								.getColumnIndex(GeneratingNAATaskAttachment.TASK_ID));
+						Long _naaAttachmentEnterpriseId = _cursor.getLong(_cursor
+								.getColumnIndex(GeneratingNAATaskAttachment.ENTERPRISE_ID));
+						Long _naaAttachmentApproveNumber = _cursor.getLong(_cursor
+								.getColumnIndex(GeneratingNAATaskAttachment.APPROVE_NUMBER));
+						String _naaAttachmentPath = _cursor.getString(_cursor
+								.getColumnIndex(GeneratingNAATaskAttachment.ATTACHMENTPATH));
+
+						// upload new approve application attachment
+						// generate upload new approve application attachment
+						// request param
+						Map<String, Object> _uploadNAAAttachmentRequestParam = new HashMap<String, Object>();
+
+						_uploadNAAAttachmentRequestParam
+								.put(_mContext
+										.getResources()
+										.getString(
+												R.string.rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_enterpriseId),
+										StringUtils
+												.base64Encode(_naaAttachmentEnterpriseId
+														.toString()));
+						_uploadNAAAttachmentRequestParam
+								.put(_mContext
+										.getResources()
+										.getString(
+												R.string.rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_approveNumber),
+										StringUtils
+												.base64Encode(_naaAttachmentApproveNumber
+														.toString()));
+						_uploadNAAAttachmentRequestParam
+								.put(_mContext
+										.getResources()
+										.getString(
+												R.string.rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_taskId),
+										_naaAttachmentTaskId.toString());
+
+						// define upload new approve application request url
+						StringBuilder _uploadNAAAttachmentRequestUrlStringBuilder = new StringBuilder(
+								_mContext.getResources().getString(
+										R.string.server_url)
+										+ _mContext
+												.getResources()
+												.getString(
+														R.string.upload_userEnterpriseApproveApplicationAttachment_url));
+						_uploadNAAAttachmentRequestUrlStringBuilder.append('?');
+						for (String _uploadNAAAttachmentRequestParamKey : _uploadNAAAttachmentRequestParam
+								.keySet()) {
+							_uploadNAAAttachmentRequestUrlStringBuilder
+									.append(_uploadNAAAttachmentRequestParamKey)
+									.append('=')
+									.append(_uploadNAAAttachmentRequestParam
+											.get(_uploadNAAAttachmentRequestParamKey))
+									.append('&');
+						}
+						String _uploadNAAAttachmentRequestUrl = _uploadNAAAttachmentRequestUrlStringBuilder
+								.substring(0,
+										_uploadNAAAttachmentRequestUrlStringBuilder
+												.length() - 1);
+						;
+
+						Map<String, File> _uploadNAAAttachmentRequestFileParam = new HashMap<String, File>();
+						_uploadNAAAttachmentRequestFileParam
+								.put(_mContext
+										.getResources()
+										.getString(
+												R.string.rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_fileName),
+										new File(_naaAttachmentPath));
+
+						// send upload new approve application attachment
+						// post http request
+						try {
+							UploadFileUtils
+									.post(_uploadNAAAttachmentRequestUrl,
+											null,
+											_uploadNAAAttachmentRequestFileParam,
+											new UploadUserEnterpriseNAAAttachmentPostHttpRequestListener(
+													_naaAttachmentLSRowId,
+													_naaAttachmentTaskId));
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 
 					// close cursor
@@ -363,18 +481,22 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 	class GenerateUserEnterpriseNAAPostHttpRequestListener extends
 			OnHttpRequestListener {
 
-		// new approve application generating local storage row id
+		// new approve application generating local storage row id and
+		// attachment path
 		private Long _mNAALocalStorageRowId;
+		private String _mNAALocalStorageAttachmentPath;
 
 		// new approve application task id
 		private Long _mNAATaskId;
 
 		public GenerateUserEnterpriseNAAPostHttpRequestListener(
-				Long naaLocalStorageRowId) {
+				Long naaLocalStorageRowId, String naaLocalStorageAttachmentPath) {
 			super();
 
-			// save new approve application generating local storage row id
+			// save new approve application generating local storage row id and
+			// attachment path
 			_mNAALocalStorageRowId = naaLocalStorageRowId;
+			_mNAALocalStorageAttachmentPath = naaLocalStorageAttachmentPath;
 		}
 
 		@Override
@@ -396,39 +518,69 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 					GeneratingNAATask.GENERATINGNAATASK_CONTENT_URI,
 					_mNAALocalStorageRowId), null, null);
 
-			// synchronized enterprise new approve application attachment
-			// define and initialize synchronized enterprise new approve
-			// application attachment post http request param
-			Map<String, String> _synchronizedEnterpriseNAAAttachmentPostHttpReqParam = new HashMap<String, String>();
-			_synchronizedEnterpriseNAAAttachmentPostHttpReqParam
-					.put(_mContext.getResources().getString(
-							R.string.rbgServer_commonReqParam_action),
-							_mContext
-									.getResources()
-									.getString(
-											R.string.rbgServer_synchronizedNewEnterpriseApproveApplicationAttachmentReqParam_action));
-			_synchronizedEnterpriseNAAAttachmentPostHttpReqParam
-					.put(_mContext
-							.getResources()
-							.getString(
-									R.string.rbgServer_synchronizedNewEnterpriseApproveApplicationAttachmentReqParam_taskId),
-							StringUtils.base64Encode(_mNAATaskId.toString()));
+			// get new approve application generating local storage attachment
+			// path list
+			@SuppressWarnings("unchecked")
+			List<String> _naaLocalStorageAttachmentPathList = (List<String>) CommonUtils
+					.array2List(StringUtils.split(
+							_mNAALocalStorageAttachmentPath, ","));
 
-			// send synchronized enterprise new approve application attachment
-			// post http request
-			HttpUtils
-					.postRequest(
-							_mContext.getResources().getString(
-									R.string.server_url)
-									+ _mContext
-											.getResources()
-											.getString(
-													R.string.syncNewEnterpriseApproveApplicationAttachment_url),
-							PostRequestFormat.URLENCODED,
-							_synchronizedEnterpriseNAAAttachmentPostHttpReqParam,
-							null,
-							HttpRequestType.ASYNCHRONOUS,
-							new SynchronizedEnterpriseNAAAttachmentPostHttpRequestListener());
+			// insert new approve application attachment to local storage
+			ContentValues _insertContentValues = new ContentValues();
+			_insertContentValues.put(GeneratingNAATaskAttachment.TASK_ID,
+					_mNAATaskId.toString());
+			_insertContentValues.put(GeneratingNAATaskAttachment.ENTERPRISE_ID,
+					_mEnterpriseId.toString());
+			_insertContentValues.put(
+					GeneratingNAATaskAttachment.APPROVE_NUMBER, UserManager
+							.getInstance().getUser().getName());
+
+			if (null == _naaLocalStorageAttachmentPathList
+					|| 0 == _naaLocalStorageAttachmentPathList.size()) {
+				// synchronized enterprise new approve application attachment
+				// define and initialize synchronized enterprise new approve
+				// application attachment post http request param
+				Map<String, String> _synchronizedEnterpriseNAAAttachmentPostHttpReqParam = new HashMap<String, String>();
+				_synchronizedEnterpriseNAAAttachmentPostHttpReqParam
+						.put(_mContext.getResources().getString(
+								R.string.rbgServer_commonReqParam_action),
+								_mContext
+										.getResources()
+										.getString(
+												R.string.rbgServer_synchronizedNewEnterpriseApproveApplicationAttachmentReqParam_action));
+				_synchronizedEnterpriseNAAAttachmentPostHttpReqParam
+						.put(_mContext
+								.getResources()
+								.getString(
+										R.string.rbgServer_synchronizedNewEnterpriseApproveApplicationAttachmentReqParam_taskId),
+								StringUtils.base64Encode(_mNAATaskId.toString()));
+
+				// send synchronized enterprise new approve application
+				// attachment post http request
+				HttpUtils
+						.postRequest(
+								_mContext.getResources().getString(
+										R.string.server_url)
+										+ _mContext
+												.getResources()
+												.getString(
+														R.string.syncNewEnterpriseApproveApplicationAttachment_url),
+								PostRequestFormat.URLENCODED,
+								_synchronizedEnterpriseNAAAttachmentPostHttpReqParam,
+								null,
+								HttpRequestType.ASYNCHRONOUS,
+								new SynchronizedEnterpriseNAAAttachmentPostHttpRequestListener());
+			} else {
+				for (String naaTaskAttachmentPath : _naaLocalStorageAttachmentPathList) {
+					_insertContentValues.put(
+							GeneratingNAATaskAttachment.ATTACHMENTPATH,
+							naaTaskAttachmentPath);
+
+					_mContentResolver
+							.insert(GeneratingNAATaskAttachment.GENERATINGNAATASKATTACHMENTS_CONTENT_URI,
+									_insertContentValues);
+				}
+			}
 		}
 
 		@Override
@@ -436,69 +588,187 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 			// nothing to do
 		}
 
-		// inner class
-		// synchronized enterprise new approve application attachment post http
-		// request listener
-		class SynchronizedEnterpriseNAAAttachmentPostHttpRequestListener extends
-				OnHttpRequestListener {
+	}
 
-			@Override
-			public void onFinished(HttpRequest request, HttpResponse response) {
-				// get http response entity string
-				String _respEntityString = HttpUtils
-						.getHttpResponseEntityString(response);
+	// upload user enterprise new approve application attachment post http
+	// request listener
+	class UploadUserEnterpriseNAAAttachmentPostHttpRequestListener extends
+			UploadFileHttpRequestListener {
 
-				Log.d(LOG_TAG,
-						"Send synchronized enterprise new approve application attachment post http request successful, response entity string = "
-								+ _respEntityString);
+		// new approve application attachment generating local storage row id
+		// and task id
+		private Long _mNAAAttachmentLocalStorageRowId;
+		private Long _mNAAAttachmentLocalStorageTaskId;
 
-				// get and check http response entity string error json data
-				JSONObject _respJsonData = JSONUtils
-						.toJSONObject(_respEntityString);
+		public UploadUserEnterpriseNAAAttachmentPostHttpRequestListener(
+				Long naaAttachmentLocalStorageRowId,
+				Long naaAttachmentLocalStorageTaskId) {
+			super();
 
-				if (null != _respJsonData) {
-					// get and check error message
-					String _errorMsg = JSONUtils.getStringFromJSONObject(
-							_respJsonData,
-							_mContext.getResources().getString(
-									R.string.rbgServer_commonReqResp_error));
+			// save new approve application attachment generating local storage
+			// row id and task id
+			_mNAAAttachmentLocalStorageRowId = naaAttachmentLocalStorageRowId;
+			_mNAAAttachmentLocalStorageTaskId = naaAttachmentLocalStorageTaskId;
+		}
 
-					if (null != _errorMsg) {
-						Log.e(LOG_TAG,
-								"Synchronized enterprise new approve application attachment failed, response error message = "
-										+ _errorMsg);
+		@Override
+		public void onFinished(String responseString) {
+			Log.d(LOG_TAG, "@@@, _mNAAAttachmentLocalStorageTaskId = "
+					+ _mNAAAttachmentLocalStorageTaskId);
 
-						// return immediately
-						return;
+			// delete the new approve application attachment for generating
+			// local storage data
+			_mContentResolver
+					.delete(ContentUris
+							.withAppendedId(
+									GeneratingNAATaskAttachment.GENERATINGNAATASKATTACHMENT_CONTENT_URI,
+									_mNAAAttachmentLocalStorageRowId), null,
+							null);
+
+			// query the new approve application attachment left
+			Cursor _cursor = _mContentResolver
+					.query(GeneratingNAATaskAttachment.GENERATINGNAATASKATTACHMENTS_CONTENT_URI,
+							new String[] { GeneratingNAATaskAttachment._COUNT_PROJECTION },
+							GeneratingNAATaskAttachment.USER_ENTERPRISENAATASK_ATTACHMENTS_WITHTASKID_CONDITION,
+							new String[] { _mNAAAttachmentLocalStorageTaskId
+									.toString() }, null);
+
+			// check cursor
+			if (null != _cursor) {
+				// get and check the new approve application attachments count
+				while (_cursor.moveToNext()) {
+					if (0 == _cursor
+							.getLong(_cursor
+									.getColumnIndex(GeneratingNAATaskAttachment._COUNT))) {
+						// synchronized enterprise new approve application
+						// attachment
+						// define and initialize synchronized enterprise new
+						// approve application attachment post http request
+						// param
+						Map<String, String> _synchronizedEnterpriseNAAAttachmentPostHttpReqParam = new HashMap<String, String>();
+						_synchronizedEnterpriseNAAAttachmentPostHttpReqParam
+								.put(_mContext
+										.getResources()
+										.getString(
+												R.string.rbgServer_commonReqParam_action),
+										_mContext
+												.getResources()
+												.getString(
+														R.string.rbgServer_synchronizedNewEnterpriseApproveApplicationAttachmentReqParam_action));
+						_synchronizedEnterpriseNAAAttachmentPostHttpReqParam
+								.put(_mContext
+										.getResources()
+										.getString(
+												R.string.rbgServer_synchronizedNewEnterpriseApproveApplicationAttachmentReqParam_taskId),
+										StringUtils
+												.base64Encode(_mNAAAttachmentLocalStorageTaskId
+														.toString()));
+
+						// send synchronized enterprise new approve application
+						// attachment post http request
+						HttpUtils
+								.postRequest(
+										_mContext.getResources().getString(
+												R.string.server_url)
+												+ _mContext
+														.getResources()
+														.getString(
+																R.string.syncNewEnterpriseApproveApplicationAttachment_url),
+										PostRequestFormat.URLENCODED,
+										_synchronizedEnterpriseNAAAttachmentPostHttpReqParam,
+										null,
+										HttpRequestType.ASYNCHRONOUS,
+										new SynchronizedEnterpriseNAAAttachmentPostHttpRequestListener());
 					}
 				}
 
-				// synchronized enterprise server data
-				// define and initialize synchronized enterprise server data
-				// post http request param
-				Map<String, String> _synchronizedEnterpriseServerDataPostHttpReqParam = new HashMap<String, String>();
-				_synchronizedEnterpriseServerDataPostHttpReqParam
-						.put(_mContext
-								.getResources()
-								.getString(
-										R.string.rbgServer_synchronizedEnterpriseServerDataReqParam_enterpriseId),
-								StringUtils.base64Encode(_mEnterpriseId
-										.toString()));
+				// close cursor
+				_cursor.close();
+			}
+		}
 
-				// send synchronized enterprise server data post http request
-				HttpUtils.postRequest(
-						_mContext.getResources().getString(R.string.server_url)
-								+ _mContext.getResources().getString(
-										R.string.syncEnterpriseData_url),
-						PostRequestFormat.URLENCODED,
-						_synchronizedEnterpriseServerDataPostHttpReqParam,
-						null, HttpRequestType.ASYNCHRONOUS, null);
+		@Override
+		public void onFailed(Integer responseCode) {
+			// nothing to do
+		}
+
+	}
+
+	// synchronized enterprise new approve application attachment post http
+	// request listener
+	class SynchronizedEnterpriseNAAAttachmentPostHttpRequestListener extends
+			OnHttpRequestListener {
+
+		@Override
+		public void onFinished(HttpRequest request, HttpResponse response) {
+			// get http response entity string
+			String _respEntityString = HttpUtils
+					.getHttpResponseEntityString(response);
+
+			Log.d(LOG_TAG,
+					"Send synchronized enterprise new approve application attachment post http request successful, response entity string = "
+							+ _respEntityString);
+
+			// get and check http response entity string error json data
+			JSONObject _respJsonData = JSONUtils
+					.toJSONObject(_respEntityString);
+
+			if (null != _respJsonData) {
+				// get and check error message
+				String _errorMsg = JSONUtils.getStringFromJSONObject(
+						_respJsonData,
+						_mContext.getResources().getString(
+								R.string.rbgServer_commonReqResp_error));
+
+				if (null != _errorMsg) {
+					Log.e(LOG_TAG,
+							"Synchronized enterprise new approve application attachment failed, response error message = "
+									+ _errorMsg);
+
+					// return immediately
+					return;
+				}
 			}
 
-			@Override
-			public void onFailed(HttpRequest request, HttpResponse response) {
-				// nothing to do
-			}
+			// synchronized enterprise server data
+			// define and initialize synchronized enterprise server data
+			// post http request param
+			Map<String, String> _synchronizedEnterpriseServerDataPostHttpReqParam = new HashMap<String, String>();
+			_synchronizedEnterpriseServerDataPostHttpReqParam
+					.put(_mContext
+							.getResources()
+							.getString(
+									R.string.rbgServer_synchronizedEnterpriseServerDataReqParam_enterpriseId),
+							StringUtils.base64Encode(_mEnterpriseId.toString()));
+
+			// send synchronized enterprise server data post http request
+			HttpUtils.postRequest(
+					_mContext.getResources().getString(R.string.server_url)
+							+ _mContext.getResources().getString(
+									R.string.syncEnterpriseData_url),
+					PostRequestFormat.URLENCODED,
+					_synchronizedEnterpriseServerDataPostHttpReqParam, null,
+					HttpRequestType.ASYNCHRONOUS, null);
+		}
+
+		@Override
+		public void onFailed(HttpRequest request, HttpResponse response) {
+			// nothing to do
+		}
+
+	}
+
+	class AA extends OnHttpRequestListener {
+
+		@Override
+		public void onFinished(HttpRequest request, HttpResponse response) {
+			Log.d(LOG_TAG, "@@");
+
+		}
+
+		@Override
+		public void onFailed(HttpRequest request, HttpResponse response) {
+			Log.d(LOG_TAG, "@");
 
 		}
 

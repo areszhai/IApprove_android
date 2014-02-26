@@ -765,6 +765,30 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 					}
 				}
 
+				// define and initialize new approve application attachment path
+				// string builder
+				StringBuilder _naaAttachmentPathStringBuilder = new StringBuilder();
+				if (null != _mAttachmentFormParentFrameLayout
+						&& View.VISIBLE == _mAttachmentFormParentFrameLayout
+								.getVisibility()
+						&& null != _mAttachmentFormLinearLayout
+						&& 1 < _mAttachmentFormLinearLayout.getChildCount()) {
+					for (int i = 1; i < _mAttachmentFormLinearLayout
+							.getChildCount(); i++) {
+						// get and check new approve application attachment path
+						String _naaAttachmentPath = ((NAAFormAttachmentFormItem) _mAttachmentFormLinearLayout
+								.getChildAt(i)).getAttachmentPath();
+						if (null != _naaAttachmentPath) {
+							_naaAttachmentPathStringBuilder
+									.append(_naaAttachmentPath);
+
+							if (_mAttachmentFormLinearLayout.getChildCount() - 1 != i) {
+								_naaAttachmentPathStringBuilder.append(',');
+							}
+						}
+					}
+				}
+
 				// insert the new approve application for generating to local
 				// storage
 				// define and initialize the new approve application approving
@@ -783,7 +807,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 				_insertContentValues.put(GeneratingNAATask.FORMITEM_VALUE,
 						_naaFormItemValueStringBuilder.toString());
 				_insertContentValues.put(GeneratingNAATask.FORM_ATTACHMENTPATH,
-						"");
+						_naaAttachmentPathStringBuilder.toString());
 
 				// insert the new approve application for generating to local
 				// storage

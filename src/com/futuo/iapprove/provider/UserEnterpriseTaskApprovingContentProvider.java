@@ -8,8 +8,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.ApprovingTodoTasks.ApprovingTodoTask;
+import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATaskAttachments.GeneratingNAATaskAttachment;
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATasks.GeneratingNAATask;
-import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskFormItems.TodoTaskFormItem;
 
 public class UserEnterpriseTaskApprovingContentProvider extends
 		LocalStorageContentProvider {
@@ -44,6 +44,23 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 		URI_MATCHER.addURI(AUTHORITY, GeneratingNAATasks.PATH
 				+ "/generatingNAATask/#",
 				NAATaskGeneratingTableAccessType.GENERATINGNAATASK_ID);
+
+		// generating new approve application attachment
+		URI_MATCHER
+				.addURI(AUTHORITY,
+						GeneratingNAATaskAttachments.PATH
+								+ "/generatingNAATaskAttachments",
+						NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENTS);
+		URI_MATCHER
+				.addURI(AUTHORITY,
+						GeneratingNAATaskAttachments.PATH
+								+ "/generatingNAATaskAttachment",
+						NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT);
+		URI_MATCHER
+				.addURI(AUTHORITY,
+						GeneratingNAATaskAttachments.PATH
+								+ "/generatingNAATaskAttachment/#",
+						NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT_ID);
 	}
 
 	@Override
@@ -70,6 +87,16 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 		case NAATaskGeneratingTableAccessType.GENERATINGNAATASK:
 		case NAATaskGeneratingTableAccessType.GENERATINGNAATASK_ID:
 			_contentType = GeneratingNAATask.GENERATINGNAATASK_CONTENT_TYPE;
+			break;
+
+		// generating new approve application attachment
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENTS:
+			_contentType = GeneratingNAATaskAttachment.GENERATINGNAATASKATTACHMENTS_CONTENT_TYPE;
+			break;
+
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT:
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT_ID:
+			_contentType = GeneratingNAATaskAttachment.GENERATINGNAATASKATTACHMENT_CONTENT_TYPE;
 			break;
 
 		default:
@@ -119,6 +146,22 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 
 			Log.d(LOG_TAG,
 					"Insert user enterprise new approve application for generating with values = "
+							+ values);
+			break;
+
+		// generating new approve application attachment
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT:
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT_ID:
+			// nothing to do
+			break;
+
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENTS:
+			// set user enterprise new approve application generating attachment
+			// table as insert table
+			_insertTableName = GeneratingNAATaskAttachments.NAATASKGENERATINGATTACHMENT_TABLE;
+
+			Log.d(LOG_TAG,
+					"Insert user enterprise new approve application attachment for generating with values = "
 							+ values);
 			break;
 
@@ -209,7 +252,7 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 
 				// check and update selection
 				if (null != selection && !"".equalsIgnoreCase(selection)) {
-					selection += TodoTaskFormItem._AND_SELECTION + _where;
+					selection += GeneratingNAATask._AND_SELECTION + _where;
 				} else {
 					selection = _where;
 				}
@@ -224,6 +267,37 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 			// notification uri
 			_queryTableName = GeneratingNAATasks.NAATASKGENERATING_TABLE;
 			_notificationUri = GeneratingNAATask.GENERATINGNAATASKS_NOTIFICATION_CONTENT_URI;
+			break;
+
+		// generating new approve application attachment
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENTS:
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT:
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT_ID:
+			// get query new approve application attachment for generating and
+			// generate where condition
+			if (NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT_ID == URI_MATCHER
+					.match(uri)) {
+				_where = GeneratingNAATaskAttachment._ID + "="
+						+ ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += GeneratingNAATaskAttachment._AND_SELECTION
+							+ _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG,
+					"Query user enterprise new approve application attachment for generating with selection = "
+							+ selection);
+
+			// set user enterprise new approve application attachment for
+			// generating table as query table and new approve application
+			// generating notification uri
+			_queryTableName = GeneratingNAATaskAttachments.NAATASKGENERATINGATTACHMENT_TABLE;
+			_notificationUri = GeneratingNAATaskAttachment.GENERATINGNAATASKATTACHMENTS_NOTIFICATION_CONTENT_URI;
 			break;
 
 		default:
@@ -329,6 +403,38 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 			_deleteTableName = GeneratingNAATasks.NAATASKGENERATING_TABLE;
 			break;
 
+		// generating new approve application attachment
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENTS:
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT:
+			// nothing to do
+			break;
+
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT_ID:
+			// get delete new approving application attachment for generating id
+			// and generate where condition
+			if (NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT_ID == URI_MATCHER
+					.match(uri)) {
+				_where = GeneratingNAATaskAttachment._ID + "="
+						+ ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += GeneratingNAATaskAttachment._AND_SELECTION
+							+ _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG,
+					"Delete user enterprise new approve application attachment for generating with selection = "
+							+ selection);
+
+			// set user enterprise new approve application attachment for
+			// generating table as delete table
+			_deleteTableName = GeneratingNAATaskAttachments.NAATASKGENERATINGATTACHMENT_TABLE;
+			break;
+
 		default:
 			throw new UnknownCPContentUriException(uri);
 		}
@@ -412,9 +518,9 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 	static class NAATaskGeneratingTableAccessType {
 
 		// user enterprise new approve application generating table access type
-		private static final int GENERATINGNAATASKS = 95;
-		private static final int GENERATINGNAATASK = 96;
-		private static final int GENERATINGNAATASK_ID = 97;
+		private static final int GENERATINGNAATASKS = 94;
+		private static final int GENERATINGNAATASK = 95;
+		private static final int GENERATINGNAATASK_ID = 96;
 
 	}
 
@@ -458,6 +564,66 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 					+ GeneratingNAATasks.class.getCanonicalName();
 			private static final String GENERATINGNAATASK_CONTENT_TYPE = "vnd.android.cursor.item/"
 					+ GeneratingNAATasks.class.getCanonicalName();
+
+		}
+
+	}
+
+	// user enterprise new approve application generating attachment table
+	// access type
+	static class NAATaskGeneratingAttachmentTableAccessType {
+
+		// user enterprise new approve application generating attachment table
+		// access type
+		private static final int GENERATINGNAATASKATTACHMENTS = 97;
+		private static final int GENERATINGNAATASKATTACHMENT = 98;
+		private static final int GENERATINGNAATASKATTACHMENT_ID = 99;
+
+	}
+
+	// user enterprise generating new approve application attachment
+	public static final class GeneratingNAATaskAttachments {
+
+		// user enterprise generating new approve application attachment path
+		private static final String PATH = GeneratingNAATaskAttachments.class
+				.getCanonicalName();
+
+		// user enterprise new approve application generating attachment table
+		// name
+		public static final String NAATASKGENERATINGATTACHMENT_TABLE = "ia_approveapplication_generating_attachment";
+
+		// inner class
+		// user enterprise generating new approve application attachment
+		public static final class GeneratingNAATaskAttachment implements
+				SimpleBaseColumns {
+
+			// user enterprise task approving content provider new approve
+			// application generating attachment process data columns
+			public static final String TASK_ID = "taskId";
+			public static final String ENTERPRISE_ID = "enterpriseId";
+			public static final String APPROVE_NUMBER = "approveNumber";
+			public static final String ATTACHMENTPATH = "attachmentPath";
+
+			// content uri
+			private static final Uri GENERATINGNAATASKATTACHMENTS_NOTIFICATION_CONTENT_URI = Uri
+					.parse("content://" + AUTHORITY + '/' + PATH);
+			public static final Uri GENERATINGNAATASKATTACHMENTS_CONTENT_URI = Uri
+					.parse("content://" + AUTHORITY + '/' + PATH
+							+ "/generatingNAATaskAttachments");
+			public static final Uri GENERATINGNAATASKATTACHMENT_CONTENT_URI = Uri
+					.parse("content://" + AUTHORITY + '/' + PATH
+							+ "/generatingNAATaskAttachment");
+
+			// content type
+			private static final String GENERATINGNAATASKATTACHMENTS_CONTENT_TYPE = "vnd.android.cursor.dir/"
+					+ GeneratingNAATaskAttachments.class.getCanonicalName();
+			private static final String GENERATINGNAATASKATTACHMENT_CONTENT_TYPE = "vnd.android.cursor.item/"
+					+ GeneratingNAATaskAttachments.class.getCanonicalName();
+
+			// user enterprise new approve application generating attachment
+			// condition
+			public static final String USER_ENTERPRISENAATASK_ATTACHMENTS_WITHTASKID_CONDITION = TASK_ID
+					+ "=?";
 
 		}
 

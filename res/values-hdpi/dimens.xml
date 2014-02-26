@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- new application approve form voice attachment play image view margin left -->
+    <dimen name="naa_formVoiceAttachment_playImgView_marginLeft_min">40dp</dimen>
+    <dimen name="naa_formVoiceAttachment_playImgView_marginLeft_max">228dp</dimen>
+    <dimen name="naa_formVoiceAttachment_playImgView_marginLeft_increaseStep">4dp</dimen>
+
+    <!-- iApprove task form voice attachment play image view margin right -->
+    <dimen name="task_formVoiceAttachment_playImgView_marginRight_min">40dp</dimen>
+    <dimen name="task_formVoiceAttachment_playImgView_marginRight_max">228dp</dimen>
+    <dimen name="task_formVoiceAttachment_playImgView_marginRight_increaseStep">4dp</dimen>
+
+</resources>

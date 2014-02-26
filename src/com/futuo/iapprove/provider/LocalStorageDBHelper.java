@@ -15,6 +15,7 @@ import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormTypes;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.Forms;
 import com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider.EnterpriseProfiles;
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.ApprovingTodoTasks;
+import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATaskAttachments;
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATasks;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskAttachments;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskFormItems;
@@ -75,8 +76,10 @@ public class LocalStorageDBHelper extends SQLiteOpenHelper {
 		// create user enterprise to-do task approving table
 		db.execSQL(getSqlStatementFromAssets(ApprovingTodoTasks.TODOTASKAPPROVING_TABLE));
 
-		// create user enterprise new approve application generating table
+		// create user enterprise new approve application generating and its
+		// attachment table
 		db.execSQL(getSqlStatementFromAssets(GeneratingNAATasks.NAATASKGENERATING_TABLE));
+		db.execSQL(getSqlStatementFromAssets(GeneratingNAATaskAttachments.NAATASKGENERATINGATTACHMENT_TABLE));
 	}
 
 	@Override

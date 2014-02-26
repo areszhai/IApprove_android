@@ -156,6 +156,8 @@
     <string name="historyRecord_tab_title">Record</string>
     <string name="hr_myApplication_segment_radioButton_title">My Application</string>
     <string name="hr_checked_segment_radioButton_title">Checked</string>
+    <string name="loadingMore_historyRecordTasks_textViewText">Loading&#8230;</string>
+    <string name="noMore_historyRecordTasks_textViewText">No more</string>
 
     <!-- history record task detail info activity -->
     <string name="title_activity_history_record_task_detail_info" translatable="false">HistoryRecordTaskDetailInfoActivity</string>

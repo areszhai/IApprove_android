@@ -114,6 +114,8 @@
     <string name="historyRecord_tab_title">记录</string>
     <string name="hr_myApplication_segment_radioButton_title">我的申请</string>
     <string name="hr_checked_segment_radioButton_title">已审批</string>
+    <string name="loadingMore_historyRecordTasks_textViewText">正在加载&#8230;</string>
+    <string name="noMore_historyRecordTasks_textViewText">没有更多数据</string>
 
     <!-- settings tab content activity -->
     <string name="settings_tab7nav_title">设置</string>

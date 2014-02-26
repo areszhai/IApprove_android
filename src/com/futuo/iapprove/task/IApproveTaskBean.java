@@ -2,6 +2,7 @@ package com.futuo.iapprove.task;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.futuo.iapprove.R;
+import com.futuo.iapprove.utils.DateStringUtils;
 import com.richitec.commontoolkit.CTApplication;
 import com.richitec.commontoolkit.utils.CommonUtils;
 import com.richitec.commontoolkit.utils.JSONUtils;
@@ -27,11 +29,13 @@ public class IApproveTaskBean implements Serializable {
 	// application context
 	protected transient Context _mAppContext;
 
-	// task id, title, applicant name, sender fake id, is ended flag and advice
+	// task id, title, applicant name, create timestamp, sender fake id, is
+	// ended flag and advice
 	// list
 	protected Long taskId;
 	protected String taskTitle;
 	protected String applicantName;
+	protected Long createTimestamp;
 	protected Long senderFakeId;
 	protected Boolean ended;
 	protected List<IApproveTaskAdviceBean> advices;
@@ -91,6 +95,20 @@ public class IApproveTaskBean implements Serializable {
 									.getResources()
 									.getString(
 											R.string.rbgServer_getIApproveListReqResp_task_applicantName));
+
+			// create timestamp
+			// get and check subcreatemit timestamp value
+			Date _createTimestampValue = DateStringUtils
+					.longDateString2Date(JSONUtils
+							.getStringFromJSONObject(
+									taskJSONObject,
+									_mAppContext
+											.getResources()
+											.getString(
+													R.string.rbgServer_getIApproveListReqResp_task_createTimestamp)));
+			if (null != _createTimestampValue) {
+				createTimestamp = _createTimestampValue.getTime();
+			}
 
 			// sender fake id
 			try {
@@ -180,6 +198,14 @@ public class IApproveTaskBean implements Serializable {
 
 	public void setApplicantName(String applicantName) {
 		this.applicantName = applicantName;
+	}
+
+	public Long getCreateTimestamp() {
+		return createTimestamp;
+	}
+
+	public void setCreateTimestamp(Long createTimestamp) {
+		this.createTimestamp = createTimestamp;
 	}
 
 	public Long getSenderFakeId() {
@@ -275,10 +301,11 @@ public class IApproveTaskBean implements Serializable {
 		_description.append("User enterprise iApprove task id = ")
 				.append(taskId).append(", ").append("title = ")
 				.append(taskTitle).append(", ").append("applicant name = ")
-				.append(applicantName).append(", ").append("sender fake id = ")
-				.append(senderFakeId).append(", ").append("is ended = ")
-				.append(ended).append(" and ").append("advices = ")
-				.append(advices);
+				.append(applicantName).append(", ")
+				.append("create timestamp = ").append(createTimestamp)
+				.append(", ").append("sender fake id = ").append(senderFakeId)
+				.append(", ").append("is ended = ").append(ended)
+				.append(" and ").append("advices = ").append(advices);
 
 		return _description.toString();
 	}

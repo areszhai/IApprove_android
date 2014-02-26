@@ -22,7 +22,8 @@
     <!-- to-do list -->
     <string name="get_userEnterpriseTodoListTask_url" translatable="false">/enterpries/processInfoMobile</string>
     <string name="new_userEnterpriseApproveApplication_url" translatable="false">/enterpries/processInfoMobile</string>
-    <string name="save_userEnterpriseApproveApplicationAttachment_url" translatable="false">/enterpries/fileInfoMobile</string>
+    <!-- <string name="upload_userEnterpriseApproveApplicationAttachment_url" translatable="false">/enterpries/fileInfoAndroidMobile</string> -->
+    <string name="upload_userEnterpriseApproveApplicationAttachment_url" translatable="false">/enterpries/fileInfoMobile</string>
     <string name="userEnterpriseTodoTask_approve_url" translatable="false">/enterpries/opinionMobile</string>
     <string name="syncNewEnterpriseApproveApplicationAttachment_url" translatable="false">/enterpries/processInfoMobile</string>
     <string name="syncEnterpriseData_url" translatable="false">/enterpries/syncMobile</string>
@@ -34,6 +35,12 @@
     <string name="get_enterpriseFormType_url" translatable="false">/enterpries/manageMobile</string>
     <string name="get_enterpriseForm_url" translatable="false">/enterpries/manageMobile</string>
     <string name="get_enterpriseFormInfo_url" translatable="false">/enterpries/fieldMobile</string>
+
+    <!-- checked list -->
+    <string name="get_userEnterpriseCheckedTaskList_url" translatable="false">/enterpries/processInfoMobile</string>
+
+    <!-- my application list -->
+    <string name="get_userEnterpriseMyApplicationTaskList_url" translatable="false">/enterpries/processInfoMobile</string>
 
     <!-- support -->
     <string name="support_url" translatable="false">/help</string>

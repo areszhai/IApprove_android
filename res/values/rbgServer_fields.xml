@@ -30,13 +30,13 @@
     <string name="rbgServer_getIApproveReqParam_state" translatable="false">state</string>
 
     <!-- iApprove list common -->
-    <string name="rbgServer_getIApproveListReqParam_state" translatable="false">state</string>
     <string name="rbgServer_getIApproveListReqParam_pageNum" translatable="false">strpage</string>
     <string name="rbgServer_getIApproveListReqResp_taskList" translatable="false">processinfoMobileList</string>
     <string name="rbgServer_getIApproveListReqResp_hasNext" translatable="false">hasNext</string>
     <string name="rbgServer_getIApproveListReqResp_task_id" translatable="false">id</string>
     <string name="rbgServer_getIApproveListReqResp_task_title" translatable="false">title</string>
     <string name="rbgServer_getIApproveListReqResp_task_applicantName" translatable="false">username</string>
+    <string name="rbgServer_getIApproveListReqResp_task_createTimestamp" translatable="false">datetime</string>
     <string name="rbgServer_getIApproveListReqResp_task_senderFakeId" translatable="false">interflowid</string>
     <string name="rbgServer_getIApproveListReqResp_task_state" translatable="false">state</string>
     <string name="rbgServer_getIApproveListReqResp_task_endedState" translatable="false">0</string>
@@ -76,7 +76,7 @@
     <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_status" translatable="false">interflowdetailstate</string>
     <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_unreadStatus" translatable="false">0</string>
     <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_readStatus" translatable="false">1</string>
-    <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_submitTimestamp" translatable="false">datetime</string>
+    <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_submitTimestamp" translatable="false">lastsendtime</string>
     <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_enterpriseId" translatable="false">enterpriseid</string>
     <string name="rbgServer_userEnterpriseTodoListTaskApproveReqParam_action" translatable="false">InsertOpinionInfo</string>
     <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_taskId" translatable="false">infoid</string>
@@ -94,8 +94,12 @@
     <string name="rbgServer_newUserEnterpriseApproveApplicationReqParam_formId" translatable="false">manageid</string>
     <string name="rbgServer_newUserEnterpriseApproveApplicationReqParam_formName" translatable="false">title</string>
     <string name="rbgServer_newUserEnterpriseApproveApplicationReqParam_formItemValue" translatable="false">formsetValue</string>
-    <string name="rbgServer_newUserEnterpriseApproveApplicationReqResp_taskId" translatable="false">infoid</string>
     <string name="rbgServer_newUserEnterpriseApproveApplicationReqParam_taskId" translatable="false">infoid</string>
+    <string name="rbgServer_newUserEnterpriseApproveApplicationReqResp_taskId" translatable="false">infoid</string>
+    <string name="rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_approveNumber" translatable="false">logname</string>
+    <string name="rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_enterpriseId" translatable="false">enterpriseid</string>
+    <string name="rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_taskId" translatable="false">infoid</string>
+    <string name="rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_fileName" translatable="false">filename</string>
     <string name="rbgServer_synchronizedNewEnterpriseApproveApplicationAttachmentReqParam_action" translatable="false">UpdateState</string>
     <string name="rbgServer_synchronizedNewEnterpriseApproveApplicationAttachmentReqParam_taskId" translatable="false">id</string>
     <string name="rbgServer_synchronizedEnterpriseServerDataReqParam_enterpriseId" translatable="false">number</string>
