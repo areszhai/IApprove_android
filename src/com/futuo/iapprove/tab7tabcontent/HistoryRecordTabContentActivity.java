@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -37,6 +38,8 @@ import android.widget.Toast;
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
 import com.futuo.iapprove.customwidget.IApproveTabContentActivity;
+import com.futuo.iapprove.tab7tabcontent.task.HistoryRecordTaskDetailInfoActivity;
+import com.futuo.iapprove.tab7tabcontent.task.HistoryRecordTaskDetailInfoActivity.HistoryRecordTaskListTaskDetailInfoExtraData;
 import com.futuo.iapprove.task.IApproveTaskBean;
 import com.futuo.iapprove.utils.HttpRequestParamUtils;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -78,7 +81,8 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 	// history record task list view's footer view
 	private View _mHistoryRecordTaskListViewFooterView;
 
-	// history record task list adapter data list
+	// history record task list list adapter data list
+	private List<IApproveTaskBean> _mHisrotyRecordTaskList = new ArrayList<IApproveTaskBean>();
 	private List<Map<String, ?>> _mHisrotyRecordTaskListAdapterDataList = new ArrayList<Map<String, ?>>();
 
 	// history record task list adapter
@@ -97,7 +101,7 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 
 		// set subViews
 		// set history record title segment as title
-		setTitle(generateHistoryRecordTitleSegment(this), "123");
+		setTitle(generateHistoryRecordTitleSegment(this), "");
 
 		// get history record checked and my application segment view
 		_mCheckedSegmentView = (FrameLayout) findViewById(R.id.hr_checked_segment_view);
@@ -281,6 +285,12 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 
 			// set data
 			_dataMap.put(
+					HistoryRecordTaskListAdapter.TASKSTATE_KEY,
+					_historyRecordTask.ended() ? BitmapFactory.decodeResource(
+							getResources(), android.R.drawable.ic_media_pause)
+							: BitmapFactory.decodeResource(getResources(),
+									android.R.drawable.ic_media_play));
+			_dataMap.put(
 					HistoryRecordTaskListAdapter.TASKTITLE7APPLICANT_KEY,
 					String.format(
 							getResources()
@@ -288,9 +298,11 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 											R.string.tdl_task_title7applicantName_format),
 							_historyRecordTask.getTaskTitle(),
 							_historyRecordTask.getApplicantName()));
-			_dataMap.put(HistoryRecordTaskListAdapter.TASKSUBMITTIMESTAMP_KEY,
+			_dataMap.put(HistoryRecordTaskListAdapter.TASKSCREATETIMESTAMP_KEY,
 					formatHistoryRecordTaskSubmitTime(_historyRecordTask
 							.getCreateTimestamp()));
+			_dataMap.put(HistoryRecordTaskListAdapter.TASKADVICES_KEY,
+					_historyRecordTask.getAdvices());
 
 			// add to data list
 			_dataList.add(_dataMap);
@@ -497,8 +509,10 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 	class HistoryRecordTaskListAdapter extends CTListAdapter {
 
 		// history record task adapter keys
+		public static final String TASKSTATE_KEY = "task state key";
 		public static final String TASKTITLE7APPLICANT_KEY = "task title and applicant key";
-		public static final String TASKSUBMITTIMESTAMP_KEY = "task submit timestamp key";
+		public static final String TASKSCREATETIMESTAMP_KEY = "task create timestamp key";
+		public static final String TASKADVICES_KEY = "task advices key";
 
 		public HistoryRecordTaskListAdapter(Context context,
 				List<Map<String, ?>> data, int itemsLayoutResId,
@@ -561,11 +575,34 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 		@Override
 		public void onItemClick(AdapterView<?> hisrotyRecordTaskListView,
 				View hisrotyRecordTaskItemContentView, int position, long id) {
-			Log.d(LOG_TAG, "@@,  = " + hisrotyRecordTaskListView
-					+ ", hisrotyRecordTaskItemContentView = "
-					+ hisrotyRecordTaskItemContentView + ", position = "
-					+ position + " and id = " + id);
+			// define history record task list task detail info extra data map
+			Map<String, Object> _extraMap = new HashMap<String, Object>();
 
+			// get the clicked history record task data map
+			IApproveTaskBean _clickedHistoryRecordTask = _mHisrotyRecordTaskList
+					.get((int) id);
+
+			// put user enterprise to-do list task id, title, sender fake id,
+			// status and advice list to extra data map as param
+			_extraMap
+					.put(HistoryRecordTaskListTaskDetailInfoExtraData.HISTORYRECORDTASK_DETAILINFO_TASKID,
+							_clickedHistoryRecordTask.getTaskId());
+			_extraMap
+					.put(HistoryRecordTaskListTaskDetailInfoExtraData.HISTORYRECORDTASK_DETAILINFO_TASKTITLE,
+							_clickedHistoryRecordTask.getTaskTitle());
+			_extraMap
+					.put(HistoryRecordTaskListTaskDetailInfoExtraData.HISTORYRECORDTASK_DETAILINFO_TASKSENDERFAKEID,
+							_clickedHistoryRecordTask.getSenderFakeId());
+			_extraMap
+					.put(HistoryRecordTaskListTaskDetailInfoExtraData.HISTORYRECORDTASK_DETAILINFO_TASKSTATUS,
+							_clickedHistoryRecordTask.getTaskStatus());
+			_extraMap
+					.put(HistoryRecordTaskListTaskDetailInfoExtraData.HISTORYRECORDTASK_DETAILINFO_TASKADVICES,
+							_clickedHistoryRecordTask.getAdvices());
+
+			// go to history record task list task detail info activity with
+			// extra data map
+			pushActivity(HistoryRecordTaskDetailInfoActivity.class, _extraMap);
 		}
 
 	}
@@ -653,6 +690,9 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 					if (null != _historyRecordTaskListJsonArray) {
 						// check page number again
 						if (null == _mPageNumber) {
+							// clear history record task
+							_mHisrotyRecordTaskList.clear();
+
 							// set history record task listView adapter
 							_mHisrotyRecordTaskListView
 									.setAdapter(_mHisrotyRecordTaskListAdapter = new HistoryRecordTaskListAdapter(
@@ -660,9 +700,11 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 											_mHisrotyRecordTaskListAdapterDataList = generateHistoryRecordTaskListDataList(_historyRecordTaskListJsonArray),
 											R.layout.historyrecord_list_task_layout,
 											new String[] {
+													HistoryRecordTaskListAdapter.TASKSTATE_KEY,
 													HistoryRecordTaskListAdapter.TASKTITLE7APPLICANT_KEY,
-													HistoryRecordTaskListAdapter.TASKSUBMITTIMESTAMP_KEY },
+													HistoryRecordTaskListAdapter.TASKSCREATETIMESTAMP_KEY },
 											new int[] {
+													R.id.hrli_taskState_imageView,
 													R.id.hrli_taskTitle7Applicant_textView,
 													R.id.hrli_taskSubmitTimestamp_textView }));
 						} else {
@@ -677,6 +719,17 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 							// notify my talking group adapter changed
 							_mHisrotyRecordTaskListAdapter
 									.notifyDataSetChanged();
+						}
+
+						for (int i = 0; i < _historyRecordTaskListJsonArray
+								.length(); i++) {
+							// get user enterprise each history record list task
+							IApproveTaskBean _historyRecordTask = new IApproveTaskBean(
+									JSONUtils.getJSONObjectFromJSONArray(
+											_historyRecordTaskListJsonArray, i));
+
+							// add history record task to list
+							_mHisrotyRecordTaskList.add(_historyRecordTask);
 						}
 					}
 				}

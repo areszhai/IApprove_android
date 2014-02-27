@@ -40,6 +40,9 @@ public class IApproveTaskBean implements Serializable {
 	protected Boolean ended;
 	protected List<IApproveTaskAdviceBean> advices;
 
+	// task status
+	private TodoTaskStatus taskStatus;
+
 	public IApproveTaskBean() {
 		super();
 
@@ -51,6 +54,9 @@ public class IApproveTaskBean implements Serializable {
 
 		// initialize advices list
 		advices = new ArrayList<IApproveTaskAdviceBean>();
+
+		// set default task status
+		taskStatus = TodoTaskStatus.UNREAD;
 	}
 
 	// constructor with JSON object
@@ -169,6 +175,24 @@ public class IApproveTaskBean implements Serializable {
 			if (null != _advicesValue) {
 				advices.addAll(_advicesValue);
 			}
+
+			// task status
+			try {
+				taskStatus = TodoTaskStatus
+						.getStatus(Integer.parseInt(JSONUtils
+								.getStringFromJSONObject(
+										taskJSONObject,
+										_mAppContext
+												.getResources()
+												.getString(
+														R.string.rbgServer_getUserEnterpriseTodoListTaskReqResp_task_status))));
+			} catch (NumberFormatException e) {
+				Log.e(LOG_TAG,
+						"Get IApprove task task status error, exception message = "
+								+ e.getMessage());
+
+				e.printStackTrace();
+			}
 		} else {
 			Log.e(LOG_TAG,
 					"New IApprove task with JSON object error, task JSON object = "
@@ -230,6 +254,14 @@ public class IApproveTaskBean implements Serializable {
 
 	public void setAdvices(List<IApproveTaskAdviceBean> advices) {
 		this.advices = advices;
+	}
+
+	public TodoTaskStatus getTaskStatus() {
+		return taskStatus;
+	}
+
+	public void setTaskStatus(TodoTaskStatus taskStatus) {
+		this.taskStatus = taskStatus;
 	}
 
 	// comparable compare to
@@ -304,8 +336,10 @@ public class IApproveTaskBean implements Serializable {
 				.append(applicantName).append(", ")
 				.append("create timestamp = ").append(createTimestamp)
 				.append(", ").append("sender fake id = ").append(senderFakeId)
-				.append(", ").append("is ended = ").append(ended)
-				.append(" and ").append("advices = ").append(advices);
+				.append(", ").append("is ended = ").append(ended).append(", ")
+				.append("advices = ").append(advices).append(" and ")
+				.append("status = ").append(taskStatus);
+		;
 
 		return _description.toString();
 	}
