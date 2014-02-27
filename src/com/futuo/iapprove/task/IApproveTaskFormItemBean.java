@@ -274,7 +274,8 @@ public class IApproveTaskFormItemBean implements
 					String _taskFormItemValue = JSONUtils
 							.getStringFromJSONObject(
 									_taskFormItemValuesJSONObject,
-									_taskFormItem.getItemPhysicalName());
+									_taskFormItem.getItemPhysicalName()
+											.toLowerCase());
 					if (null != _taskFormItemValue
 							&& !"".equalsIgnoreCase(_taskFormItemValue)) {
 						_taskFormItem.setItemInfo(_taskFormItemValue);

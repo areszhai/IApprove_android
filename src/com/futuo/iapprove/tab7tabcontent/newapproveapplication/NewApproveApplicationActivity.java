@@ -1,5 +1,6 @@
 package com.futuo.iapprove.tab7tabcontent.newapproveapplication;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +15,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -352,6 +358,133 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 					// set the enterprise form item form item info
 					_formItemView.setInfo(_need2updateInfoValue);
+				}
+				break;
+
+			case NewApproveApplicationRequestCode.NAA_TAKEPHOTO_REQCODE:
+			case NewApproveApplicationRequestCode.NAA_SELECTPHOTO_REQCODE:
+				// check data
+				if (null != data) {
+					// define photo file path
+					String _photoFilePath = null;
+
+					// define image attachment image bitmap
+					Bitmap _imageAttachmentImgBitmap = null;
+
+					Log.d(LOG_TAG, "@, data = " + data);
+
+					// get and check photo uri
+					Uri _photoUri = data.getData();
+					if (null != _photoUri) {
+						// query photo from local storage
+						Cursor _cursor = getContentResolver().query(_photoUri,
+								new String[] { MediaStore.Images.Media.DATA },
+								null, null, null);
+
+						// check the cursor
+						if (null != _cursor) {
+							// move to first
+							_cursor.moveToFirst();
+
+							// get photo file path
+							_photoFilePath = _cursor
+									.getString(_cursor
+											.getColumnIndex(MediaStore.Images.Media.DATA));
+
+							// close the cursor
+							_cursor.close();
+						}
+					} else {
+						// get and check data extra bundle
+						Bundle _dataExtraBundle = data.getExtras();
+						if (null != _dataExtraBundle) {
+							_imageAttachmentImgBitmap = (Bitmap) _dataExtraBundle
+									.get("data");
+
+							//
+						}
+					}
+
+					// check image attachment image bitmap
+					if (null == _imageAttachmentImgBitmap) {
+						// test by ares
+						try {
+							_imageAttachmentImgBitmap = BitmapFactory
+									.decodeFile(_photoFilePath);
+							int nh = (int) (_imageAttachmentImgBitmap
+									.getHeight() * (256.0 / _imageAttachmentImgBitmap
+									.getWidth()));
+							_imageAttachmentImgBitmap = Bitmap
+									.createScaledBitmap(
+											_imageAttachmentImgBitmap, 256, nh,
+											true);
+						} catch (OutOfMemoryError e) {
+							e.printStackTrace();
+
+							System.gc();
+
+							BitmapFactory.Options options = new BitmapFactory.Options();
+							options.inSampleSize = 6;
+							_imageAttachmentImgBitmap = BitmapFactory
+									.decodeFile(_photoFilePath, options);
+							int nh = (int) (_imageAttachmentImgBitmap
+									.getHeight() * (256.0 / _imageAttachmentImgBitmap
+									.getWidth()));
+							_imageAttachmentImgBitmap = Bitmap
+									.createScaledBitmap(
+											_imageAttachmentImgBitmap, 256, nh,
+											true);
+						}
+					} else {
+						// save image attachment image bitmap to local storage
+						String _takePhotoFileName = Long.toString(System
+								.currentTimeMillis()) + ".jpg";
+
+						FileOutputStream _fos = null;
+						try {
+							_fos = openFileOutput(_takePhotoFileName,
+									Context.MODE_PRIVATE);
+
+							_imageAttachmentImgBitmap.compress(
+									CompressFormat.JPEG, 100, _fos);
+							_fos.flush();
+							_fos.close();
+
+							_photoFilePath = getFileStreamPath(
+									_takePhotoFileName).getAbsolutePath();
+						} catch (Exception e) {
+							Log.e(LOG_TAG,
+									"Take photo error, exception message = "
+											+ e.getMessage());
+
+							e.printStackTrace();
+
+							return;
+						}
+					}
+
+					// generate image attachment info with file path and image
+					Map<String, Object> _imageAttachmentInfo = new HashMap<String, Object>();
+					_imageAttachmentInfo
+							.put(NAAFormVoiceAttachmentInfoDataKeys.ATTACHMENT_FILEPATH,
+									_photoFilePath);
+					_imageAttachmentInfo
+							.put(NAAFormVoiceAttachmentInfoDataKeys.IMAGEATTACHMENT_IMAGE_BITMAP,
+									_imageAttachmentImgBitmap);
+
+					// get the image and set as image attachment,
+					// then add to form attachment form linearLayout
+					addNAAFormAttachmentFormItem(
+							TaskFormAttachmentType.IMAGE_ATTACHMENT,
+							_imageAttachmentInfo,
+							new NAAFormImageAttachmentFormItemOnClickListener());
+
+					// hide more plus input parent relativeLayout if needed
+					if (View.VISIBLE == _mMorePlusInputParentRelativeLayout
+							.getVisibility()) {
+						_mMorePlusInputParentRelativeLayout
+								.setVisibility(View.GONE);
+					}
 				}
 				break;
 			}
@@ -715,6 +848,10 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		// new approve application form item editor request code
 		private static final int NAA_FORMITEM_EDITOR_REQCODE = 400;
 
+		// new approve application take and select photo request code
+		private static final int NAA_TAKEPHOTO_REQCODE = 402;
+		private static final int NAA_SELECTPHOTO_REQCODE = 403;
+
 	}
 
 	// new approve application submit bar button item on click listener
@@ -955,7 +1092,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 				// play the voice
 				AudioUtils
 						.playRecorderAudio((String) v
-								.getTag(NAAFormVoiceAttachmentInfoDataKeys.VOICEATTACHMENT_VOICE_FILEPATH
+								.getTag(NAAFormVoiceAttachmentInfoDataKeys.ATTACHMENT_FILEPATH
 										.hashCode()));
 			} else {
 				Log.d(LOG_TAG, "Stop play the voice");
@@ -1522,7 +1659,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 						// duration
 						Map<String, Object> _voiceAttachmentInfo = new HashMap<String, Object>();
 						_voiceAttachmentInfo
-								.put(NAAFormVoiceAttachmentInfoDataKeys.VOICEATTACHMENT_VOICE_FILEPATH,
+								.put(NAAFormVoiceAttachmentInfoDataKeys.ATTACHMENT_FILEPATH,
 										_mAudioRecordingFilePath);
 						_voiceAttachmentInfo
 								.put(NAAFormVoiceAttachmentInfoDataKeys.VOICEATTACHMENT_VOICE_DURATION,
@@ -1812,7 +1949,13 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 			Log.d(LOG_TAG, "Click more plus photos input item image button = "
 					+ v);
 
-			//
+			// select photo
+			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			intent.setType("image/*");
+			startActivityForResult(
+					Intent.createChooser(intent, "Select photo"),
+					NewApproveApplicationRequestCode.NAA_SELECTPHOTO_REQCODE);
 		}
 
 	}
@@ -1827,7 +1970,10 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 			Log.d(LOG_TAG, "Click more plus camera input item image button = "
 					+ v);
 
-			//
+			// take photo
+			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			startActivityForResult(intent,
+					NewApproveApplicationRequestCode.NAA_TAKEPHOTO_REQCODE);
 		}
 
 	}

@@ -401,7 +401,10 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 													_naaAttachmentLSRowId,
 													_naaAttachmentTaskId));
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
+							Log.e(LOG_TAG,
+									"Upload new approve application attachment error, exception message = "
+											+ e.getMessage());
+
 							e.printStackTrace();
 						}
 					}
@@ -754,22 +757,6 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 		@Override
 		public void onFailed(HttpRequest request, HttpResponse response) {
 			// nothing to do
-		}
-
-	}
-
-	class AA extends OnHttpRequestListener {
-
-		@Override
-		public void onFinished(HttpRequest request, HttpResponse response) {
-			Log.d(LOG_TAG, "@@");
-
-		}
-
-		@Override
-		public void onFailed(HttpRequest request, HttpResponse response) {
-			Log.d(LOG_TAG, "@");
-
 		}
 
 	}

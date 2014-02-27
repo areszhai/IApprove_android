@@ -173,7 +173,21 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 			break;
 
 		case IMAGE_ATTACHMENT:
-			// nothing to do
+			// convert attachment info object to map
+			try {
+				@SuppressWarnings("unchecked")
+				Map<String, Object> _imageAttachmentInfo = (Map<String, Object>) _mAttachmentInfo;
+
+				// get voice attachment voice file path
+				_attachmentPath = (String) _imageAttachmentInfo
+						.get(NAAFormVoiceAttachmentInfoDataKeys.ATTACHMENT_FILEPATH);
+			} catch (Exception e) {
+				Log.e(LOG_TAG,
+						"Get image attachment voice file path error, exception message = "
+								+ e.getMessage());
+
+				e.printStackTrace();
+			}
 			break;
 
 		case VOICE_ATTACHMENT:
@@ -210,7 +224,11 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 		if (TaskFormAttachmentType.IMAGE_ATTACHMENT == _mAttachmentType) {
 			// convert attachment info object to bitmap
 			try {
-				_imageAttachmentImgBitmap = (Bitmap) _mAttachmentInfo;
+				@SuppressWarnings("unchecked")
+				Map<String, Object> _imageAttachmentInfo = (Map<String, Object>) _mAttachmentInfo;
+
+				_imageAttachmentImgBitmap = (Bitmap) _imageAttachmentInfo
+						.get(NAAFormVoiceAttachmentInfoDataKeys.IMAGEATTACHMENT_IMAGE_BITMAP);
 			} catch (Exception e) {
 				Log.e(LOG_TAG,
 						"Get image attachment image bitmap error, exception message = "
@@ -236,7 +254,7 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 
 				// get voice attachment voice file path
 				_voiceAttachmentVoiceFilePath = (String) _voiceAttachmentInfo
-						.get(NAAFormVoiceAttachmentInfoDataKeys.VOICEATTACHMENT_VOICE_FILEPATH);
+						.get(NAAFormVoiceAttachmentInfoDataKeys.ATTACHMENT_FILEPATH);
 			} catch (Exception e) {
 				Log.e(LOG_TAG,
 						"Get voice attachment voice file path error, exception message = "
@@ -393,8 +411,13 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 	// new approve application form voice attachment info data keys
 	public static class NAAFormVoiceAttachmentInfoDataKeys {
 
-		// voice attachment voice file path and duration
-		public static final String VOICEATTACHMENT_VOICE_FILEPATH = "voiceattachment_voice_filepath";
+		// attachment file path
+		public static final String ATTACHMENT_FILEPATH = "achment_filepath";
+
+		// image attachment image bitmap
+		public static final String IMAGEATTACHMENT_IMAGE_BITMAP = "imageattachment_image_bitmap";
+
+		// voice attachment voice duration
 		public static final String VOICEATTACHMENT_VOICE_DURATION = "voiceattachment_voice_duration";
 
 	}
@@ -474,8 +497,8 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 
 			// update voice playing flag, voice file path and set as voice
 			// attachment voice play imageView tag
-			_mVoiceAttachmentPlayImgView
-					.setTag(NAAFormVoiceAttachmentInfoDataKeys.VOICEATTACHMENT_VOICE_FILEPATH
+			_mVoiceAttachmentPlayImgView.setTag(
+					NAAFormVoiceAttachmentInfoDataKeys.ATTACHMENT_FILEPATH
 							.hashCode(), getVoiceAttachmentVoiceFilePath());
 			_mVoiceAttachmentPlayImgView
 					.setTag(_mIsVoicePlaying = !_mIsVoicePlaying);
