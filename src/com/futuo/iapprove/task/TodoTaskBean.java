@@ -310,6 +310,9 @@ public class TodoTaskBean extends IApproveTaskBean implements
 							&& !TodoTask.ADVICE_CONTENT_PLACEHOLDER
 									.equalsIgnoreCase(_adviceContentValue)) {
 						// set advice content
+						if ("~!@#$".equalsIgnoreCase(_adviceContentValue)) {
+							_adviceContentValue = "";
+						}
 						_todoTaskAdvice.setAdvice(_adviceContentValue);
 					}
 				}

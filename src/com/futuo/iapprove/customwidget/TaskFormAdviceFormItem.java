@@ -199,6 +199,9 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 				}
 			}
 			String _adviceInfo = advice.getAdvice();
+			if (null != _adviceInfo && "~!@#$".equalsIgnoreCase(_adviceInfo)) {
+				_adviceInfo = "";
+			}
 			_newTaskFormAdviceFormItem._mAdviceInfoTextView
 					.setText(null != _adviceInfo
 							&& !"".equalsIgnoreCase(_adviceInfo) ? _adviceInfo

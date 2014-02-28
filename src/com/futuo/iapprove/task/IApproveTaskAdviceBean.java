@@ -39,9 +39,11 @@ public class IApproveTaskAdviceBean implements
 	public IApproveTaskAdviceBean() {
 		super();
 
-		// set default is agreed, modified flag and advice given timestamp
+		// set default is agreed, modified flag, advice and advice given
+		// timestamp
 		agreed = false;
 		modified = false;
+		advice = "~!@#$";
 		adviceGivenTimestamp = 0L;
 	}
 
@@ -139,14 +141,19 @@ public class IApproveTaskAdviceBean implements
 										.getString(
 												R.string.rbgServer_getIApproveListReqResp_task_advice_adviceContent));
 				if (null != _adviceContentObject) {
-					// advice
-					advice = JSONUtils
+					// get and check advice info
+					String _adviceInfo = JSONUtils
 							.getStringFromJSONObject(
 									_adviceContentObject,
 									_appContext
 											.getResources()
 											.getString(
 													R.string.rbgServer_getIApproveListReqResp_task_advice_adviceContentInfo));
+					// advice
+					if (null != _adviceInfo
+							&& !"".equalsIgnoreCase(_adviceInfo)) {
+						advice = _adviceInfo;
+					}
 				}
 
 				// advice given timestamp
@@ -229,13 +236,13 @@ public class IApproveTaskAdviceBean implements
 			if ((null == agreed && null == another.agreed)
 					|| (null != agreed && null != another.agreed && agreed
 							.booleanValue() == another.agreed.booleanValue())) {
-				if ((null == modified && null == another.modified)
-						|| (null != modified && null != another.modified && modified
-								.booleanValue() == another.modified
+				if ((null == agreed && null == another.agreed)
+						|| (null != agreed && null != another.agreed && agreed
+								.booleanValue() == another.agreed
 								.booleanValue())) {
 					if ((null == advice && null == another.advice)
-							|| (null != advice && null != another.advice && advice
-									.equalsIgnoreCase(another.advice))) {
+							|| (null != advice && null != another.advice && (("~!@#$" == advice || "~!@#$" == another.advice) || advice
+									.equalsIgnoreCase(another.advice)))) {
 						if ((null == adviceGivenTimestamp && null == another.adviceGivenTimestamp)
 								|| (null != adviceGivenTimestamp
 										&& null != another.adviceGivenTimestamp && adviceGivenTimestamp
