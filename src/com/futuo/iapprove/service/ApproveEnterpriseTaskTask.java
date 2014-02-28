@@ -616,9 +616,6 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 
 		@Override
 		public void onFinished(String responseString) {
-			Log.d(LOG_TAG, "@@@, _mNAAAttachmentLocalStorageTaskId = "
-					+ _mNAAAttachmentLocalStorageTaskId);
-
 			// delete the new approve application attachment for generating
 			// local storage data
 			_mContentResolver

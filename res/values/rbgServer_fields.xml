@@ -45,7 +45,8 @@
     <string name="rbgServer_getIApproveListReqResp_task_advice_advisorName" translatable="false">username</string>
     <string name="rbgServer_getIApproveListReqResp_task_advice_state" translatable="false">examine</string>
     <string name="rbgServer_getIApproveListReqResp_task_advice_agreedState" translatable="false">1</string>
-    <string name="rbgServer_getIApproveListReqResp_task_advice_disAgreedstate" translatable="false">0</string>
+    <string name="rbgServer_getIApproveListReqResp_task_advice_disAgreedstate" translatable="false">2</string>
+    <string name="rbgServer_getIApproveListReqResp_task_advice_modifiedstate" translatable="false">3</string>
     <string name="rbgServer_getIApproveListReqResp_task_advice_adviceList" translatable="false">opinionInfoList</string>
     <string name="rbgServer_getIApproveListReqResp_task_advice_adviceContent" translatable="false">tProcessTextinfo</string>
     <string name="rbgServer_getIApproveListReqResp_task_advice_adviceContentInfo" translatable="false">content</string>

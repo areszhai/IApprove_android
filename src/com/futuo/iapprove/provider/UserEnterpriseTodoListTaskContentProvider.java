@@ -790,7 +790,7 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 					// task advice content values
 					_todoTaskAdviceContentValues.put(
 							TodoTaskAdvice.ADVICE_STATE,
-							values.getAsBoolean(contentValuesKey));
+							values.getAsShort(contentValuesKey));
 				} else if (contentValuesKey.startsWith(_adviceContentKeyPrefix)) {
 					// get and check the to-do list task advice content values
 					ContentValues _todoTaskAdviceContentValues = getTodoTaskAdviceContentValues(
@@ -933,6 +933,11 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 					.replace("%s", TodoTaskAdvice.ADVICE_GIVENTIMESTAMP);
 			public static final String ADVICE_SEPARATOR = TodoTaskAdvice.ADVICE_SEPARATOR;
 			public static final String ADVICE_CONTENT_PLACEHOLDER = TodoTaskAdvice.ADVICE_CONTENT_PLACEHOLDER;
+
+			// advice state(agreed, disAgreed, modified)
+			public static final Short ADVICE_DISAGREED_STATE = 0;
+			public static final Short ADVICE_AGREED_STATE = 1;
+			public static final Short ADVICE_MODIFIED_STATE = 2;
 
 			// content uri
 			private static final Uri TODOTASKS_NOTIFICATION_CONTENT_URI = Uri

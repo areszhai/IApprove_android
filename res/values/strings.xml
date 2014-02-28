@@ -161,6 +161,7 @@
 
     <!-- history record task detail info activity -->
     <string name="title_activity_history_record_task_detail_info" translatable="false">HistoryRecordTaskDetailInfoActivity</string>
+    <string name="hrtdi_getDetailInfoAsyncHttpReq_progDlg_message">Get task detail info, please wait&#8230;</string>
 
     <!-- settings tab content activity -->
     <string name="title_activity_settings_tab_content" translatable="false">SettingsTabContentActivity</string>

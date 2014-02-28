@@ -117,6 +117,9 @@
     <string name="loadingMore_historyRecordTasks_textViewText">正在加载&#8230;</string>
     <string name="noMore_historyRecordTasks_textViewText">没有更多数据</string>
 
+    <!-- history record task detail info activity -->
+    <string name="hrtdi_getDetailInfoAsyncHttpReq_progDlg_message">正在获取表单详情，请稍后&#8230;</string>
+
     <!-- settings tab content activity -->
     <string name="settings_tab7nav_title">设置</string>
     <string name="st_userProfileSetting_userApproveNumber_format">审批号：%d</string>

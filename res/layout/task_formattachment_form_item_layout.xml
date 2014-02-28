@@ -18,7 +18,7 @@
         android:paddingLeft="20dp"
         android:paddingRight="14dp"
         android:paddingTop="4dp"
-        android:visibility="gone" >
+        android:visibility="visible" >
 
         <TextView
             android:id="@+id/taskfafi_textAttachment_textView"
@@ -34,14 +34,14 @@
             android:textSize="16sp"
             android:visibility="gone" />
 
-        <ImageView
+        <com.futuo.iapprove.customwidget.NetLoadImageView
             android:id="@+id/taskfafi_imageAttachment_imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:contentDescription="@string/task_imageAttachment_imageView_contentDescription"
             android:scaleType="centerCrop"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </FrameLayout>
 
     <RelativeLayout

@@ -6,6 +6,7 @@ import java.io.IOException;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaRecorder;
 import android.util.Log;
 
@@ -135,6 +136,22 @@ public class AudioUtils {
 		}
 	}
 
+	// play remote audio with audio remote path
+	public static void playRemoteAudio(String audioRemotePath) {
+		// check audio remote path
+		if (null != audioRemotePath && !"".equalsIgnoreCase(audioRemotePath)) {
+			// play remote audio
+			try {
+				getAudioPlayerInstance().playRemoteAudio(audioRemotePath);
+			} catch (Exception e) {
+				Log.e(LOG_TAG, "Play remote audio = " + audioRemotePath
+						+ " error, exception message = " + e.getMessage());
+
+				e.printStackTrace();
+			}
+		}
+	}
+
 	// stop play recorded audio
 	public static void stopPlayRecorderAudio() {
 		// stop play audio
@@ -251,6 +268,23 @@ public class AudioUtils {
 			_mMediaPlayer.start();
 		}
 
+		// play remote audio
+		public void playRemoteAudio(String remoteAudioDataSource)
+				throws IllegalArgumentException, SecurityException,
+				IllegalStateException, IOException {
+			// reset media player
+			_mMediaPlayer.reset();
+
+			// set audio stream type and data source
+			_mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			_mMediaPlayer.setDataSource(remoteAudioDataSource);
+
+			// prepare media player
+			_mMediaPlayer.prepare();
+			_mMediaPlayer
+					.setOnPreparedListener(new MediaPlayerOnPreparedListener());
+		}
+
 		// stop play audio
 		public void stopPlayAudio() {
 			// check media player and its if is playing or not
@@ -258,6 +292,23 @@ public class AudioUtils {
 				// stop media player
 				_mMediaPlayer.stop();
 			}
+		}
+
+		// inner class
+		// media player on prepared listener
+		class MediaPlayerOnPreparedListener implements OnPreparedListener {
+
+			@Override
+			public void onPrepared(MediaPlayer mp) {
+				Log.d(LOG_TAG, "Media player prepared");
+
+				// start play
+				_mMediaPlayer.start();
+
+				// remove on prepared listener
+				_mMediaPlayer.setOnPreparedListener(null);
+			}
+
 		}
 
 	}

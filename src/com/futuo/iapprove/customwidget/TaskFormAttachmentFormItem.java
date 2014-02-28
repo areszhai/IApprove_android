@@ -38,7 +38,7 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 	// play image view container relativeLayout, play image view
 	private FrameLayout _mText7ImageAttachmentParentFrameLayout;
 	private TextView _mTextAttachmentTextView;
-	private ImageView _mImageAttachmentImgView;
+	private NetLoadImageView _mImageAttachmentImgView;
 	private RelativeLayout _mVoiceAttachmentPlayImgViewContainerRelativeLayout;
 	private ImageView _mVoiceAttachmentPlayImgView;
 
@@ -63,7 +63,7 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 		// get iApprove task form text attachment textView and image attachment
 		// imageView
 		_mTextAttachmentTextView = (TextView) findViewById(R.id.taskfafi_textAttachment_textView);
-		_mImageAttachmentImgView = (ImageView) findViewById(R.id.taskfafi_imageAttachment_imageView);
+		_mImageAttachmentImgView = (NetLoadImageView) findViewById(R.id.taskfafi_imageAttachment_imageView);
 
 		// get iApprove task form voice attachment play image view container
 		// relativeLayout
@@ -149,6 +149,19 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 		}
 
 		return _imageAttachmentImgBitmap;
+	}
+
+	// get image attachment image remote url
+	private String getImageAttachmentImgRemoteUrl() {
+		String _imageAttachmentImgRemoteUrl = null;
+
+		// check iApprove task form attachment type
+		if (TaskFormAttachmentType.IMAGE_ATTACHMENT == _mAttachmentType) {
+			// convert attachment info object to string
+			_imageAttachmentImgRemoteUrl = (String) _mAttachmentInfo;
+		}
+
+		return _imageAttachmentImgRemoteUrl;
 	}
 
 	// get voice attachment voice file path
@@ -256,6 +269,10 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 			if (null != _imageAttachmentImgBitmap) {
 				_newTaskFormAttachmentFormItem._mImageAttachmentImgView
 						.setImageBitmap(_imageAttachmentImgBitmap);
+			} else {
+				_newTaskFormAttachmentFormItem._mImageAttachmentImgView
+						.loadUrl(_newTaskFormAttachmentFormItem
+								.getImageAttachmentImgRemoteUrl());
 			}
 			break;
 

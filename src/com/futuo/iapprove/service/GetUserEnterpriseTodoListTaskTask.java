@@ -495,7 +495,10 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 										_todoTaskContentValues.put(
 												String.format(
 														TodoTask.ADVICE_ADVICESTATE_FORMAT,
-														j), _advice.agreed());
+														j),
+												_advice.modified() ? TodoTask.ADVICE_MODIFIED_STATE
+														: (_advice.agreed() ? TodoTask.ADVICE_AGREED_STATE
+																: TodoTask.ADVICE_DISAGREED_STATE));
 										_todoTaskContentValues.put(
 												String.format(
 														TodoTask.ADVICE_ADVICECONTENT_FORMAT,

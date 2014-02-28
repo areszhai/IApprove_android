@@ -81,7 +81,7 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 	// history record task list view's footer view
 	private View _mHistoryRecordTaskListViewFooterView;
 
-	// history record task list list adapter data list
+	// history record task list list and its adapter data list
 	private List<IApproveTaskBean> _mHisrotyRecordTaskList = new ArrayList<IApproveTaskBean>();
 	private List<Map<String, ?>> _mHisrotyRecordTaskListAdapterDataList = new ArrayList<Map<String, ?>>();
 
@@ -137,6 +137,13 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 	@Override
 	protected void onResume() {
 		super.onResume();
+
+		// check history record task list adapter data list
+		if (null == _mHisrotyRecordTaskListAdapterDataList
+				|| 0 == _mHisrotyRecordTaskListAdapterDataList.size()) {
+			// history record task list view pull to refresh listView refreshing
+			_mHisrotyRecordTaskPull2RefreshListView.setRefreshing();
+		}
 
 		// refresh history record task list
 		getHistoryRecordTaskList(null);
@@ -227,6 +234,13 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 							.getString(
 									R.string.get_userEnterpriseMyApplicationTaskList_url));
 			break;
+		}
+
+		// check page number
+		if (null == pageNumber) {
+			// remove history record task list view footer view first
+			_mHisrotyRecordTaskListView
+					.removeFooterView(_mHistoryRecordTaskListViewFooterView);
 		}
 
 		// send get history record task list post http request

@@ -295,10 +295,13 @@ public class TodoTaskBean extends IApproveTaskBean implements
 					_todoTaskAdvice.setAdvisorName(_advisorNameList.get(i));
 				}
 				if (null != _adviceStateList) {
-					// set advice agreed
-					_todoTaskAdvice
-							.setAgreed(0 == Short.parseShort(_adviceStateList
-									.get(i)) ? false : true);
+					Short _adviceState = Short.parseShort(_adviceStateList
+							.get(i));
+
+					// set advice agreed and modified
+					_todoTaskAdvice.setAgreed(1 == _adviceState ? true : false);
+					_todoTaskAdvice.setModified(2 == _adviceState ? true
+							: false);
 				}
 				if (null != _adviceContentList && 0 < _adviceContentList.size()) {
 					// get and check advice content value

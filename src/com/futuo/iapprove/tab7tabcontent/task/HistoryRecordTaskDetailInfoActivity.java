@@ -10,7 +10,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.json.JSONObject;
 
-import android.graphics.BitmapFactory;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -72,6 +72,10 @@ public class HistoryRecordTaskDetailInfoActivity extends
 	// linearLayout
 	private FrameLayout _mAdviceFormParentFrameLayout;
 	private LinearLayout _mAdviceFormLinearLayout;
+
+	// get history record task detail info asynchronous post http request
+	// progress dialog
+	private ProgressDialog _mGetHistoryRecordTaskDetailInfoAsyncHttpReqProgDlg;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -196,6 +200,14 @@ public class HistoryRecordTaskDetailInfoActivity extends
 						StringUtils.base64Encode(_historyRecordTaskStatus
 								.getValue().toString()));
 
+		// show get history record task detail info asynchronous post http
+		// request process dialog
+		_mGetHistoryRecordTaskDetailInfoAsyncHttpReqProgDlg = ProgressDialog
+				.show(HistoryRecordTaskDetailInfoActivity.this,
+						null,
+						getString(R.string.hrtdi_getDetailInfoAsyncHttpReq_progDlg_message),
+						true);
+
 		// send get user enterprise history record list task form info post http
 		// request
 		HttpUtils
@@ -209,6 +221,14 @@ public class HistoryRecordTaskDetailInfoActivity extends
 						null,
 						HttpRequestType.ASYNCHRONOUS,
 						new GetUserEnterpriseHistoryRecordTaskFormInfoPostHttpRequestListener());
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		// stop play recorder audio if needed
+		AudioUtils.stopPlayRecorderAudio();
 	}
 
 	@Override
@@ -272,9 +292,21 @@ public class HistoryRecordTaskDetailInfoActivity extends
 	class GetUserEnterpriseHistoryRecordTaskFormInfoPostHttpRequestListener
 			extends OnHttpRequestListener {
 
+		// done get history record task detail info
+		private void doneGetHistoryRecordTaskDetailInfo() {
+			// check and dismiss account login asynchronous post http request
+			// process dialog
+			if (null != _mGetHistoryRecordTaskDetailInfoAsyncHttpReqProgDlg) {
+				_mGetHistoryRecordTaskDetailInfoAsyncHttpReqProgDlg.dismiss();
+			}
+		}
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public void onFinished(HttpRequest request, HttpResponse response) {
+			// done get history record task detail info
+			doneGetHistoryRecordTaskDetailInfo();
+
 			// get http response entity string
 			String _respEntityString = HttpUtils
 					.getHttpResponseEntityString(response);
@@ -385,9 +417,8 @@ public class HistoryRecordTaskDetailInfoActivity extends
 								// check image attachment url
 								if (null != historyRecordTaskAttachment
 										.getAttachmentRemoteUrl()) {
-									_attachmentInfo = BitmapFactory
-											.decodeFile(historyRecordTaskAttachment
-													.getAttachmentRemoteUrl());
+									_attachmentInfo = historyRecordTaskAttachment
+											.getAttachmentRemoteUrl();
 									_attachmentOnClickListener = new HistoryRecordTaskFormImageAttachmentFormItemOnClickListener();
 								}
 								break;
@@ -483,6 +514,9 @@ public class HistoryRecordTaskDetailInfoActivity extends
 
 		@Override
 		public void onFailed(HttpRequest request, HttpResponse response) {
+			// done get history record task detail info
+			doneGetHistoryRecordTaskDetailInfo();
+
 			Log.e(LOG_TAG,
 					"Send get user enterprise history record task detail info post http request failed");
 
@@ -522,7 +556,7 @@ public class HistoryRecordTaskDetailInfoActivity extends
 
 				// play the voice
 				AudioUtils
-						.playRecorderAudio((String) v
+						.playRemoteAudio((String) v
 								.getTag(TaskFormVoiceAttachmentInfoDataKeys.VOICEATTACHMENT_VOICE_FILEPATH
 										.hashCode()));
 			} else {

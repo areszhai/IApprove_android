@@ -27,19 +27,21 @@ public class IApproveTaskAdviceBean implements
 	private static final String LOG_TAG = IApproveTaskAdviceBean.class
 			.getCanonicalName();
 
-	// advisor id, advisor name, is agreed flag, advice and advice given
-	// timestamp
+	// advisor id, advisor name, is agreed flag, is modified flag, advice and
+	// advice given timestamp
 	private Long advisorId;
 	private String advisorName;
 	private Boolean agreed;
+	private Boolean modified;
 	private String advice;
 	private Long adviceGivenTimestamp;
 
 	public IApproveTaskAdviceBean() {
 		super();
 
-		// set default is agreed flag and advice given timestamp
+		// set default is agreed, modified flag and advice given timestamp
 		agreed = false;
+		modified = false;
 		adviceGivenTimestamp = 0L;
 	}
 
@@ -73,7 +75,7 @@ public class IApproveTaskAdviceBean implements
 									.getString(
 											R.string.rbgServer_getIApproveListReqResp_task_advice_advisorName));
 
-			// agreed
+			// agreed and modified
 			// get and check state value
 			try {
 				Integer _stateValue = Integer
@@ -98,6 +100,13 @@ public class IApproveTaskAdviceBean implements
 										R.string.rbgServer_getIApproveListReqResp_task_advice_agreedState)) == _stateValue
 						.intValue()) {
 					agreed = true;
+				} else if (Integer
+						.parseInt(_appContext
+								.getResources()
+								.getString(
+										R.string.rbgServer_getIApproveListReqResp_task_advice_modifiedstate)) == _stateValue
+						.intValue()) {
+					modified = true;
 				}
 			} catch (NumberFormatException e) {
 				Log.e(LOG_TAG,
@@ -185,6 +194,14 @@ public class IApproveTaskAdviceBean implements
 		this.agreed = agreed;
 	}
 
+	public Boolean modified() {
+		return modified;
+	}
+
+	public void setModified(Boolean modified) {
+		this.modified = modified;
+	}
+
 	public String getAdvice() {
 		return advice;
 	}
@@ -212,27 +229,39 @@ public class IApproveTaskAdviceBean implements
 			if ((null == agreed && null == another.agreed)
 					|| (null != agreed && null != another.agreed && agreed
 							.booleanValue() == another.agreed.booleanValue())) {
-				if ((null == advice && null == another.advice)
-						|| (null != advice && null != another.advice && advice
-								.equalsIgnoreCase(another.advice))) {
-					if ((null == adviceGivenTimestamp && null == another.adviceGivenTimestamp)
-							|| (null != adviceGivenTimestamp
-									&& null != another.adviceGivenTimestamp && adviceGivenTimestamp
-									.longValue() == another.adviceGivenTimestamp
-									.longValue())) {
-						_result = 0;
+				if ((null == modified && null == another.modified)
+						|| (null != modified && null != another.modified && modified
+								.booleanValue() == another.modified
+								.booleanValue())) {
+					if ((null == advice && null == another.advice)
+							|| (null != advice && null != another.advice && advice
+									.equalsIgnoreCase(another.advice))) {
+						if ((null == adviceGivenTimestamp && null == another.adviceGivenTimestamp)
+								|| (null != adviceGivenTimestamp
+										&& null != another.adviceGivenTimestamp && adviceGivenTimestamp
+										.longValue() == another.adviceGivenTimestamp
+										.longValue())) {
+							_result = 0;
+						} else {
+							Log.d(LOG_TAG,
+									"IApprove task advice bean advice given timestamp not equals, self task advice given timestamp = "
+											+ adviceGivenTimestamp
+											+ " and another task advice given timestamp = "
+											+ another.adviceGivenTimestamp);
+						}
 					} else {
 						Log.d(LOG_TAG,
-								"IApprove task advice bean advice given timestamp not equals, self task advice given timestamp = "
-										+ adviceGivenTimestamp
-										+ " and another task advice given timestamp = "
-										+ another.adviceGivenTimestamp);
+								"IApprove task advice bean advice not equals, self task advice = "
+										+ advice
+										+ " and another task advice = "
+										+ another.advice);
 					}
 				} else {
 					Log.d(LOG_TAG,
-							"IApprove task advice bean advice not equals, self task advice = "
-									+ advice + " and another task advice = "
-									+ another.advice);
+							"IApprove task advice bean is modified flag not equals, self task advice is modified flag = "
+									+ modified
+									+ " and another task advice is modified flag = "
+									+ another.modified);
 				}
 			} else {
 				Log.d(LOG_TAG,
@@ -269,7 +298,8 @@ public class IApproveTaskAdviceBean implements
 				.append("User enterprise iApprove task advice advisor id = ")
 				.append(advisorId).append(", ").append("advisor name = ")
 				.append(advisorName).append(", ").append("is agreed = ")
-				.append(agreed).append(", ").append("advice content = ")
+				.append(agreed).append(", ").append("is modified = ")
+				.append(modified).append(", ").append("advice content = ")
 				.append(advice).append(" and ")
 				.append("advice given timestamp = ")
 				.append(adviceGivenTimestamp);
@@ -306,8 +336,8 @@ public class IApproveTaskAdviceBean implements
 							JSONUtils.getJSONObjectFromJSONArray(
 									_taskAdviceList, i));
 					if (null != _taskAdvice
-							&& 0L != _taskAdvice.getAdviceGivenTimestamp()
-									.longValue()) {
+							&& (_taskAdvice.modified || 0L != _taskAdvice
+									.getAdviceGivenTimestamp().longValue())) {
 						_taskAdvices.add(_taskAdvice);
 					}
 				}

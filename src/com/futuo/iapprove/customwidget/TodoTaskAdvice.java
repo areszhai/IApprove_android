@@ -48,14 +48,19 @@ public class TodoTaskAdvice extends FrameLayout {
 		// set to-do list task advisor name textView text
 		_mTodoTaskAdvisorNameTextView.setText(todoTaskAdvice.getAdvisorName());
 
-		// check to-do list task advice is agreed flag and set to-do list task
-		// advice background
-		if (todoTaskAdvice.agreed()) {
-			// agreed
-			setBackgroundResource(R.drawable.todo_task_agreedadvice_bg);
+		// check to-do list task advice is agreed, modified flag and set to-do
+		// list task advice background
+		if (todoTaskAdvice.modified()) {
+			// modified
+			setBackgroundResource(R.drawable.todo_task_modifiedadvice_bg);
 		} else {
-			// disagreed
-			setBackgroundResource(R.drawable.todo_task_disagreedadvice_bg);
+			if (todoTaskAdvice.agreed()) {
+				// agreed
+				setBackgroundResource(R.drawable.todo_task_agreedadvice_bg);
+			} else {
+				// disagreed
+				setBackgroundResource(R.drawable.todo_task_disagreedadvice_bg);
+			}
 		}
 	}
 
@@ -69,14 +74,19 @@ public class TodoTaskAdvice extends FrameLayout {
 		// set to-do list task advisor name textView text
 		_mTodoTaskAdvisorNameTextView.setText(todoTaskAdvice.getAdvisorName());
 
-		// check to-do list task advice is agreed flag and set to-do list task
-		// advice background
-		if (todoTaskAdvice.agreed()) {
-			// agreed
-			setBackgroundResource(R.drawable.todo_task_agreedadvice_bg);
+		// check to-do list task advice is agreed, modified flag and set to-do
+		// list task advice background
+		if (todoTaskAdvice.modified()) {
+			// modified
+			setBackgroundResource(R.drawable.todo_task_modifiedadvice_bg);
 		} else {
-			// disagreed
-			setBackgroundResource(R.drawable.todo_task_disagreedadvice_bg);
+			if (todoTaskAdvice.agreed()) {
+				// agreed
+				setBackgroundResource(R.drawable.todo_task_agreedadvice_bg);
+			} else {
+				// disagreed
+				setBackgroundResource(R.drawable.todo_task_disagreedadvice_bg);
+			}
 		}
 	}
 

@@ -184,17 +184,33 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 		if (null != advice) {
 			// check iApprove task form advice type again
 			if (null != type && TaskFormAdviceType.MY_ADVICE != type) {
-				// check others advice info agreed
-				if (advice.agreed()) {
+				// check others advice info agreed and modified
+				if (advice.modified()) {
 					_newTaskFormAdviceFormItem._mAdviceInfoParentFrameLayout
-							.setBackgroundResource(R.drawable.task_formadvice_formitem_othersagreeadvice_bg);
+							.setBackgroundResource(R.drawable.task_formadvice_formitem_othersmodifyadvice_bg);
 				} else {
-					_newTaskFormAdviceFormItem._mAdviceInfoParentFrameLayout
-							.setBackgroundResource(R.drawable.task_formadvice_formitem_othersdisagreeadvice_bg);
+					if (advice.agreed()) {
+						_newTaskFormAdviceFormItem._mAdviceInfoParentFrameLayout
+								.setBackgroundResource(R.drawable.task_formadvice_formitem_othersagreeadvice_bg);
+					} else {
+						_newTaskFormAdviceFormItem._mAdviceInfoParentFrameLayout
+								.setBackgroundResource(R.drawable.task_formadvice_formitem_othersdisagreeadvice_bg);
+					}
 				}
 			}
-			_newTaskFormAdviceFormItem._mAdviceInfoTextView.setText(advice
-					.getAdvice());
+			String _adviceInfo = advice.getAdvice();
+			_newTaskFormAdviceFormItem._mAdviceInfoTextView
+					.setText(null != _adviceInfo
+							&& !"".equalsIgnoreCase(_adviceInfo) ? _adviceInfo
+							: (advice.modified() ? "修改"
+									: (advice.agreed() ? _newTaskFormAdviceFormItem
+											.getResources()
+											.getString(
+													R.string.tdta_adviceSwitch_onText)
+											: _newTaskFormAdviceFormItem
+													.getResources()
+													.getString(
+															R.string.tdta_adviceSwitch_offText))));
 		}
 
 		return _newTaskFormAdviceFormItem;
