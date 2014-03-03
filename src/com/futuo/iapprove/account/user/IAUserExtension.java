@@ -14,6 +14,18 @@ public class IAUserExtension {
 	private static final String LOG_TAG = IAUserExtension.class
 			.getCanonicalName();
 
+	// get approve user login user id
+	public static Long getUserLoginUserId(UserBean user) {
+		return (Long) getUserExtAttr(user,
+				IAUserExtensionAttributes.USER_LOGINUSERID);
+	}
+
+	// set approve user login user id
+	public static void setUserLoginUserId(UserBean user, Long userLoginUserId) {
+		setUserExtAttr(user, IAUserExtensionAttributes.USER_LOGINUSERID,
+				userLoginUserId);
+	}
+
 	// get approve user login enterprise id
 	public static Long getUserLoginEnterpriseId(UserBean user) {
 		return (Long) getUserExtAttr(user,
@@ -142,8 +154,8 @@ public class IAUserExtension {
 	// approve user extension attributes
 	static enum IAUserExtensionAttributes {
 
-		// user login enterprise id
-		USER_LOGINENTERPRISEID
+		// user login user id and enterprise id
+		USER_LOGINUSERID, USER_LOGINENTERPRISEID
 
 	}
 

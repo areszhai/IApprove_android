@@ -156,6 +156,9 @@ public class UserEnterpriseProfileBean implements
 		// get login user
 		final UserBean _loginUser = UserManager.getInstance().getUser();
 
+		// define user login user id
+		Long _userLoginUserId = null;
+
 		// define user login, last login enterprise id and user enterprise
 		// profile list
 		Long _userLoginEnterpriseId = null;
@@ -171,6 +174,8 @@ public class UserEnterpriseProfileBean implements
 
 			// set the first enterprise id as user login enterprise id
 			if (0 == i) {
+				_userLoginUserId = _userEnterpriseProfile.getUserProfile()
+						.getUserId();
 				_userLoginEnterpriseId = _userEnterpriseProfile
 						.getUserEnterprise().getEnterpriseId();
 			}
@@ -189,6 +194,7 @@ public class UserEnterpriseProfileBean implements
 
 		// set user login enterprise id to approve user extension
 		if (null != _userLoginEnterpriseId) {
+			IAUserExtension.setUserLoginUserId(_loginUser, _userLoginUserId);
 			IAUserExtension.setUserLoginEnterpriseId(_loginUser,
 					_userLoginEnterpriseId);
 

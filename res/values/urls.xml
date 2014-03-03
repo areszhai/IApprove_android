@@ -2,8 +2,8 @@
 <resources>
 
     <!-- approve remote background server url -->
-    <string name="server_url" translatable="false">http://sync.walkwork.net/TouchRemoting_IF_Super</string>
-    <!-- <string name="server_url" translatable="false">http://192.168.1.234:10086/TouchRemoting_IF_Super</string> -->
+    <!-- <string name="server_url" translatable="false">http://sync.walkwork.net/TouchRemoting_IF_Super</string> -->
+    <string name="server_url" translatable="false">http://192.168.1.234:10086/TouchRemoting_IF_Super</string>
     <!-- <string name="server_url" translatable="false">http://192.168.1.188:8080/TouchRemoting_IF_Super</string> -->
 
 
@@ -14,6 +14,7 @@
     <!-- account -->
     <!-- account login -->
     <string name="account_login_url" translatable="false">/enterpries/userLoginMobile</string>
+    <string name="updateAccountLoginInfo" translatable="false">/enterpries/mobileUser</string>
 
     <!-- iApprove -->
     <!-- iApprove list task form info common -->

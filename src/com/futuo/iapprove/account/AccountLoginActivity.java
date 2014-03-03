@@ -10,6 +10,9 @@ import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -343,6 +346,93 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 					// process user enterprise profile
 					UserEnterpriseProfileBean
 							.processUserEnterpriseProfile(_respJsonDataArray);
+
+					// update account login info
+					// get location
+					// define my location latitude and longitude
+					double _myLocationLatitude = 0, _myLocationLongitude = 0;
+
+					LocationManager _locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+					if (_locationManager
+							.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+						Location location = _locationManager
+								.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+						if (location != null) {
+							_myLocationLatitude = location.getLatitude();
+							_myLocationLongitude = location.getLongitude();
+						}
+					} else {
+						Location location = _locationManager
+								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+						if (location != null) {
+							_myLocationLatitude = location.getLatitude();
+							_myLocationLongitude = location.getLongitude();
+						}
+					}
+
+					// generate update account login info post http request
+					// param
+					Map<String, String> _updateAccountLoginInfoPostHttpReqParam = new HashMap<String, String>();
+
+					// put update account login info action, user id, login
+					// name, longitude, latitude, device name, platform and
+					// version in
+					_updateAccountLoginInfoPostHttpReqParam
+							.put(getResources().getString(
+									R.string.rbgServer_commonReqParam_action),
+									getResources()
+											.getString(
+													R.string.rbgServer_updateAccountLoginInfoReqParam_action));
+					_updateAccountLoginInfoPostHttpReqParam
+							.put(getResources()
+									.getString(
+											R.string.rbgServer_userSigReqParam_userName),
+									StringUtils.base64Encode(_loginUserBean
+											.getName()));
+					_updateAccountLoginInfoPostHttpReqParam
+							.put(getResources()
+									.getString(
+											R.string.rbgServer_updateAccountLoginInfoReqParam_userId),
+									StringUtils.base64Encode(IAUserExtension
+											.getUserLoginUserId(_loginUserBean)
+											.toString()));
+					_updateAccountLoginInfoPostHttpReqParam
+							.put(getResources()
+									.getString(
+											R.string.rbgServer_updateAccountLoginInfoReqParam_latitude),
+									StringUtils.base64Encode(Double.valueOf(
+											_myLocationLongitude).toString()));
+					_updateAccountLoginInfoPostHttpReqParam
+							.put(getResources()
+									.getString(
+											R.string.rbgServer_updateAccountLoginInfoReqParam_longitude),
+									StringUtils.base64Encode(Double.valueOf(
+											_myLocationLatitude).toString()));
+					_updateAccountLoginInfoPostHttpReqParam
+							.put(getResources()
+									.getString(
+											R.string.rbgServer_updateAccountLoginInfoReqParam_deviceName),
+									StringUtils.base64Encode(Build.BRAND));
+					_updateAccountLoginInfoPostHttpReqParam
+							.put(getResources()
+									.getString(
+											R.string.rbgServer_updateAccountLoginInfoReqParam_devicePlatform),
+									StringUtils.base64Encode("Android"));
+					_updateAccountLoginInfoPostHttpReqParam
+							.put(getResources()
+									.getString(
+											R.string.rbgServer_updateAccountLoginInfoReqParam_deviceVersion),
+									StringUtils
+											.base64Encode(Build.VERSION.RELEASE));
+
+					// send account login post http request
+					HttpUtils.postRequest(
+							getResources().getString(R.string.server_url)
+									+ getResources().getString(
+											R.string.updateAccountLoginInfo),
+							PostRequestFormat.URLENCODED,
+							_updateAccountLoginInfoPostHttpReqParam, null,
+							HttpRequestType.ASYNCHRONOUS, null);
 
 					// save account login user name and key to local storage
 					DataStorageUtils.putObject(

@@ -20,9 +20,17 @@
     <string name="rbgServer_accountLoginReqParam_action" translatable="false">LoginValidationPass</string>
     <string name="rbgServer_accountLoginReqParam_phone" translatable="false">logname</string>
     <string name="rbgServer_accountLoginReqParam_password" translatable="false">logpass</string>
+    <string name="rbgServer_accountLoginReqResp_user_id" translatable="false">userid</string>
     <string name="rbgServer_accountLoginReqResp_enterprise_id" translatable="false">number</string>
     <string name="rbgServer_accountLoginReqResp_enterprise_abbreviation" translatable="false">abbreviation</string>
     <string name="rbgServer_accountLoginReqResp_enterprise_employeeName" translatable="false">name</string>
+    <string name="rbgServer_updateAccountLoginInfoReqParam_action" translatable="false">saveMobileUser</string>
+    <string name="rbgServer_updateAccountLoginInfoReqParam_userId" translatable="false">userid</string>
+    <string name="rbgServer_updateAccountLoginInfoReqParam_longitude" translatable="false">googlex</string>
+    <string name="rbgServer_updateAccountLoginInfoReqParam_latitude" translatable="false">googley</string>
+    <string name="rbgServer_updateAccountLoginInfoReqParam_deviceName" translatable="false">devicename</string>
+    <string name="rbgServer_updateAccountLoginInfoReqParam_devicePlatform" translatable="false">deviceplatform</string>
+    <string name="rbgServer_updateAccountLoginInfoReqParam_deviceVersion" translatable="false">deviceversion</string>
 
     <!-- iApprove -->
     <!-- iApprove common -->

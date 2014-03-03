@@ -26,8 +26,9 @@ public class PersonBean implements Serializable {
 	// application context
 	protected transient Context _mAppContext;
 
-	// avater, avatar url, employee name, sex, birthday, department, approve
-	// number, mobile phone, office phone, email and note
+	// user id, avater, avatar url, employee name, sex, birthday, department,
+	// approve number, mobile phone, office phone, email and note
+	private Long userId;
 	protected byte[] avatar;
 	protected String avatarUrl;
 	protected String employeeName;
@@ -57,6 +58,23 @@ public class PersonBean implements Serializable {
 		// check person JSON object
 		if (null != personJSONObject) {
 			// set person attributes
+			// user id
+			try {
+				userId = Long
+						.parseLong(JSONUtils
+								.getStringFromJSONObject(
+										personJSONObject,
+										_mAppContext
+												.getResources()
+												.getString(
+														R.string.rbgServer_accountLoginReqResp_user_id)));
+			} catch (NumberFormatException e) {
+				Log.e(LOG_TAG, "Get person user id error, exception message = "
+						+ e.getMessage());
+
+				e.printStackTrace();
+			}
+
 			// avatar url
 			avatarUrl = JSONUtils
 					.getStringFromJSONObject(
@@ -219,6 +237,14 @@ public class PersonBean implements Serializable {
 		} else {
 			Log.e(LOG_TAG, "New person with cursor error, cursor = " + cursor);
 		}
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public byte[] getAvatar() {
