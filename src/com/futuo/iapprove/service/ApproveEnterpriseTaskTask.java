@@ -89,8 +89,8 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 								.genUserSigHttpReqParam();
 
 						// put to-do task approving post http request param
-						// enterprise id, task id, submit contacts, judge,
-						// advice info, sender fake id and status
+						// enterprise id, task id, judge, advice info, sender
+						// fake id and status
 						_todoTaskApprovingPostHttpReqParam
 								.put(_mContext
 										.getResources()
@@ -106,13 +106,6 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 												R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_taskId),
 										StringUtils.base64Encode(_todoTaskId
 												.toString()));
-						_todoTaskApprovingPostHttpReqParam
-								.put(_mContext
-										.getResources()
-										.getString(
-												R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_submitContacts),
-										StringUtils
-												.base64Encode(_todoTaskSubmitContacts));
 						_todoTaskApprovingPostHttpReqParam
 								.put(_mContext
 										.getResources()
@@ -160,6 +153,15 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 													.getResources()
 													.getString(
 															R.string.rbgServer_userEnterpriseTodoListTaskApproveReqParam_action));
+							// set to-do task approving post http request param
+							// submit contacts
+							_todoTaskApprovingPostHttpReqParam
+									.put(_mContext
+											.getResources()
+											.getString(
+													R.string.rbgServer_userEnterpriseTodoListTaskApproveReqParam_submitContacts),
+											StringUtils
+													.base64Encode(_todoTaskSubmitContacts));
 						} else if (ApprovingTodoTask.TASK_OPERATESTATE_ENDED == _todoTaskOperateState
 								.intValue()) {
 							_todoTaskApprovingPostHttpReqParam

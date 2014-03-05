@@ -45,7 +45,7 @@ public class AudioUtils {
 			// create the file to save audio record
 			File _recordAudio = new File(APP_CONTEXT.getDir(userName,
 					Context.MODE_PRIVATE).getAbsolutePath(),
-					System.currentTimeMillis() + ".arm");
+					System.currentTimeMillis() + ".3gp");
 
 			// start record audio
 			try {
@@ -180,7 +180,8 @@ public class AudioUtils {
 				throws IllegalStateException, IOException {
 			// set audio source, output format, encoder and output file
 			_mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-			_mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+			_mMediaRecorder
+					.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 			_mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 			_mMediaRecorder.setOutputFile(outputFilePath);
 
@@ -212,8 +213,11 @@ public class AudioUtils {
 			if (null != _mMediaRecorder) {
 				// stop media recorder and reset
 				_mMediaRecorder.stop();
-				_mMediaRecorder.reset();
+				_mMediaRecorder.release();
 			}
+
+			// release
+			_audioRecorderSingletonInstance = null;
 		}
 
 	}

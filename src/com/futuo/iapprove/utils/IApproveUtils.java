@@ -39,6 +39,8 @@ public class IApproveUtils {
 			bitmap = BitmapFactory.decodeStream(is, null, options);
 			is.close();
 
+			conn.disconnect();
+
 			Log.i(LOG_TAG, "image download finished." + imageUri);
 		} catch (IOException e) {
 			e.printStackTrace();

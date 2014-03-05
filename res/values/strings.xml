@@ -76,6 +76,7 @@
 
     <!-- iApprove list common -->
     <string name="iapprove_listView_item_detailInfo_imageView_contentDescription" translatable="false">the iApprove listView item detail info imageView</string>
+    <string name="task_formItem_infoLabel_capitalFormat">%s(Capital)</string>
 
     <!-- to-do list tab content activity -->
     <string name="title_activity_todo_list_tab_content" translatable="false">TodoListTabContentActivity</string>

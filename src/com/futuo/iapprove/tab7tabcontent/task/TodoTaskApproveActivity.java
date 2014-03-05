@@ -69,6 +69,7 @@ import com.futuo.iapprove.task.IApproveTaskFormItemBean;
 import com.futuo.iapprove.task.TodoTaskStatus;
 import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.futuo.iapprove.utils.AudioUtils;
+import com.futuo.iapprove.utils.CalculateStringUtils;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
 
@@ -83,7 +84,8 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 	private Long _mTodoTaskSenderFakeId;
 	private TodoTaskStatus _mTodoTaskStatus;
 
-	// to-do list task form item form linearLayout
+	// to-do list task form item form parent frameLayout and form linearLayout
+	private FrameLayout _mFormItemFormParentFrameLayout;
 	private LinearLayout _mFormItemFormLinearLayout;
 
 	// to-do list task form item id(key) and form item form item view(value) map
@@ -113,6 +115,9 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 	// core service connection
 	private CoreServiceConnection _mCoreServiceConnection;
+
+	// core service
+	private CoreService _mCoreService;
 
 	// to-do list task submit contact list sliding drawer and its listView
 	private SlidingDrawer _mSubmitContactListSlidingDrawer;
@@ -207,7 +212,9 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		// map
 		_mFormItemId7FormItemFormItemMap = new HashMap<Long, TaskFormItemFormItem>();
 
-		// get to-do list task form item form linearLayout
+		// get to-do list task form item form parent frameLayout and form
+		// linearLayout
+		_mFormItemFormParentFrameLayout = (FrameLayout) findViewById(R.id.tdta_formItemForm_parent_frameLayout);
 		_mFormItemFormLinearLayout = (LinearLayout) findViewById(R.id.tdta_formItemForm_linearLayout);
 
 		// refresh to-do list task form item form
@@ -372,6 +379,16 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 				// and form item form item view map key set
 				if (!_mFormItemId7FormItemFormItemMap.keySet().contains(
 						_todoTaskFormItem.getItemId())) {
+					// check to-do list task form item form parent
+					// frameLayout visibility
+					if (View.VISIBLE != _mFormItemFormParentFrameLayout
+							.getVisibility()) {
+						// show to-do list task form item form parent
+						// frameLayout
+						_mFormItemFormParentFrameLayout
+								.setVisibility(View.VISIBLE);
+					}
+
 					// generate new to-do list task form item form item
 					_todoTaskFormItemFormItem = TaskFormItemFormItem
 							.generateTaskFormItemFormItem(_todoTaskFormItem);
@@ -385,6 +402,37 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 							_todoTaskFormItemFormItem, new LayoutParams(
 									LayoutParams.MATCH_PARENT,
 									LayoutParams.WRAP_CONTENT, 1));
+
+					// need capital
+					if (_todoTaskFormItem.itemNeedCapital()) {
+						// clone to-do list task form item copy
+						IApproveTaskFormItemBean _todoTaskFormItemCopy = new IApproveTaskFormItemBean();
+						_todoTaskFormItemCopy
+								.setItemName(String
+										.format(getResources()
+												.getString(
+														R.string.task_formItem_infoLabel_capitalFormat),
+												_todoTaskFormItem.getItemName()));
+						_todoTaskFormItemCopy.setItemInfo(CalculateStringUtils
+								.calculateCapital(_todoTaskFormItem
+										.getItemInfo()));
+
+						// generate new to-do list task capital form item form
+						// item
+						TaskFormItemFormItem _todoTaskFormItemCapitalFormItem = TaskFormItemFormItem
+								.generateTaskFormItemFormItem(_todoTaskFormItemCopy);
+
+						// add separator line and to-do list task form item form
+						// item to form item form
+						_mFormItemFormLinearLayout.addView(
+								new CommonFormSeparator(this),
+								new LayoutParams(LayoutParams.MATCH_PARENT,
+										LayoutParams.WRAP_CONTENT));
+						_mFormItemFormLinearLayout.addView(
+								_todoTaskFormItemCapitalFormItem,
+								new LayoutParams(LayoutParams.MATCH_PARENT,
+										LayoutParams.WRAP_CONTENT, 1));
+					}
 				} else {
 					// get the existed to-do list task form item form item and
 					// set its form item
@@ -478,6 +526,16 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 						break;
 
 					case APPLICATION_ATTACHMENT:
+						Log.d(LOG_TAG,
+								"@@@, _todoTaskAttachment.getAttachmentUrl() = "
+										+ _todoTaskAttachment
+												.getAttachmentUrl()
+										+ ", origin name = "
+										+ _todoTaskAttachment
+												.getAttachmentOriginName()
+										+ " and suffix = "
+										+ _todoTaskAttachment
+												.getAttachmentSuffix());
 						// nothing to do
 						break;
 					}
@@ -785,113 +843,86 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		public boolean onLongClick(View v) {
 			// check to-do task status
 			if (TodoTaskStatus.ENDED != _mTodoTaskStatus) {
-				// check submit contact list
-				if (null != _mSubmitContactList
-						&& 0 < _mSubmitContactList.size()) {
-					// get my advice
-					// define my advice string builder
-					StringBuilder _myAdviceStringBuilder = new StringBuilder();
+				// get my advice
+				// define my advice string builder
+				StringBuilder _myAdviceStringBuilder = new StringBuilder();
 
-					// get and check advice form linearLayout subviews count
-					int _adviceFormLinearLayoutSubviewsCount = _mAdviceFormLinearLayout
-							.getChildCount();
-					if (1 < _adviceFormLinearLayoutSubviewsCount) {
-						// traversal advice form linearLayout all subviews
-						for (int i = 1; i < _adviceFormLinearLayoutSubviewsCount; i++) {
-							// get to-do task advice form item
-							TaskFormAdviceFormItem _todoTaskAdviceFormItem = (TaskFormAdviceFormItem) _mAdviceFormLinearLayout
-									.getChildAt(i);
+				// get and check advice form linearLayout subviews count
+				int _adviceFormLinearLayoutSubviewsCount = _mAdviceFormLinearLayout
+						.getChildCount();
+				if (1 < _adviceFormLinearLayoutSubviewsCount) {
+					// traversal advice form linearLayout all subviews
+					for (int i = 1; i < _adviceFormLinearLayoutSubviewsCount; i++) {
+						// get to-do task advice form item
+						TaskFormAdviceFormItem _todoTaskAdviceFormItem = (TaskFormAdviceFormItem) _mAdviceFormLinearLayout
+								.getChildAt(i);
 
-							// check to-do task advice type and get my advice
-							if (TaskFormAdviceType.MY_ADVICE == _todoTaskAdviceFormItem
-									.getAdviceType()) {
-								// add my advice and separate character to my
-								// advice string builder
-								_myAdviceStringBuilder
-										.append(_todoTaskAdviceFormItem
-												.getAdviceInfo());
-								if (_adviceFormLinearLayoutSubviewsCount - 1 != i) {
-									_myAdviceStringBuilder.append("\n");
-								}
+						// check to-do task advice type and get my advice
+						if (TaskFormAdviceType.MY_ADVICE == _todoTaskAdviceFormItem
+								.getAdviceType()) {
+							// add my advice and separate character to my
+							// advice string builder
+							_myAdviceStringBuilder
+									.append(_todoTaskAdviceFormItem
+											.getAdviceInfo());
+							if (_adviceFormLinearLayoutSubviewsCount - 1 != i) {
+								_myAdviceStringBuilder.append("\n");
 							}
 						}
 					}
-
-					// define and initialize submit contacts name string builder
-					StringBuilder _submitContactsNameStringBuilder = new StringBuilder();
-					for (ABContactBean _submitContact : _mSubmitContactList) {
-						_submitContactsNameStringBuilder.append(_submitContact
-								.getApproveNumber());
-						if (_mSubmitContactList.size() - 1 != _mSubmitContactList
-								.indexOf(_submitContact)) {
-							_submitContactsNameStringBuilder.append(',');
-						}
-					}
-
-					// hide the to-do task local storage
-					// define and initialize the update content values
-					ContentValues _updateContentValues = new ContentValues();
-					_updateContentValues.put(TodoTask.TASK_STATUS,
-							TodoTask.HIDDEN_STATUS.toString());
-
-					// update user enterprise to-do list task local storage
-					getContentResolver()
-							.update(ContentUris
-									.withAppendedId(
-											TodoTask.ENTERPRISE_CONTENT_URI,
-											IAUserExtension
-													.getUserLoginEnterpriseId(_mLoginUser)),
-									_updateContentValues,
-									TodoTask.APPROVE_USER_ENTERPRISETODOLISTTASK_WITHSENDERFAKEID_CONDITION,
-									new String[] { _mTodoTaskSenderFakeId
-											.toString() });
-
-					// insert the to-do task for approving to local storage
-					// define and initialize the to-do task approving for
-					// inserting content values
-					ContentValues _insertContentValues = new ContentValues();
-					_insertContentValues.put(ApprovingTodoTask.TASK_ID,
-							_mTodoTaskId.toString());
-					_insertContentValues.put(ApprovingTodoTask.ENTERPRISE_ID,
-							IAUserExtension
-									.getUserLoginEnterpriseId(_mLoginUser));
-					_insertContentValues.put(ApprovingTodoTask.APPROVE_NUMBER,
-							_mLoginUser.getName());
-					_insertContentValues.put(ApprovingTodoTask.SUBMITCONTACTS,
-							_submitContactsNameStringBuilder.toString());
-					_insertContentValues
-							.put(ApprovingTodoTask.JUDGE,
-									_mMyAdviceJudge ? getResources()
-											.getString(
-													R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myAgreedJudge)
-											: getResources()
-													.getString(
-															R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myDisAgreedJudge));
-					_insertContentValues.put(ApprovingTodoTask.ADVICE_INFO,
-							_myAdviceStringBuilder.toString());
-					_insertContentValues.put(ApprovingTodoTask.SENDER_FAKEID,
-							_mTodoTaskSenderFakeId.toString());
-					_insertContentValues.put(ApprovingTodoTask.TASK_STATUS,
-							_mTodoTaskStatus.getValue());
-					_insertContentValues.put(
-							ApprovingTodoTask.TASK_OPERATESTATE,
-							ApprovingTodoTask.TASK_OPERATESTATE_ENDED);
-
-					// insert the to-do task for approving to local storage
-					getContentResolver().insert(
-							ApprovingTodoTask.APPROVINGTODOTASKS_CONTENT_URI,
-							_insertContentValues);
-
-					// popup to-do task approve activity
-					popActivity();
-				} else {
-					Log.d(LOG_TAG, "Please select at least one submit contact");
-
-					// show select at least one submit contact toast
-					Toast.makeText(TodoTaskApproveActivity.this,
-							R.string.toast_select_submitContact,
-							Toast.LENGTH_SHORT).show();
 				}
+
+				// hide the to-do task local storage
+				// define and initialize the update content values
+				ContentValues _updateContentValues = new ContentValues();
+				_updateContentValues.put(TodoTask.TASK_STATUS,
+						TodoTask.HIDDEN_STATUS.toString());
+
+				// update user enterprise to-do list task local storage
+				getContentResolver()
+						.update(ContentUris.withAppendedId(
+								TodoTask.ENTERPRISE_CONTENT_URI,
+								IAUserExtension
+										.getUserLoginEnterpriseId(_mLoginUser)),
+								_updateContentValues,
+								TodoTask.APPROVE_USER_ENTERPRISETODOLISTTASK_WITHSENDERFAKEID_CONDITION,
+								new String[] { _mTodoTaskSenderFakeId
+										.toString() });
+
+				// insert the to-do task for approving to local storage
+				// define and initialize the to-do task approving for
+				// inserting content values
+				ContentValues _insertContentValues = new ContentValues();
+				_insertContentValues.put(ApprovingTodoTask.TASK_ID,
+						_mTodoTaskId.toString());
+				_insertContentValues.put(ApprovingTodoTask.ENTERPRISE_ID,
+						IAUserExtension.getUserLoginEnterpriseId(_mLoginUser));
+				_insertContentValues.put(ApprovingTodoTask.APPROVE_NUMBER,
+						_mLoginUser.getName());
+				_insertContentValues
+						.put(ApprovingTodoTask.JUDGE,
+								_mMyAdviceJudge ? getResources()
+										.getString(
+												R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myAgreedJudge)
+										: getResources()
+												.getString(
+														R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myDisAgreedJudge));
+				_insertContentValues.put(ApprovingTodoTask.ADVICE_INFO,
+						_myAdviceStringBuilder.toString());
+				_insertContentValues.put(ApprovingTodoTask.SENDER_FAKEID,
+						_mTodoTaskSenderFakeId.toString());
+				_insertContentValues.put(ApprovingTodoTask.TASK_STATUS,
+						_mTodoTaskStatus.getValue());
+				_insertContentValues.put(ApprovingTodoTask.TASK_OPERATESTATE,
+						ApprovingTodoTask.TASK_OPERATESTATE_ENDED);
+
+				// insert the to-do task for approving to local storage
+				getContentResolver().insert(
+						ApprovingTodoTask.APPROVINGTODOTASKS_CONTENT_URI,
+						_insertContentValues);
+
+				// popup to-do task approve activity
+				popActivity();
 			}
 
 			return true;
@@ -1058,6 +1089,11 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 				}
 			}
 
+			// start get user login enterprise address book
+			if (null != _mCoreService) {
+				_mCoreService.startGetEnterpriseAddressbook();
+			}
+
 			// open submit contact list sliding drawer
 			_mSubmitContactListSlidingDrawer.animateOpen();
 
@@ -1120,14 +1156,11 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder binder) {
 			// get core service
-			CoreService _coreService = ((LocalBinder) binder).getService();
+			_mCoreService = ((LocalBinder) binder).getService();
 
-			Log.d(LOG_TAG, "The core service = " + _coreService
+			Log.d(LOG_TAG, "The core service = " + _mCoreService
 					+ " is connected, component name = " + name
 					+ " and the binder = " + binder);
-
-			// start get user login enterprise address book
-			_coreService.startGetEnterpriseAddressbook();
 		}
 
 		@Override

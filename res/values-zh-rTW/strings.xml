@@ -52,6 +52,9 @@
     <!-- new approve application form item editor activity -->
     <string name="naafie_saveInfo_barButtonItem_title">保存</string>
 
+    <!-- iApprove list common -->
+    <string name="task_formItem_infoLabel_capitalFormat">%s（大写）</string>
+
     <!-- to-do list tab content activity -->
     <string name="todoList_tab_title">未审批</string>
     <string name="tdl_taskSearch_editText_hint">搜索</string>

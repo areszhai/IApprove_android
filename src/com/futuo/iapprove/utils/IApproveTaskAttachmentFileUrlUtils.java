@@ -23,12 +23,12 @@ public class IApproveTaskAttachmentFileUrlUtils {
 				+ getTaskAttachmentFileUrlContent(name, originName, suffix);
 	}
 
-	// get iApprove task voice attachment file url with voice name, original
+	// get iApprove task voice attachment file url with file name, original
 	// name and suffix
-	public static final String taskVoiceAttachmentFileUrl(String name,
+	public static final String taskFileAttachmentFileUrl(String name,
 			String originName, String suffix) {
 		return APP_CONTEXT.getResources().getString(R.string.server_url)
-				+ APP_CONTEXT.getResources().getString(R.string.audioFile_url)
+				+ APP_CONTEXT.getResources().getString(R.string.commonFile_url)
 				+ getTaskAttachmentFileUrlContent(name, originName, suffix);
 	}
 

@@ -28,11 +28,12 @@ public class IApproveTaskFormItemBean implements
 	private static final String LOG_TAG = IApproveTaskFormItemBean.class
 			.getCanonicalName();
 
-	// row id, task form item id, form item name and info
+	// row id, task form item id, form item name, info and is capital
 	private Long rowId;
 	private Long itemId;
 	private String itemName;
 	private String itemInfo;
+	private Boolean itemCapital;
 
 	// task form item physical name
 	private String itemPhysicalName;
@@ -42,6 +43,9 @@ public class IApproveTaskFormItemBean implements
 
 	public IApproveTaskFormItemBean() {
 		super();
+
+		// set default capital flag
+		itemCapital = false;
 
 		// set default local storage data dirty type
 		lsDataDirtyType = LocalStorageDataDirtyType.NORMAL;
@@ -83,6 +87,39 @@ public class IApproveTaskFormItemBean implements
 									.getResources()
 									.getString(
 											R.string.rbgServer_getIApproveListTaskFormInfoReqResp_item_name));
+
+			// task form item capital flag
+			try {
+				// get task item capital flag
+				Integer _capitalFlag = Integer
+						.parseInt(JSONUtils
+								.getStringFromJSONObject(
+										taskFormItemJSONObject,
+										_appContext
+												.getResources()
+												.getString(
+														R.string.rbgServer_getIApproveListTaskFormInfoReqResp_item_capitalFlag)));
+
+				if (Integer
+						.parseInt(_appContext
+								.getResources()
+								.getString(
+										R.string.rbgServer_getIApproveListTaskFormInfoReqResp_item_capital)) == _capitalFlag) {
+					itemCapital = true;
+				} else if (Integer
+						.parseInt(_appContext
+								.getResources()
+								.getString(
+										R.string.rbgServer_getIApproveListTaskFormInfoReqResp_item_notCapital)) == _capitalFlag) {
+					itemCapital = false;
+				}
+			} catch (NumberFormatException e) {
+				Log.e(LOG_TAG,
+						"Get task form item capital flag error, exception message = "
+								+ e.getMessage());
+
+				e.printStackTrace();
+			}
 
 			// task form item physical name
 			itemPhysicalName = JSONUtils
@@ -129,6 +166,14 @@ public class IApproveTaskFormItemBean implements
 
 	public void setItemInfo(String itemInfo) {
 		this.itemInfo = itemInfo;
+	}
+
+	public Boolean itemNeedCapital() {
+		return itemCapital;
+	}
+
+	public void setItemCapital(Boolean itemCapital) {
+		this.itemCapital = itemCapital;
 	}
 
 	public String getItemPhysicalName() {
@@ -218,6 +263,11 @@ public class IApproveTaskFormItemBean implements
 			// task form item info
 			_todoTaskFormItem.itemInfo = cursor.getString(cursor
 					.getColumnIndex(TodoTaskFormItem.INFO));
+
+			// task form item need capital
+			_todoTaskFormItem.itemCapital = 0 == cursor.getShort(cursor
+					.getColumnIndex(TodoTaskFormItem.CAPITAL_FLAG)) ? false
+					: true;
 		} else {
 			Log.e(LOG_TAG,
 					"Get to-do list task form item with cursor error, cursor = "
@@ -229,67 +279,106 @@ public class IApproveTaskFormItemBean implements
 
 	// get iApprove task form item list with JSON object
 	public static List<IApproveTaskFormItemBean> getTaskFormItems(
-			JSONObject taskFormInfoJSONObject) {
+			JSONObject taskContentInfoJSONObject) {
 		List<IApproveTaskFormItemBean> _taskFormItems = null;
 
-		// check iApprove task form info JSON object
-		if (null != taskFormInfoJSONObject) {
+		// check iApprove task content info JSON object
+		if (null != taskContentInfoJSONObject) {
 			// get application context
 			Context _appContext = CTApplication.getContext();
 
 			// initialize return iApprove task form item bean list
 			_taskFormItems = new ArrayList<IApproveTaskFormItemBean>();
 
-			// get, check iApprove task form item and its value json array
-			JSONArray _taskFormItemsJSONArray = JSONUtils
+			// get and check iApprove task content info json array
+			JSONArray _taskContentInfosJSONArray = JSONUtils
 					.getJSONArrayFromJSONObject(
-							taskFormInfoJSONObject,
+							taskContentInfoJSONObject,
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_getIApproveListTaskFormInfoReqResp_itemList));
-			JSONArray _taskFormItemValuesJSONArray = JSONUtils
-					.getJSONArrayFromJSONObject(
-							taskFormInfoJSONObject,
-							_appContext
+											R.string.rbgServer_getIApproveListTaskFormInfoReqResp_contentList));
+			if (null != _taskContentInfosJSONArray
+					&& 0 < _taskContentInfosJSONArray.length()) {
+				for (int i = 0; i < _taskContentInfosJSONArray.length(); i++) {
+					// get each iApprove task content info and check its type
+					JSONObject _taskContentInfoJSONObject = JSONUtils
+							.getJSONObjectFromJSONArray(
+									_taskContentInfosJSONArray, i);
+					if (null != _taskContentInfoJSONObject
+							&& _appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_getIApproveListTaskFormInfoReqResp_itemValueList));
-			if (null != _taskFormItemsJSONArray
-					&& null != _taskFormItemValuesJSONArray) {
-				// get user enterprise iApprove task form item values json
-				// object
-				JSONObject _taskFormItemValuesJSONObject = JSONUtils
-						.getJSONObjectFromJSONArray(
-								_taskFormItemValuesJSONArray, 0);
+											R.string.rbgServer_getIApproveListTaskFormInfoReqResp_formContentType)
+									.equalsIgnoreCase(
+											JSONUtils
+													.getStringFromJSONObject(
+															_taskContentInfoJSONObject,
+															_appContext
+																	.getResources()
+																	.getString(
+																			R.string.rbgServer_getIApproveListTaskFormInfoReqResp_contentType)))) {
+						// get, check iApprove task form item and its value json
+						// array
+						JSONArray _taskFormItemsJSONArray = JSONUtils
+								.getJSONArrayFromJSONObject(
+										_taskContentInfoJSONObject,
+										_appContext
+												.getResources()
+												.getString(
+														R.string.rbgServer_getIApproveListTaskFormInfoReqResp_itemList));
+						JSONArray _taskFormItemValuesJSONArray = JSONUtils
+								.getJSONArrayFromJSONObject(
+										_taskContentInfoJSONObject,
+										_appContext
+												.getResources()
+												.getString(
+														R.string.rbgServer_getIApproveListTaskFormInfoReqResp_itemValueList));
 
-				for (int i = 0; i < _taskFormItemsJSONArray.length(); i++) {
-					// get user enterprise iApprove task form item
-					IApproveTaskFormItemBean _taskFormItem = new IApproveTaskFormItemBean(
-							JSONUtils.getJSONObjectFromJSONArray(
-									_taskFormItemsJSONArray, i));
+						if (null != _taskFormItemsJSONArray
+								&& null != _taskFormItemValuesJSONArray) {
+							// get user enterprise iApprove task form item
+							// values json
+							// object
+							JSONObject _taskFormItemValuesJSONObject = JSONUtils
+									.getJSONObjectFromJSONArray(
+											_taskFormItemValuesJSONArray, 0);
 
-					// get and check user enterprise iApprove task form item
-					// value
-					String _taskFormItemValue = JSONUtils
-							.getStringFromJSONObject(
-									_taskFormItemValuesJSONObject,
-									_taskFormItem.getItemPhysicalName()
-											.toLowerCase());
-					if (null != _taskFormItemValue
-							&& !"".equalsIgnoreCase(_taskFormItemValue)) {
-						_taskFormItem.setItemInfo(_taskFormItemValue);
+							for (int j = 0; j < _taskFormItemsJSONArray
+									.length(); j++) {
+								// get user enterprise iApprove task form item
+								IApproveTaskFormItemBean _taskFormItem = new IApproveTaskFormItemBean(
+										JSONUtils.getJSONObjectFromJSONArray(
+												_taskFormItemsJSONArray, j));
 
-						// add got user enterprise iApprove task form item to
-						// list
-						_taskFormItems.add(_taskFormItem);
+								// get and check user enterprise iApprove task
+								// form item
+								// value
+								String _taskFormItemValue = JSONUtils
+										.getStringFromJSONObject(
+												_taskFormItemValuesJSONObject,
+												_taskFormItem
+														.getItemPhysicalName()
+														.toLowerCase());
+								if (null != _taskFormItemValue
+										&& !"".equalsIgnoreCase(_taskFormItemValue)) {
+									_taskFormItem
+											.setItemInfo(_taskFormItemValue);
+
+									// add got user enterprise iApprove task
+									// form item to
+									// list
+									_taskFormItems.add(_taskFormItem);
+								}
+							}
+						}
 					}
 				}
 			}
 		} else {
 			Log.e(LOG_TAG,
-					"Get iApprove task form item list with JSON object error, form info JSON object = "
-							+ taskFormInfoJSONObject);
+					"Get iApprove task form item list with JSON object error, content info JSON object = "
+							+ taskContentInfoJSONObject);
 		}
 
 		return _taskFormItems;

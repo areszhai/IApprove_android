@@ -18,7 +18,7 @@
         android:paddingLeft="20dp"
         android:paddingRight="14dp"
         android:paddingTop="4dp"
-        android:visibility="visible" >
+        android:visibility="gone" >
 
         <TextView
             android:id="@+id/taskfafi_textAttachment_textView"
@@ -41,7 +41,7 @@
             android:layout_gravity="center"
             android:contentDescription="@string/task_imageAttachment_imageView_contentDescription"
             android:scaleType="centerCrop"
-            android:visibility="visible" />
+            android:visibility="gone" />
     </FrameLayout>
 
     <RelativeLayout
@@ -59,6 +59,7 @@
             android:layout_centerVertical="true"
             android:background="@drawable/task_formattachment_formitem_voice_bg"
             android:clickable="true"
+            android:paddingRight="@dimen/task_formVoiceAttachment_playImgViewContainerRelativeLayout_paddingRight_min"
             android:paddingTop="12dp" >
 
             <ImageView
@@ -66,7 +67,6 @@
                 android:layout_width="18dp"
                 android:layout_height="22dp"
                 android:layout_alignParentLeft="true"
-                android:layout_marginRight="@dimen/task_formVoiceAttachment_playImgView_marginRight_min"
                 android:contentDescription="@string/task_voiceAttachment_play_imageView_contentDescription"
                 android:scaleType="centerCrop"
                 android:src="@drawable/img_task_formattachment_formitem_voice_play" />

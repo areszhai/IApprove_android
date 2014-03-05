@@ -88,17 +88,21 @@ public class UploadFileUtils {
 				// get file suffix
 				String _fileSuffix = _fileName.substring(
 						_fileName.lastIndexOf(".") + 1, _fileName.length());
-				if ("arm".equalsIgnoreCase(_fileSuffix)) {
-					_fileMIMEType = "audio/arm";
-				} else if ("png".equalsIgnoreCase(_fileSuffix)) {
-					_fileMIMEType = "image/png";
+				if ("amr".equalsIgnoreCase(_fileSuffix)) {
+					_fileMIMEType = "audio/amr";
+				} else if ("wav".equalsIgnoreCase(_fileSuffix)) {
+					_fileMIMEType = "audio/x-wav";
+				} else if ("3gp".equalsIgnoreCase(_fileSuffix)) {
+					_fileMIMEType = "audio/3gpp";
 				} else if ("jpg".equalsIgnoreCase(_fileSuffix)
 						|| "jpeg".equalsIgnoreCase(_fileSuffix)) {
 					_fileMIMEType = "image/jpeg";
-				} else if ("gif".equalsIgnoreCase(_fileSuffix)) {
-					_fileMIMEType = "image/gif";
+				} else if ("png".equalsIgnoreCase(_fileSuffix)) {
+					_fileMIMEType = "image/png";
 				} else if ("bmp".equalsIgnoreCase(_fileSuffix)) {
 					_fileMIMEType = "image/bmp";
+				} else if ("gif".equalsIgnoreCase(_fileSuffix)) {
+					_fileMIMEType = "image/gif";
 				}
 
 				sb1.append("Content-Type: " + _fileMIMEType + LINEND);

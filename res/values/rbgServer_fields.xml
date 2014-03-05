@@ -47,7 +47,7 @@
     <string name="rbgServer_getIApproveListReqResp_task_createTimestamp" translatable="false">datetime</string>
     <string name="rbgServer_getIApproveListReqResp_task_senderFakeId" translatable="false">interflowid</string>
     <string name="rbgServer_getIApproveListReqResp_task_state" translatable="false">state</string>
-    <string name="rbgServer_getIApproveListReqResp_task_endedState" translatable="false">0</string>
+    <string name="rbgServer_getIApproveListReqResp_task_endedState" translatable="false">2</string>
     <string name="rbgServer_getIApproveListReqResp_task_goingState" translatable="false">1</string>
     <string name="rbgServer_getIApproveListReqResp_task_adviceList" translatable="false">processRecordInfoList</string>
     <string name="rbgServer_getIApproveListReqResp_task_advice_advisorName" translatable="false">username</string>
@@ -65,19 +65,34 @@
     <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskId" translatable="false">infoid</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskSenderFakeId" translatable="false">interflowid</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskStatus" translatable="false">interflowdetailstate</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_contentList" translatable="false">list</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_contentType" translatable="false">type</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_formContentType" translatable="false">table</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_fileContentType" translatable="false">file</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_textContentType" translatable="false">text</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_itemList" translatable="false">fieldlist</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_item_id" translatable="false">id</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_item_name" translatable="false">name</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_item_physicalName" translatable="false">physicsname</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_item_capitalFlag" translatable="false">capital</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_item_notCapital" translatable="false">0</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_item_capital" translatable="false">1</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_itemValueList" translatable="false">tablefieldvalue</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachmentList" translatable="false">fileinfolist</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_id" translatable="false">id</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_name" translatable="false">name</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_originName" translatable="false">originalname</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_suffix" translatable="false">suffix</string>
-    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_armSuffix" translatable="false">arm</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_amrSuffix" translatable="false">amr</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_wavSuffix" translatable="false">wav</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_3gpSuffix" translatable="false">3gp</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_jpgSuffix" translatable="false">jpg</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_jpegSuffix" translatable="false">jpeg</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_pngSuffix" translatable="false">png</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_bmpSuffix" translatable="false">bmp</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_gifSuffix" translatable="false">gif</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_textSuffix" translatable="false">text</string>
+    <string name="rbgServer_getIApproveListTaskFormInfoReqResp_attachment_content" translatable="false">content</string>
 
     <!-- to-do list -->
     <string name="rbgServer_getUserEnterpriseTodoListTaskReqParam_action" translatable="false">getAllProcessInfo</string>
@@ -86,10 +101,11 @@
     <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_unreadStatus" translatable="false">0</string>
     <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_readStatus" translatable="false">1</string>
     <string name="rbgServer_getUserEnterpriseTodoListTaskReqResp_task_submitTimestamp" translatable="false">lastsendtime</string>
+    <string name="rbgServer_getUserEnterpriseTodoTaskFormInfoReqParam_action" translatable="false">getInfoDetailByType</string>
     <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_enterpriseId" translatable="false">enterpriseid</string>
     <string name="rbgServer_userEnterpriseTodoListTaskApproveReqParam_action" translatable="false">InsertOpinionInfo</string>
     <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_taskId" translatable="false">infoid</string>
-    <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_submitContacts" translatable="false">receives</string>
+    <string name="rbgServer_userEnterpriseTodoListTaskApproveReqParam_submitContacts" translatable="false">receives</string>
     <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myJudge" translatable="false">isopinion</string>
     <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myDisAgreedJudge" translatable="false">0</string>
     <string name="rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myAgreedJudge" translatable="false">1</string>

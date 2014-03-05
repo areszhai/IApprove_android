@@ -8,8 +8,11 @@ import com.richitec.commontoolkit.CTApplication;
 
 public enum IApproveTaskAttachmentType {
 
-	// audio arm, wav and image jpg
-	AUDIO_ARM(0), AUDIO_WAV(1), IMAGE_JPG(5);
+	// audio amr, wav and 3gp
+	// image jpg, jpeg, png, bmp and gif
+	// common file
+	AUDIO_AMR(0), AUDIO_WAV(1), AUDIO_3GPP(2), IMAGE_JPG(4), IMAGE_JPEG(5), IMAGE_PNG(
+			6), IMAGE_BMP(7), IMAGE_GIF(8), COMMON_TEXT(10), COMMON_FILE(12);
 
 	private static final String LOG_TAG = IApproveTaskAttachmentType.class
 			.getCanonicalName();
@@ -29,17 +32,47 @@ public enum IApproveTaskAttachmentType {
 			rbgServerRetValue = _appContext
 					.getResources()
 					.getString(
-							R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_armSuffix);
+							R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_amrSuffix);
 		} else if (1 == value) {
 			rbgServerRetValue = _appContext
 					.getResources()
 					.getString(
 							R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_wavSuffix);
-		} else if (5 == value) {
+		} else if (2 == value) {
+			rbgServerRetValue = _appContext
+					.getResources()
+					.getString(
+							R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_3gpSuffix);
+		} else if (4 == value) {
 			rbgServerRetValue = _appContext
 					.getResources()
 					.getString(
 							R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_jpgSuffix);
+		} else if (5 == value) {
+			rbgServerRetValue = _appContext
+					.getResources()
+					.getString(
+							R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_jpegSuffix);
+		} else if (6 == value) {
+			rbgServerRetValue = _appContext
+					.getResources()
+					.getString(
+							R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_pngSuffix);
+		} else if (7 == value) {
+			rbgServerRetValue = _appContext
+					.getResources()
+					.getString(
+							R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_bmpSuffix);
+		} else if (8 == value) {
+			rbgServerRetValue = _appContext
+					.getResources()
+					.getString(
+							R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_gifSuffix);
+		} else if (10 == value) {
+			rbgServerRetValue = _appContext
+					.getResources()
+					.getString(
+							R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_textSuffix);
 		}
 	}
 
@@ -55,21 +88,44 @@ public enum IApproveTaskAttachmentType {
 
 		// check type rbgServer return value
 		if (null != rbgServerRetValue) {
-			if (AUDIO_ARM.rbgServerRetValue.equalsIgnoreCase(rbgServerRetValue)) {
-				// arm audio
-				_type = AUDIO_ARM;
+			if (AUDIO_AMR.rbgServerRetValue.equalsIgnoreCase(rbgServerRetValue)) {
+				// amr audio
+				_type = AUDIO_AMR;
 			} else if (AUDIO_WAV.rbgServerRetValue
 					.equalsIgnoreCase(rbgServerRetValue)) {
 				// wav audio
 				_type = AUDIO_WAV;
+			} else if (AUDIO_3GPP.rbgServerRetValue
+					.equalsIgnoreCase(rbgServerRetValue)) {
+				// 3gp audio
+				_type = AUDIO_3GPP;
 			} else if (IMAGE_JPG.rbgServerRetValue
 					.equalsIgnoreCase(rbgServerRetValue)) {
 				// jpg image
 				_type = IMAGE_JPG;
+			} else if (IMAGE_JPEG.rbgServerRetValue
+					.equalsIgnoreCase(rbgServerRetValue)) {
+				// jpeg image
+				_type = IMAGE_JPEG;
+			} else if (IMAGE_PNG.rbgServerRetValue
+					.equalsIgnoreCase(rbgServerRetValue)) {
+				// png image
+				_type = IMAGE_PNG;
+			} else if (IMAGE_BMP.rbgServerRetValue
+					.equalsIgnoreCase(rbgServerRetValue)) {
+				// bmp image
+				_type = IMAGE_BMP;
+			} else if (IMAGE_GIF.rbgServerRetValue
+					.equalsIgnoreCase(rbgServerRetValue)) {
+				// gif image
+				_type = IMAGE_GIF;
+			} else if (COMMON_TEXT.rbgServerRetValue
+					.equalsIgnoreCase(rbgServerRetValue)) {
+				// text
+				_type = COMMON_TEXT;
 			} else {
-				Log.e(LOG_TAG,
-						"Unrecognized user enterprise to-do list task attachment type remote background server return value = "
-								+ rbgServerRetValue);
+				// common file
+				_type = COMMON_FILE;
 			}
 		} else {
 			Log.e(LOG_TAG,
@@ -86,15 +142,36 @@ public enum IApproveTaskAttachmentType {
 
 		// check type value
 		if (null != value) {
-			if (AUDIO_ARM.typeValue.intValue() == value.intValue()) {
-				// arm audio
-				_type = AUDIO_ARM;
+			if (AUDIO_AMR.typeValue.intValue() == value.intValue()) {
+				// amr audio
+				_type = AUDIO_AMR;
 			} else if (AUDIO_WAV.typeValue.intValue() == value.intValue()) {
 				// wav audio
 				_type = AUDIO_WAV;
+			} else if (AUDIO_3GPP.typeValue.intValue() == value.intValue()) {
+				// 3gp audio
+				_type = AUDIO_3GPP;
 			} else if (IMAGE_JPG.typeValue.intValue() == value.intValue()) {
 				// jpg image
 				_type = IMAGE_JPG;
+			} else if (IMAGE_JPEG.typeValue.intValue() == value.intValue()) {
+				// jpeg image
+				_type = IMAGE_JPEG;
+			} else if (IMAGE_PNG.typeValue.intValue() == value.intValue()) {
+				// png image
+				_type = IMAGE_PNG;
+			} else if (IMAGE_BMP.typeValue.intValue() == value.intValue()) {
+				// bmp image
+				_type = IMAGE_BMP;
+			} else if (IMAGE_BMP.typeValue.intValue() == value.intValue()) {
+				// gif image
+				_type = IMAGE_GIF;
+			} else if (COMMON_TEXT.typeValue.intValue() == value.intValue()) {
+				// text
+				_type = COMMON_TEXT;
+			} else if (COMMON_FILE.typeValue.intValue() == value.intValue()) {
+				// common file
+				_type = COMMON_FILE;
 			} else {
 				Log.e(LOG_TAG,
 						"Unrecognized user enterprise to-do list task attachment type value = "

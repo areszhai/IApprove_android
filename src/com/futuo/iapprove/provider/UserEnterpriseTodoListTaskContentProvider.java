@@ -1032,6 +1032,7 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 			public static final String APPROVE_NUMBER = "approveNumber";
 			public static final String NAME = "taskFormItemName";
 			public static final String INFO = "taskFormItemInfo";
+			public static final String CAPITAL_FLAG = "taskFormItemIsCapital";
 
 			// content uri
 			private static final Uri TODOTASKFORMITEMS_NOTIFICATION_CONTENT_URI = Uri
@@ -1094,8 +1095,10 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 			public static final String APPROVE_NUMBER = "approveNumber";
 			public static final String NAME = "taskAttachmentName";
 			public static final String ORIGINNAME = "taskAttachmentOriginName";
-			public static final String Type = "taskAttachmentType";
+			public static final String SUFFIX = "taskAttachmentSuffix";
+			public static final String TYPE = "taskAttachmentType";
 			public static final String URL = "taskAttachmentUrl";
+			public static final String DOWNLOADSTATUS = "taskAttachmentDownloadStatus";
 
 			// content uri
 			private static final Uri TODOTASKATTACHMENTS_NOTIFICATION_CONTENT_URI = Uri

@@ -1,6 +1,7 @@
 package com.futuo.iapprove.service;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,7 +18,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.util.Log;
 
 import com.futuo.iapprove.R;
@@ -26,6 +27,8 @@ import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.Tod
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentBean;
+import com.futuo.iapprove.task.IApproveTaskAttachmentDownloadStatus;
+import com.futuo.iapprove.task.IApproveTaskAttachmentType;
 import com.futuo.iapprove.task.IApproveTaskFormItemBean;
 import com.futuo.iapprove.task.TodoTaskBean;
 import com.futuo.iapprove.task.TodoTaskStatus;
@@ -215,7 +218,7 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 							_mContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_getIApproveListTaskFormInfoReqParam_action));
+											R.string.rbgServer_getUserEnterpriseTodoTaskFormInfoReqParam_action));
 		}
 
 		// put get user enterprise to-do list task form info user enterprise id
@@ -307,13 +310,17 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 	// download to-do list task attachment to local file path with attachment
 	// url
 	private String downloadTodoTaskAttachment2LocalFilePath(
-			String attachmentRemoteUrl) {
+			Long attachmentLSRowId, String attachmentRemoteUrl,
+			String attachmentSuffix) {
 		String _attachmentLocalFilePath = null;
+
+		HttpURLConnection _attachmentDownloadHttpUrlConnection = null;
 
 		try {
 			// define to-do list task attachment local storage file name
 			StringBuilder _attachmentLocalStorageFileName = new StringBuilder();
-			_attachmentLocalStorageFileName.append(System.currentTimeMillis());
+			_attachmentLocalStorageFileName.append(System.currentTimeMillis())
+					.append('.').append(attachmentSuffix);
 			Log.d(LOG_TAG,
 					"To-do list task attachment local storage file name = "
 							+ _attachmentLocalStorageFileName
@@ -323,8 +330,23 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 			URL _attachmentUrl = new URL(attachmentRemoteUrl);
 
 			// open to-do list task attachment download http url connection
-			HttpURLConnection _attachmentDownloadHttpUrlConnection = (HttpURLConnection) _attachmentUrl
+			_attachmentDownloadHttpUrlConnection = (HttpURLConnection) _attachmentUrl
 					.openConnection();
+
+			// define the to-do list task attachment content values
+			ContentValues _todoTaskAttachmentContentValues = new ContentValues();
+
+			// generate the to-do list task attachment content values
+			// with attachment downloading flag
+			_todoTaskAttachmentContentValues
+					.put(TodoTaskAttachment.DOWNLOADSTATUS,
+							IApproveTaskAttachmentDownloadStatus.DOWNLOADING
+									.getValue());
+
+			_mContentResolver.update(ContentUris.withAppendedId(
+					TodoTaskAttachment.TODOTASKATTACHMENT_CONTENT_URI,
+					attachmentLSRowId), _todoTaskAttachmentContentValues, null,
+					null);
 
 			// get to-do list task attachment input stream
 			InputStream _is = _attachmentDownloadHttpUrlConnection
@@ -355,15 +377,61 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 			_is.close();
 			_fos.close();
 
+			//
+			_attachmentDownloadHttpUrlConnection.disconnect();
+
 			Log.d(LOG_TAG,
 					"To-do list task attachment download finished, attachment remote url = "
 							+ _attachmentUrl
 							+ " and local storage file path = "
 							+ _attachmentLocalFilePath);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			Log.e(LOG_TAG,
 					"Download to-do list task attachment failed, exception message = "
 							+ e.getMessage());
+
+			//
+			if (null != _attachmentDownloadHttpUrlConnection) {
+				try {
+					// get and check response code
+					int _responseCode = _attachmentDownloadHttpUrlConnection
+							.getResponseCode();
+
+					// define the to-do list task attachment content values
+					ContentValues _todoTaskAttachmentContentValues = new ContentValues();
+
+					if (HttpStatus.SC_NOT_FOUND == _responseCode) {
+						// generate the to-do list task attachment content
+						// values
+						// with attachment downloading flag
+						_todoTaskAttachmentContentValues
+								.put(TodoTaskAttachment.DOWNLOADSTATUS,
+										IApproveTaskAttachmentDownloadStatus.DOWNLOAD_FAILED
+												.getValue());
+					} else if (HttpStatus.SC_INTERNAL_SERVER_ERROR == _responseCode) {
+						// generate the to-do list task attachment content
+						// values
+						// with attachment downloading flag
+						_todoTaskAttachmentContentValues.put(
+								TodoTaskAttachment.DOWNLOADSTATUS,
+								IApproveTaskAttachmentDownloadStatus.NORMAL
+										.getValue());
+					}
+
+					_mContentResolver.update(ContentUris.withAppendedId(
+							TodoTaskAttachment.TODOTASKATTACHMENT_CONTENT_URI,
+							attachmentLSRowId),
+							_todoTaskAttachmentContentValues, null, null);
+
+					_attachmentDownloadHttpUrlConnection.disconnect();
+				} catch (IOException e1) {
+					Log.e(LOG_TAG,
+							"Get download to-do list task attachment request response code error, exception message = "
+									+ e.getMessage());
+
+					e1.printStackTrace();
+				}
+			}
 
 			e.printStackTrace();
 		}
@@ -727,6 +795,9 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 								_todoTaskFormItemContentValues.put(
 										TodoTaskFormItem.INFO,
 										todoTaskFormItem.getItemInfo());
+								_todoTaskFormItemContentValues.put(
+										TodoTaskFormItem.CAPITAL_FLAG,
+										todoTaskFormItem.itemNeedCapital());
 
 								// append task form item form sender fake id,
 								// enterprise id and approve number
@@ -861,9 +932,23 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 										todoTaskAttachment
 												.getAttachmentOriginName());
 								_todoTaskAttachmentContentValues.put(
-										TodoTaskAttachment.Type,
+										TodoTaskAttachment.SUFFIX,
+										todoTaskAttachment
+												.getAttachmentSuffix());
+								_todoTaskAttachmentContentValues.put(
+										TodoTaskAttachment.TYPE,
 										todoTaskAttachment.getAttachmentType()
 												.getValue());
+
+								// check task attachment type
+								if (IApproveTaskAttachmentType.COMMON_TEXT == todoTaskAttachment
+										.getAttachmentType()) {
+									// add url
+									_todoTaskAttachmentContentValues.put(
+											TodoTaskAttachment.URL,
+											todoTaskAttachment
+													.getAttachmentRemoteUrl());
+								}
 
 								// append task attachment form sender fake id,
 								// enterprise id and approve number
@@ -890,51 +975,64 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 													+ " for inserting into local storage database, its content values = "
 													+ _todoTaskAttachmentContentValues);
 
-									final Uri _newInsertTodoTaskAttachmentUri = _mContentResolver
+									final Long _newInsertTodoTaskAttachmentLSRowId = ContentUris.parseId(_mContentResolver
 											.insert(TodoTaskAttachment.TODOTASKATTACHMENT_CONTENT_URI,
-													_todoTaskAttachmentContentValues);
+													_todoTaskAttachmentContentValues));
 
-									// download to-do list task attachment in
-									// work thread
-									new Thread(new Runnable() {
+									// check task attachment type
+									if (IApproveTaskAttachmentType.COMMON_TEXT != todoTaskAttachment
+											.getAttachmentType()) {
+										// download to-do list task attachment
+										// in work thread
+										new Thread(new Runnable() {
 
-										@Override
-										public void run() {
-											// download to-do list task
-											// attachment to local file path
-											String _attachmentLocalStorageFilePath = downloadTodoTaskAttachment2LocalFilePath(todoTaskAttachment
-													.getAttachmentRemoteUrl());
+											@Override
+											public void run() {
+												// download to-do list task
+												// attachment to local file path
+												String _attachmentLocalStorageFilePath = downloadTodoTaskAttachment2LocalFilePath(
+														_newInsertTodoTaskAttachmentLSRowId,
+														todoTaskAttachment
+																.getAttachmentRemoteUrl(),
+														todoTaskAttachment
+																.getAttachmentSuffix());
 
-											// check to-do list task attachment
-											// to local file path
-											if (null != _attachmentLocalStorageFilePath) {
-												// define the to-do list task
-												// attachment content values
-												ContentValues _todoTaskAttachmentContentValues = new ContentValues();
+												// check to-do list task
+												// attachment to local file path
+												if (null != _attachmentLocalStorageFilePath) {
+													// define the to-do list
+													// task attachment content
+													// values
+													ContentValues _todoTaskAttachmentContentValues = new ContentValues();
 
-												// generate the to-do list task
-												// attachment content values
-												// with attachment url
-												_todoTaskAttachmentContentValues
-														.put(TodoTaskAttachment.URL,
-																_attachmentLocalStorageFilePath);
+													// generate the to-do list
+													// task attachment content
+													// values with attachment
+													// url
+													_todoTaskAttachmentContentValues
+															.put(TodoTaskAttachment.DOWNLOADSTATUS,
+																	IApproveTaskAttachmentDownloadStatus.NORMAL
+																			.getValue());
+													_todoTaskAttachmentContentValues
+															.put(TodoTaskAttachment.URL,
+																	_attachmentLocalStorageFilePath);
 
-												Log.d(LOG_TAG,
-														"The to-do list task attachment for updating to local storage database, its content values = "
-																+ _todoTaskAttachmentContentValues);
+													Log.d(LOG_TAG,
+															"The to-do list task attachment for updating to local storage database, its content values = "
+																	+ _todoTaskAttachmentContentValues);
 
-												_mContentResolver.update(
-														ContentUris
-																.withAppendedId(
-																		TodoTaskAttachment.TODOTASKATTACHMENT_CONTENT_URI,
-																		ContentUris
-																				.parseId(_newInsertTodoTaskAttachmentUri)),
-														_todoTaskAttachmentContentValues,
-														null, null);
+													_mContentResolver.update(
+															ContentUris
+																	.withAppendedId(
+																			TodoTaskAttachment.TODOTASKATTACHMENT_CONTENT_URI,
+																			_newInsertTodoTaskAttachmentLSRowId),
+															_todoTaskAttachmentContentValues,
+															null, null);
+												}
 											}
-										}
 
-									}).start();
+										}).start();
+									}
 								} else {
 									// get for updating to-do list task
 									// attachment
@@ -972,16 +1070,23 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 									// check for updating to-do list task
 									// attachment url and download to-do list
 									// task attachment in work thread
-									if (null == _4updatingTodoTaskAttachment
-											.getAttachmentUrl()) {
+									if (IApproveTaskAttachmentDownloadStatus.NORMAL == _4updatingTodoTaskAttachment
+											.getAttachmentDownloadStatus()
+											&& null == _4updatingTodoTaskAttachment
+													.getAttachmentUrl()) {
 										new Thread(new Runnable() {
 
 											@Override
 											public void run() {
 												// download to-do list task
 												// attachment to local file path
-												String _attachmentLocalStorageFilePath = downloadTodoTaskAttachment2LocalFilePath(todoTaskAttachment
-														.getAttachmentRemoteUrl());
+												String _attachmentLocalStorageFilePath = downloadTodoTaskAttachment2LocalFilePath(
+														_4updatingTodoTaskAttachment
+																.getRowId(),
+														todoTaskAttachment
+																.getAttachmentRemoteUrl(),
+														todoTaskAttachment
+																.getAttachmentSuffix());
 
 												// check to-do list task
 												// attachment to local file path
@@ -995,6 +1100,10 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 													// task attachment content
 													// values with attachment
 													// url
+													_todoTaskAttachmentContentValues
+															.put(TodoTaskAttachment.DOWNLOADSTATUS,
+																	IApproveTaskAttachmentDownloadStatus.NORMAL
+																			.getValue());
 													_todoTaskAttachmentContentValues
 															.put(TodoTaskAttachment.URL,
 																	_attachmentLocalStorageFilePath);

@@ -604,6 +604,9 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 			} else {
 				Log.e(LOG_TAG,
 						"Format to-do list task submit time error, submit timestamp greater than current system time");
+
+				_ret.append(_todoTaskSubmitTimeTimeFormat
+						.format(submitTimestamp));
 			}
 
 			return _ret.toString();

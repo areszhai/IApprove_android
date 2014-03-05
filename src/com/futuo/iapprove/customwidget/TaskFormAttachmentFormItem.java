@@ -296,32 +296,30 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 												R.string.task_voiceAttachment_voiceDuration_format),
 										_voiceAttachmentVoiceDuration));
 
-				// get voice play image view layout params
-				RelativeLayout.LayoutParams _layoutParams = (RelativeLayout.LayoutParams) _newTaskFormAttachmentFormItem._mVoiceAttachmentPlayImgView
-						.getLayoutParams();
-
-				// update voice play image view margin right
-				_layoutParams
-						.setMargins(
-								_layoutParams.leftMargin,
-								_layoutParams.topMargin,
+				// update voice play image view container relativeLayout padding
+				// right
+				_newTaskFormAttachmentFormItem._mVoiceAttachmentPlayImgViewContainerRelativeLayout
+						.setPadding(
+								_newTaskFormAttachmentFormItem._mVoiceAttachmentPlayImgViewContainerRelativeLayout
+										.getPaddingLeft(),
+								_newTaskFormAttachmentFormItem._mVoiceAttachmentPlayImgViewContainerRelativeLayout
+										.getPaddingTop(),
 								Math.min(
 										_appContext
 												.getResources()
 												.getDimensionPixelSize(
-														R.dimen.task_formVoiceAttachment_playImgView_marginRight_min)
+														R.dimen.task_formVoiceAttachment_playImgViewContainerRelativeLayout_paddingRight_min)
 												+ (_voiceAttachmentVoiceDuration - 1)
 												* _appContext
 														.getResources()
 														.getDimensionPixelSize(
-																R.dimen.task_formVoiceAttachment_playImgView_marginRight_increaseStep),
+																R.dimen.task_formVoiceAttachment_playImgViewContainerRelativeLayout_paddingRight_increaseStep),
 										_appContext
 												.getResources()
 												.getDimensionPixelSize(
-														R.dimen.task_formVoiceAttachment_playImgView_marginRight_max)),
-								_layoutParams.bottomMargin);
-				_newTaskFormAttachmentFormItem._mVoiceAttachmentPlayImgView
-						.setLayoutParams(_layoutParams);
+														R.dimen.task_formVoiceAttachment_playImgViewContainerRelativeLayout_paddingRight_max)),
+								_newTaskFormAttachmentFormItem._mVoiceAttachmentPlayImgViewContainerRelativeLayout
+										.getPaddingBottom());
 			}
 			break;
 
@@ -348,15 +346,30 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 
 			// check task iApprove task attachment type
 			switch (taskAttachmentType) {
-			case AUDIO_ARM:
+			case AUDIO_AMR:
 			case AUDIO_WAV:
+			case AUDIO_3GPP:
 				// voice attachment
 				_taskFormAttachmentType = VOICE_ATTACHMENT;
 				break;
 
 			case IMAGE_JPG:
+			case IMAGE_JPEG:
+			case IMAGE_PNG:
+			case IMAGE_BMP:
+			case IMAGE_GIF:
 				// image attachment
 				_taskFormAttachmentType = IMAGE_ATTACHMENT;
+				break;
+
+			case COMMON_TEXT:
+				// text attachment
+				_taskFormAttachmentType = TEXT_ATTACHMENT;
+				break;
+
+			case COMMON_FILE:
+				// application attachment
+				_taskFormAttachmentType = APPLICATION_ATTACHMENT;
 				break;
 
 			default:

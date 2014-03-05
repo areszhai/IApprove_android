@@ -42,11 +42,17 @@ public class IApproveTaskAttachmentBean implements
 	// task attachment url
 	private String attachmentUrl;
 
+	// task attachment download status
+	private IApproveTaskAttachmentDownloadStatus attachmentDownloadStatus;
+
 	// local storage data dirty type
 	private LocalStorageDataDirtyType lsDataDirtyType;
 
 	public IApproveTaskAttachmentBean() {
 		super();
+
+		// set default download status
+		attachmentDownloadStatus = IApproveTaskAttachmentDownloadStatus.NORMAL;
 
 		// set default local storage data dirty type
 		lsDataDirtyType = LocalStorageDataDirtyType.NORMAL;
@@ -88,6 +94,9 @@ public class IApproveTaskAttachmentBean implements
 									.getResources()
 									.getString(
 											R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_name));
+			if (null == attachmentName) {
+				attachmentName = "";
+			}
 
 			// task attachment origin name
 			attachmentOriginName = JSONUtils
@@ -97,6 +106,9 @@ public class IApproveTaskAttachmentBean implements
 									.getResources()
 									.getString(
 											R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_originName));
+			if (null == attachmentOriginName) {
+				attachmentOriginName = "";
+			}
 
 			// get task attachment suffix
 			attachmentSuffix = JSONUtils
@@ -106,10 +118,25 @@ public class IApproveTaskAttachmentBean implements
 									.getResources()
 									.getString(
 											R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_suffix));
+			if (null == attachmentSuffix) {
+				attachmentSuffix = _appContext
+						.getResources()
+						.getString(
+								R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_textSuffix);
+			}
 
 			// task attachment type
 			attachmentType = IApproveTaskAttachmentType
 					.getType(attachmentSuffix);
+			if (IApproveTaskAttachmentType.COMMON_TEXT == attachmentType) {
+				attachmentUrl = JSONUtils
+						.getStringFromJSONObject(
+								taskAttachmentJSONObject,
+								_appContext
+										.getResources()
+										.getString(
+												R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachment_content));
+			}
 		} else {
 			Log.e(LOG_TAG,
 					"New iApprove task attachment with JSON object error, form JSON object = "
@@ -157,21 +184,44 @@ public class IApproveTaskAttachmentBean implements
 		this.attachmentType = attachmentType;
 	}
 
+	public String getAttachmentSuffix() {
+		return attachmentSuffix;
+	}
+
+	public void setAttachmentSuffix(String attachmentSuffix) {
+		this.attachmentSuffix = attachmentSuffix;
+	}
+
 	public String getAttachmentRemoteUrl() {
 		String _attachmentRemoteUrl = null;
 
 		// task attachment url
-		if (IApproveTaskAttachmentType.AUDIO_ARM == attachmentType
-				|| IApproveTaskAttachmentType.AUDIO_WAV == attachmentType) {
-			// audio
-			_attachmentRemoteUrl = IApproveTaskAttachmentFileUrlUtils
-					.taskVoiceAttachmentFileUrl(attachmentName,
-							attachmentOriginName, attachmentSuffix);
-		} else if (IApproveTaskAttachmentType.IMAGE_JPG == attachmentType) {
+		switch (attachmentType) {
+		case IMAGE_JPG:
+		case IMAGE_JPEG:
+		case IMAGE_PNG:
+		case IMAGE_BMP:
+		case IMAGE_GIF:
 			// image
 			_attachmentRemoteUrl = IApproveTaskAttachmentFileUrlUtils
 					.taskImageAttachmentFileUrl(attachmentName,
 							attachmentOriginName, attachmentSuffix);
+			break;
+
+		case COMMON_TEXT:
+			// text content
+			_attachmentRemoteUrl = attachmentUrl;
+			break;
+
+		case AUDIO_AMR:
+		case AUDIO_WAV:
+		case AUDIO_3GPP:
+		default:
+			// file
+			_attachmentRemoteUrl = IApproveTaskAttachmentFileUrlUtils
+					.taskFileAttachmentFileUrl(attachmentName,
+							attachmentOriginName, attachmentSuffix);
+			break;
 		}
 
 		return _attachmentRemoteUrl;
@@ -183,6 +233,15 @@ public class IApproveTaskAttachmentBean implements
 
 	public void setAttachmentUrl(String attachmentUrl) {
 		this.attachmentUrl = attachmentUrl;
+	}
+
+	public IApproveTaskAttachmentDownloadStatus getAttachmentDownloadStatus() {
+		return attachmentDownloadStatus;
+	}
+
+	public void setAttachmentDownloadStatus(
+			IApproveTaskAttachmentDownloadStatus attachmentDownloadStatus) {
+		this.attachmentDownloadStatus = attachmentDownloadStatus;
 	}
 
 	public LocalStorageDataDirtyType getLocalStorageDataDirtyType() {
@@ -265,14 +324,23 @@ public class IApproveTaskAttachmentBean implements
 			_todoTaskAttachment.attachmentOriginName = cursor.getString(cursor
 					.getColumnIndex(TodoTaskAttachment.ORIGINNAME));
 
+			// task attachment suffix
+			_todoTaskAttachment.attachmentSuffix = cursor.getString(cursor
+					.getColumnIndex(TodoTaskAttachment.SUFFIX));
+
 			// task attachment type
 			_todoTaskAttachment.attachmentType = IApproveTaskAttachmentType
 					.getType(cursor.getInt(cursor
-							.getColumnIndex(TodoTaskAttachment.Type)));
+							.getColumnIndex(TodoTaskAttachment.TYPE)));
 
 			// task attachment url
 			_todoTaskAttachment.attachmentUrl = cursor.getString(cursor
 					.getColumnIndex(TodoTaskAttachment.URL));
+
+			// task attachment download status
+			_todoTaskAttachment.attachmentDownloadStatus = IApproveTaskAttachmentDownloadStatus
+					.getDownloadStatus(cursor.getInt(cursor
+							.getColumnIndex(TodoTaskAttachment.DOWNLOADSTATUS)));
 		} else {
 			Log.e(LOG_TAG,
 					"Get to-do list task attachment with cursor error, cursor = "
@@ -284,37 +352,63 @@ public class IApproveTaskAttachmentBean implements
 
 	// get iApprove task attachment list with JSON object
 	public static List<IApproveTaskAttachmentBean> getTaskAttachments(
-			JSONObject taskFormInfoJSONObject) {
+			JSONObject taskContentInfoJSONObject) {
 		List<IApproveTaskAttachmentBean> _taskAttachments = null;
 
-		// check iApprove task form info JSON object
-		if (null != taskFormInfoJSONObject) {
+		// check iApprove task content info JSON object
+		if (null != taskContentInfoJSONObject) {
 			// get application context
 			Context _appContext = CTApplication.getContext();
 
 			// initialize return iApprove task attachment bean list
 			_taskAttachments = new ArrayList<IApproveTaskAttachmentBean>();
 
-			// get and check iApprove task attachment json array
-			JSONArray _taskAttachmentsJSONArray = JSONUtils
+			// get and check iApprove task content info json array
+			JSONArray _taskContentInfosJSONArray = JSONUtils
 					.getJSONArrayFromJSONObject(
-							taskFormInfoJSONObject,
+							taskContentInfoJSONObject,
 							_appContext
 									.getResources()
 									.getString(
-											R.string.rbgServer_getIApproveListTaskFormInfoReqResp_attachmentList));
-			if (null != _taskAttachmentsJSONArray) {
-				for (int i = 0; i < _taskAttachmentsJSONArray.length(); i++) {
-					// add got user enterprise iApprove task attachment to list
-					_taskAttachments.add(new IApproveTaskAttachmentBean(
-							JSONUtils.getJSONObjectFromJSONArray(
-									_taskAttachmentsJSONArray, i)));
+											R.string.rbgServer_getIApproveListTaskFormInfoReqResp_contentList));
+			if (null != _taskContentInfosJSONArray
+					&& 0 < _taskContentInfosJSONArray.length()) {
+				for (int i = 0; i < _taskContentInfosJSONArray.length(); i++) {
+					// get each iApprove task content info and check its type
+					JSONObject _taskContentInfoJSONObject = JSONUtils
+							.getJSONObjectFromJSONArray(
+									_taskContentInfosJSONArray, i);
+
+					// get attachment type string
+					String _attachmentTypeString = JSONUtils
+							.getStringFromJSONObject(
+									_taskContentInfoJSONObject,
+									_appContext
+											.getResources()
+											.getString(
+													R.string.rbgServer_getIApproveListTaskFormInfoReqResp_contentType));
+
+					if (null != _taskContentInfoJSONObject
+							&& (_appContext
+									.getResources()
+									.getString(
+											R.string.rbgServer_getIApproveListTaskFormInfoReqResp_fileContentType)
+									.equalsIgnoreCase(_attachmentTypeString) || _appContext
+									.getResources()
+									.getString(
+											R.string.rbgServer_getIApproveListTaskFormInfoReqResp_textContentType)
+									.equalsIgnoreCase(_attachmentTypeString))) {
+						// add got user enterprise iApprove task attachment to
+						// list
+						_taskAttachments.add(new IApproveTaskAttachmentBean(
+								_taskContentInfoJSONObject));
+					}
 				}
 			}
 		} else {
 			Log.e(LOG_TAG,
-					"Get iApprove task attachment list with JSON object error, form info JSON object = "
-							+ taskFormInfoJSONObject);
+					"Get iApprove task attachment list with JSON object error, content info JSON object = "
+							+ taskContentInfoJSONObject);
 		}
 
 		return _taskAttachments;
