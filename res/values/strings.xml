@@ -75,6 +75,10 @@
     <string name="title_activity_naa_form_item_editor" translatable="false">NAAFormItemEditorActivity</string>
     <string name="naafie_saveInfo_barButtonItem_title">Save</string>
 
+    <!-- new approve application or to-do task text or image attachment view activity -->
+    <string name="title_activity_naa6tdt_text6img_attachment_view" translatable="false">NAATDTTextImgAttachmentViewActivity</string>
+    <string name="naa_tdt_imgAttachment_image_imageView_contentDescription" translatable="false">new approve application or to-do task image attachment image imageView</string>
+
     <!-- iApprove list common -->
     <string name="iapprove_listView_item_detailInfo_imageView_contentDescription" translatable="false">the iApprove listView item detail info imageView</string>
     <string name="task_formItem_infoLabel_capitalFormat">%s(Capital)</string>

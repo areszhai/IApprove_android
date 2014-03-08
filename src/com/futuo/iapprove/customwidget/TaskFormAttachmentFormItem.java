@@ -404,6 +404,11 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 			if (null != _imageAttachmentImgBitmap) {
 				_newTaskFormAttachmentFormItem._mImageAttachmentImgView
 						.setImageBitmap(_imageAttachmentImgBitmap);
+
+				// also set the image attachment image bitmap as tag of image
+				// attachment imageView
+				_newTaskFormAttachmentFormItem._mImageAttachmentImgView
+						.setTag(_imageAttachmentImgBitmap);
 			} else {
 				_newTaskFormAttachmentFormItem._mImageAttachmentImgView
 						.loadUrl(_newTaskFormAttachmentFormItem

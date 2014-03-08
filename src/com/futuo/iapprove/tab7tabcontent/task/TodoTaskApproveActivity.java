@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
@@ -71,6 +73,8 @@ import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.Tod
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.service.CoreService.LocalBinder;
+import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity;
+import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity.NAATDTTextImgAttachmentViewExtraData;
 import com.futuo.iapprove.tab7tabcontent.task.TaskApplicationAttachmentViewActivity.TaskApplicationAttachmentViewExtraData;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentBean;
@@ -969,11 +973,20 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(LOG_TAG,
-					"Form text attachment form item on click listener, view = "
-							+ v);
+			// go to new approve application or to-do task text or image
+			// attachment view activity
+			// define new approve application or to-do task text or image
+			// attachment view extra data map
+			Map<String, String> _extraMap = new HashMap<String, String>();
 
-			//
+			// put to-do task text attachment text to extra data map as param
+			_extraMap
+					.put(NAATDTTextImgAttachmentViewExtraData.NAA_TDT_TEXT_IMAGE_ATTCHMENT_OBJECT,
+							((TextView) v).getText().toString());
+
+			// go to new approve application or to-do task text or image
+			// attachment view activity with extra data map
+			pushActivity(NAATDTTextImgAttachmentViewActivity.class, _extraMap);
 		}
 
 	}
@@ -999,11 +1012,29 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(LOG_TAG,
-					"Form image attachment form item on click listener, view = "
-							+ v);
+			// get and check tag of the imageView
+			Object _imageViewTag = ((ImageView) v).getTag();
+			if (null != _imageViewTag) {
+				// go to new approve application or to-do task text or image
+				// attachment view activity
+				// define new approve application or to-do task text or image
+				// attachment view extra data map
+				Map<String, Bitmap> _extraMap = new HashMap<String, Bitmap>();
 
-			//
+				// put to-do task image attachment image bitmap to extra data
+				// map as param
+				_extraMap
+						.put(NAATDTTextImgAttachmentViewExtraData.NAA_TDT_TEXT_IMAGE_ATTCHMENT_OBJECT,
+								(Bitmap) _imageViewTag);
+
+				// go to new approve application or to-do task text or image
+				// attachment view activity with extra data map
+				pushActivity(NAATDTTextImgAttachmentViewActivity.class,
+						_extraMap);
+			} else {
+				Log.e(LOG_TAG,
+						"Get to-do task form image attachment image view error");
+			}
 		}
 
 	}
@@ -1081,8 +1112,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 					Map<String, String> _extraMap = new HashMap<String, String>();
 
 					// put to-do task application attachment name and open url
-					// to
-					// extra data map as param
+					// to extra data map as param
 					_extraMap
 							.put(TaskApplicationAttachmentViewExtraData.TASK_APPLICATIONATTCHMENT_NAME,
 									((TextView) v).getText().toString());
@@ -1092,8 +1122,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 											+ _todoTaskApplicationAttachmentOpenUrl);
 
 					// go to task application attachment view activity with
-					// extra
-					// data map
+					// extra data map
 					pushActivity(TaskApplicationAttachmentViewActivity.class,
 							_extraMap);
 				}

@@ -347,6 +347,11 @@ public class NAAFormAttachmentFormItem extends FrameLayout {
 			if (null != _imageAttachmentImgBitmap) {
 				_newNAAFormAttachmentFormItem._mImageAttachmentImgView
 						.setImageBitmap(_imageAttachmentImgBitmap);
+
+				// also set the image attachment image bitmap as tag of image
+				// attachment imageView
+				_newNAAFormAttachmentFormItem._mImageAttachmentImgView
+						.setTag(_imageAttachmentImgBitmap);
 			}
 			break;
 

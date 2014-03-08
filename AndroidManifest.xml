@@ -85,6 +85,11 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
+            android:name=".tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity"
+            android:label="@string/title_activity_naa6tdt_text6img_attachment_view"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".tab7tabcontent.TodoListTabContentActivity"
             android:label="@string/title_activity_todo_list_tab_content"
             android:screenOrientation="portrait" >

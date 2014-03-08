@@ -1,0 +1,24 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity" >
+
+    <TextView
+        android:id="@+id/naatdt_textAttachment_text_textView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:textSize="26sp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/naatdt_imgAttachment_image_imageView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/black"
+        android:contentDescription="@string/naa_tdt_imgAttachment_image_imageView_contentDescription"
+        android:scaleType="fitCenter"
+        android:visibility="gone" />
+
+</FrameLayout>

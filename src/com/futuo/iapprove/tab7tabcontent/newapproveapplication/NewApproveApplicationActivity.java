@@ -75,6 +75,8 @@ import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyTyp
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATasks.GeneratingNAATask;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.service.CoreService.LocalBinder;
+import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity;
+import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity.NAATDTTextImgAttachmentViewExtraData;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NAAFormItemEditorActivity.NAAFormItemEditorExtraData;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationActivity.NAAMorePlusInputListAdapter.NAAMorePlusInputListAdapterIconItemDataKey;
 import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
@@ -1033,11 +1035,21 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(LOG_TAG,
-					"Form text attachment form item on click listener, view = "
-							+ v);
+			// go to new approve application or to-do task text or image
+			// attachment view activity
+			// define new approve application or to-do task text or image
+			// attachment view extra data map
+			Map<String, String> _extraMap = new HashMap<String, String>();
 
-			//
+			// put new approve application text attachment text to extra data
+			// map as param
+			_extraMap
+					.put(NAATDTTextImgAttachmentViewExtraData.NAA_TDT_TEXT_IMAGE_ATTCHMENT_OBJECT,
+							((TextView) v).getText().toString());
+
+			// go to new approve application or to-do task text or image
+			// attachment view activity with extra data map
+			pushActivity(NAATDTTextImgAttachmentViewActivity.class, _extraMap);
 		}
 
 	}
@@ -1048,11 +1060,29 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(LOG_TAG,
-					"Form image attachment form item on click listener, view = "
-							+ v);
+			// get and check tag of the imageView
+			Object _imageViewTag = ((ImageView) v).getTag();
+			if (null != _imageViewTag) {
+				// go to new approve application or to-do task text or image
+				// attachment view activity
+				// define new approve application or to-do task text or image
+				// attachment view extra data map
+				Map<String, Bitmap> _extraMap = new HashMap<String, Bitmap>();
 
-			//
+				// put new approve application image attachment image bitmap to
+				// extra data map as param
+				_extraMap
+						.put(NAATDTTextImgAttachmentViewExtraData.NAA_TDT_TEXT_IMAGE_ATTCHMENT_OBJECT,
+								(Bitmap) _imageViewTag);
+
+				// go to new approve application or to-do task text or image
+				// attachment view activity with extra data map
+				pushActivity(NAATDTTextImgAttachmentViewActivity.class,
+						_extraMap);
+			} else {
+				Log.e(LOG_TAG,
+						"Get new approve application form image attachment image view error");
+			}
 		}
 
 	}
