@@ -11,9 +11,9 @@ import com.futuo.iapprove.R;
 import com.futuo.iapprove.addressbook.ABContactBean;
 import com.richitec.commontoolkit.CTApplication;
 
-public class SubmitContact extends FrameLayout {
+public class NAATDTSubmitContact extends FrameLayout {
 
-	private static final String LOG_TAG = SubmitContact.class
+	private static final String LOG_TAG = NAATDTSubmitContact.class
 			.getCanonicalName();
 
 	// new approve application or to-do task submit contact
@@ -26,12 +26,12 @@ public class SubmitContact extends FrameLayout {
 	// listener
 	private OnLongClickListener _mSubmitContactOnLongClickListener;
 
-	private SubmitContact(Context context) {
+	private NAATDTSubmitContact(Context context) {
 		super(context);
 
 		// inflate new approve application or to-do task submit contact layout
-		LayoutInflater.from(context).inflate(R.layout.submit_contact_layout,
-				this);
+		LayoutInflater.from(context).inflate(
+				R.layout.naa_tdt_submit_contact_layout, this);
 
 		// get new approve application or to-do task submit contact name
 		// textView
@@ -42,7 +42,7 @@ public class SubmitContact extends FrameLayout {
 				.setOnLongClickListener(new SubmitContactNameTextViewOnLongClickListener());
 	}
 
-	private SubmitContact(Context context, ABContactBean submitContact) {
+	private NAATDTSubmitContact(Context context, ABContactBean submitContact) {
 		this(context);
 
 		// save new approve application or to-do task submit contact
@@ -55,8 +55,6 @@ public class SubmitContact extends FrameLayout {
 
 	@Override
 	public void setOnLongClickListener(OnLongClickListener l) {
-		super.setOnLongClickListener(l);
-
 		// save submit contact on long click listener
 		_mSubmitContactOnLongClickListener = l;
 	}
@@ -78,7 +76,7 @@ public class SubmitContact extends FrameLayout {
 			// check submit contact on long click listener
 			if (null != _mSubmitContactOnLongClickListener) {
 				_ret = _mSubmitContactOnLongClickListener
-						.onLongClick(SubmitContact.this);
+						.onLongClick(NAATDTSubmitContact.this);
 			}
 
 			return _ret;
@@ -88,16 +86,16 @@ public class SubmitContact extends FrameLayout {
 
 	// generate new approve application or to-do task submit contact with
 	// selected submit contact object
-	public static SubmitContact generateNAA6TodoTaskSubmitContact(
+	public static NAATDTSubmitContact generateNAA6TodoTaskSubmitContact(
 			ABContactBean submitContact) {
 		// define new approve application or to-do task submit contact
-		SubmitContact _submitContact = null;
+		NAATDTSubmitContact _submitContact = null;
 
 		// check new approve application or to-do task submit contact object
 		if (null != submitContact) {
 			// new new approve application or to-do task submit contact
-			_submitContact = new SubmitContact(CTApplication.getContext(),
-					submitContact);
+			_submitContact = new NAATDTSubmitContact(
+					CTApplication.getContext(), submitContact);
 		} else {
 			Log.d(LOG_TAG,
 					"Generate new new approve application or to-do task submit contact error, submit contact = "

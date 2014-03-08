@@ -319,8 +319,119 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
+		int _updateNumber = 0;
+
+		// get local storage database writable instance
+		SQLiteDatabase _lswDB = _mLocalStorageDBHelper.getWritableDatabase();
+
+		// define where condition string and update table name
+		String _where = null;
+		String _updateTableName = null;
+
+		// check uri
+		switch (URI_MATCHER.match(uri)) {
+		// approving to-do task
+		case TodoTaskApprovingTableAccessType.APPROVINGTODOTASKS:
+		case TodoTaskApprovingTableAccessType.APPROVINGTODOTASK:
+
+			// nothing to do
+			break;
+
+		case TodoTaskApprovingTableAccessType.APPROVINGTODOTASK_ID:
+			// define and get lookup key
+			String _lookupKey = ApprovingTodoTask._ID;
+
+			// check lookup key
+			if (null != _lookupKey) {
+				// get update approve to-do task id and generate where condition
+				_where = _lookupKey + "=" + ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += SimpleBaseColumns._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG, "Update approving to-do task with selection = "
+					+ selection + " and update values = " + values);
+
+			// set approving to-do task table as update table
+			_updateTableName = ApprovingTodoTasks.TODOTASKAPPROVING_TABLE;
+			break;
+
+		// generating new approve application
+		case NAATaskGeneratingTableAccessType.GENERATINGNAATASKS:
+		case NAATaskGeneratingTableAccessType.GENERATINGNAATASK:
+			// nothing to do
+			break;
+
+		case NAATaskGeneratingTableAccessType.GENERATINGNAATASK_ID:
+			// get update generating new approve application id and generate
+			// where condition
+			if (NAATaskGeneratingTableAccessType.GENERATINGNAATASK_ID == URI_MATCHER
+					.match(uri)) {
+				_where = GeneratingNAATask._ID + "=" + ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += GeneratingNAATask._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG,
+					"Update generating new approve application with selection = "
+							+ selection + " and update values = " + values);
+
+			// set generate new approve application table as update table
+			_updateTableName = GeneratingNAATasks.NAATASKGENERATING_TABLE;
+			break;
+
+		// generating new approve application attachment
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENTS:
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT:
+
+		case NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT_ID:
+			// get update generate new approve application attachment id and
+			// generate where condition
+			if (NAATaskGeneratingAttachmentTableAccessType.GENERATINGNAATASKATTACHMENT_ID == URI_MATCHER
+					.match(uri)) {
+				_where = GeneratingNAATaskAttachment._ID + "="
+						+ ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += GeneratingNAATaskAttachment._AND_SELECTION
+							+ _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG,
+					"Update generating new approve application attachment with selection = "
+							+ selection + " and update values = " + values);
+
+			// set generate new approve application attachment table as update
+			// table
+			_updateTableName = GeneratingNAATaskAttachments.NAATASKGENERATINGATTACHMENT_TABLE;
+			break;
+
+		default:
+			throw new UnknownCPContentUriException(uri);
+		}
+
+		// update object from its local storage table with selection
+		_updateNumber = _lswDB.update(_updateTableName, values, selection,
+				selectionArgs);
+
+		// notify data has been changed
+		getContext().getContentResolver().notifyChange(uri, null);
+
+		return _updateNumber;
 	}
 
 	@Override
@@ -602,7 +713,8 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 			public static final String TASK_ID = "taskId";
 			public static final String ENTERPRISE_ID = "enterpriseId";
 			public static final String APPROVE_NUMBER = "approveNumber";
-			public static final String ATTACHMENTPATH = "attachmentPath";
+			public static final String ATTACHMENT_PATH = "attachmentPath";
+			public static final String ATTACHMENT_UPLOADING = "attachmentUploading";
 
 			// content uri
 			private static final Uri GENERATINGNAATASKATTACHMENTS_NOTIFICATION_CONTENT_URI = Uri

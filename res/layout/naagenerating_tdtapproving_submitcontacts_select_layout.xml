@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/naagtdta_submitContactDisplay_linearLayout"
+        android:layout_width="260dp"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:paddingBottom="6dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="4dp" >
+
+        <TextView
+            android:id="@+id/naagtdta_submitContactName_textView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/naagtdta_submitContactApproveNumber_textView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray" />
+    </LinearLayout>
+
+    <CheckedTextView
+        android:id="@+id/naagtdta_submitContactSelect_checkedTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/naagtdta_submitContactDisplay_linearLayout"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+        android:paddingEnd="10dp"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+</RelativeLayout>

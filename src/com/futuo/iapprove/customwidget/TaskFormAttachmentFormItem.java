@@ -42,8 +42,16 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 	private RelativeLayout _mVoiceAttachmentPlayImgViewContainerRelativeLayout;
 	private ImageView _mVoiceAttachmentPlayImgView;
 
-	// iApprove task form attachment form item on click listener
+	// iApprove task form attachment application attachment parent
+	// relativeLayout, icon image view and shown tip text view
+	private RelativeLayout _mApplicationAttachmentParentRelativeLayout;
+	private ImageView _mApplicationAttachmentIconImgView;
+	private TextView _mApplicationAttachmentShownTipTextView;
+
+	// iApprove task form attachment form item on click and on long click
+	// listener
 	private OnClickListener _mAttachmentFormItemOnClickListener;
+	private OnLongClickListener _mAttachmentFormItemOnLongClickListener;
 
 	// iApprove task form voice attachment play image view container
 	// relativeLayout on click listener
@@ -72,6 +80,15 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 		// get iApprove task form voice attachment play image view
 		_mVoiceAttachmentPlayImgView = (ImageView) findViewById(R.id.taskfafi_voiceAttachment_play_imageView);
 
+		// get iApprove task form attachment application attachment parent
+		// relativeLayout
+		_mApplicationAttachmentParentRelativeLayout = (RelativeLayout) findViewById(R.id.taskfafi_application_parent_relativeLayout);
+
+		// get iApprove task form application attachment shown tip textView and
+		// icon imageView
+		_mApplicationAttachmentShownTipTextView = (TextView) findViewById(R.id.taskfafi_applicationAttachment_shownTip_textView);
+		_mApplicationAttachmentIconImgView = (ImageView) findViewById(R.id.taskfafi_applicationAttachment_icon_imageView);
+
 		// set iApprove task form attachment type default value
 		_mAttachmentType = TaskFormAttachmentType.TEXT_ATTACHMENT;
 	}
@@ -98,6 +115,31 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 					.setOnClickListener(_mVoiceAttachmentPlayImgViewContainerRelativeLayoutOnClickListener = new TaskFormVoiceAttachmentPlayImgViewContainerRelativeLayoutOnClickListener());
 			break;
 
+		case APPLICATION_ATTACHMENT:
+			// set application attachment parent relativeLayout on click
+			// listener
+			_mApplicationAttachmentParentRelativeLayout
+					.setOnClickListener(new TaskFormApplicationAttachmentParentRelativeLayoutOnClickListener());
+			break;
+		}
+	}
+
+	@Override
+	public void setOnLongClickListener(OnLongClickListener l) {
+		// save attachment on long click listener
+		_mAttachmentFormItemOnLongClickListener = l;
+
+		// check iApprove task form attachment type
+		switch (_mAttachmentType) {
+		case TEXT_ATTACHMENT:
+		case IMAGE_ATTACHMENT:
+			// set text and image attachment parent frameLayout on long click
+			// listener
+			_mText7ImageAttachmentParentFrameLayout
+					.setOnLongClickListener(new TaskFormText7ImageAttachmentParentFrameLayoutOnLongClickListener());
+			break;
+
+		case VOICE_ATTACHMENT:
 		case APPLICATION_ATTACHMENT:
 			// nothing to do
 			break;
@@ -216,6 +258,99 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 		return _voiceAttachmentVoiceDuration;
 	}
 
+	// get application attachment shown tip
+	private String getApplicationAttachmentShownTip() {
+		String _applicationAttachmentShownTip = null;
+
+		// check iApprove task form attachment type
+		if (TaskFormAttachmentType.APPLICATION_ATTACHMENT == _mAttachmentType) {
+			// convert attachment info object to map
+			try {
+				@SuppressWarnings("unchecked")
+				Map<String, String> _applicationAttachmentInfo = (Map<String, String>) _mAttachmentInfo;
+
+				// get application attachment shown tip
+				_applicationAttachmentShownTip = _applicationAttachmentInfo
+						.get(TaskFormApplicationAttachmentInfoDataKeys.APPLICATIONATTACHMENT_SHOWN_TIP);
+			} catch (Exception e) {
+				Log.e(LOG_TAG,
+						"Get application attachment shown tip error, exception message = "
+								+ e.getMessage());
+
+				e.printStackTrace();
+			}
+		}
+
+		return _applicationAttachmentShownTip;
+	}
+
+	// get application attachment open url
+	private String getApplicationAttachmentOpenUrl() {
+		String _applicationAttachmentOpenUrl = null;
+
+		// check iApprove task form attachment type
+		if (TaskFormAttachmentType.APPLICATION_ATTACHMENT == _mAttachmentType) {
+			// convert attachment info object to map
+			try {
+				@SuppressWarnings("unchecked")
+				Map<String, String> _applicationAttachmentInfo = (Map<String, String>) _mAttachmentInfo;
+
+				// get application attachment open url
+				_applicationAttachmentOpenUrl = _applicationAttachmentInfo
+						.get(TaskFormApplicationAttachmentInfoDataKeys.APPLICATIONATTACHMENT_OPEN_URL);
+			} catch (Exception e) {
+				Log.e(LOG_TAG,
+						"Get application attachment open url error, exception message = "
+								+ e.getMessage());
+
+				e.printStackTrace();
+			}
+		}
+
+		return _applicationAttachmentOpenUrl;
+	}
+
+	// get application attachment icon
+	private Drawable getApplicationAttachmentIcon() {
+		Drawable _applicationAttachmentIcon = getContext().getResources()
+				.getDrawable(R.drawable.img_document_attachment_icon);
+
+		// get and check application attachment open url
+		String _applicationAttachmentOpenUrl = getApplicationAttachmentOpenUrl();
+		if (null != _applicationAttachmentOpenUrl) {
+			// get and check application attachment open url suffix
+			String _suffix = _applicationAttachmentOpenUrl.substring(
+					_applicationAttachmentOpenUrl.lastIndexOf('.') + 1,
+					_applicationAttachmentOpenUrl.length());
+			if (null != _suffix) {
+				// enum the suffix
+				if ("doc".equalsIgnoreCase(_suffix)
+						|| "docx".equalsIgnoreCase(_suffix)) {
+					_applicationAttachmentIcon = getContext().getResources()
+							.getDrawable(R.drawable.img_word_attachment_icon);
+				} else if ("xls".equalsIgnoreCase(_suffix)
+						|| "xlsx".equalsIgnoreCase(_suffix)) {
+					_applicationAttachmentIcon = getContext().getResources()
+							.getDrawable(R.drawable.img_excel_attachment_icon);
+				} else if ("ppt".equalsIgnoreCase(_suffix)
+						|| "pptx".equalsIgnoreCase(_suffix)) {
+					_applicationAttachmentIcon = getContext().getResources()
+							.getDrawable(R.drawable.img_ppt_attachment_icon);
+				} else if ("pdf".equalsIgnoreCase(_suffix)) {
+					_applicationAttachmentIcon = getContext().getResources()
+							.getDrawable(R.drawable.img_pdf_attachment_icon);
+				} else if ("txt".equalsIgnoreCase(_suffix)) {
+					_applicationAttachmentIcon = getContext().getResources()
+							.getDrawable(R.drawable.img_txt_attachment_icon);
+				}
+			} else {
+				// nothing to do
+			}
+		}
+
+		return _applicationAttachmentIcon;
+	}
+
 	// generate iApprove task form attachment form item with type and info
 	public static TaskFormAttachmentFormItem generateTaskFormAttachmentFormItem(
 			TaskFormAttachmentType type, Object info) {
@@ -324,7 +459,22 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 			break;
 
 		case APPLICATION_ATTACHMENT:
-			// nothing to do
+			// show application attachment parent relativeLayout
+			_newTaskFormAttachmentFormItem._mApplicationAttachmentParentRelativeLayout
+					.setVisibility(View.VISIBLE);
+
+			// get and check application attachment shown tip, icon and open url
+			String _applicationAttachmentShownTip = _newTaskFormAttachmentFormItem
+					.getApplicationAttachmentShownTip();
+			Drawable _applicationAttachmentIcon = _newTaskFormAttachmentFormItem
+					.getApplicationAttachmentIcon();
+			if (null != _applicationAttachmentShownTip
+					&& null != _applicationAttachmentIcon) {
+				_newTaskFormAttachmentFormItem._mApplicationAttachmentShownTipTextView
+						.setText(_applicationAttachmentShownTip);
+				_newTaskFormAttachmentFormItem._mApplicationAttachmentIconImgView
+						.setImageDrawable(_applicationAttachmentIcon);
+			}
 			break;
 		}
 
@@ -388,6 +538,15 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 		// voice attachment voice file path and duration
 		public static final String VOICEATTACHMENT_VOICE_FILEPATH = "voiceattachment_voice_filepath";
 		public static final String VOICEATTACHMENT_VOICE_DURATION = "voiceattachment_voice_duration";
+
+	}
+
+	// iApprove task form application attachment info data keys
+	public static class TaskFormApplicationAttachmentInfoDataKeys {
+
+		// application attachment shown tip and open url
+		public static final String APPLICATIONATTACHMENT_SHOWN_TIP = "applicationattachment_shown_tip";
+		public static final String APPLICATIONATTACHMENT_OPEN_URL = "applicationattachment_open_url";
 
 	}
 
@@ -579,6 +738,49 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 			// form item on click response view
 			_mAttachmentFormItemOnClickListener
 					.onClick(_mVoiceAttachmentPlayImgView);
+		}
+
+	}
+
+	// iApprove task form application attachment parent relativeLayout on click
+	// listener
+	class TaskFormApplicationAttachmentParentRelativeLayoutOnClickListener
+			implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// set application attachment open url as tag of its shown tip
+			// textView
+			_mApplicationAttachmentShownTipTextView
+					.setTag(getApplicationAttachmentOpenUrl());
+
+			_mAttachmentFormItemOnClickListener
+					.onClick(_mApplicationAttachmentShownTipTextView);
+		}
+
+	}
+
+	// iApprove task form text and image attachment parent frameLayout on long
+	// click listener
+	class TaskFormText7ImageAttachmentParentFrameLayoutOnLongClickListener
+			implements OnLongClickListener {
+
+		@Override
+		public boolean onLongClick(View v) {
+			boolean _ret = false;
+
+			// check iApprove task form attachment type and set text attachment
+			// textView or image attachment imageView as text or image
+			// attachment form item on long click response view
+			if (TaskFormAttachmentType.TEXT_ATTACHMENT == _mAttachmentType) {
+				_ret = _mAttachmentFormItemOnLongClickListener
+						.onLongClick(_mTextAttachmentTextView);
+			} else {
+				_ret = _mAttachmentFormItemOnLongClickListener
+						.onLongClick(_mImageAttachmentImgView);
+			}
+
+			return _ret;
 		}
 
 	}

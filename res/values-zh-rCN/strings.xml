@@ -42,6 +42,7 @@
     <string name="naa_voiceRecord_cancelRecord">松开手指，取消录音</string>
     <string name="naa_noteSend_button_title">发送</string>
     <string name="naa_morePlus_photosInput_label">图片</string>
+    <string name="naa_morePlus_photosInput_photosSelect_title">选择照片</string>
     <string name="naa_morePlus_cameraInput_label">拍摄</string>
     <string name="naa_morePlus_applicationsInput_label">程序</string>
 

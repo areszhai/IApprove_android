@@ -330,84 +330,109 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 						Long _naaAttachmentApproveNumber = _cursor.getLong(_cursor
 								.getColumnIndex(GeneratingNAATaskAttachment.APPROVE_NUMBER));
 						String _naaAttachmentPath = _cursor.getString(_cursor
-								.getColumnIndex(GeneratingNAATaskAttachment.ATTACHMENTPATH));
+								.getColumnIndex(GeneratingNAATaskAttachment.ATTACHMENT_PATH));
+						Boolean _naaAttachmentUploading = 0 != _cursor.getShort(_cursor
+								.getColumnIndex(GeneratingNAATaskAttachment.ATTACHMENT_UPLOADING)) ? true
+								: false;
 
-						// upload new approve application attachment
-						// generate upload new approve application attachment
-						// request param
-						Map<String, Object> _uploadNAAAttachmentRequestParam = new HashMap<String, Object>();
+						// check new approve application attachment uploading
+						// flag
+						if (!_naaAttachmentUploading) {
+							// define new approve application attachment update
+							// content values
+							ContentValues _naaAttachmentUpdateContentValues = new ContentValues();
+							_naaAttachmentUpdateContentValues
+									.put(GeneratingNAATaskAttachment.ATTACHMENT_UPLOADING,
+											Boolean.valueOf(true));
 
-						_uploadNAAAttachmentRequestParam
-								.put(_mContext
-										.getResources()
-										.getString(
-												R.string.rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_enterpriseId),
-										StringUtils
-												.base64Encode(_naaAttachmentEnterpriseId
-														.toString()));
-						_uploadNAAAttachmentRequestParam
-								.put(_mContext
-										.getResources()
-										.getString(
-												R.string.rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_approveNumber),
-										StringUtils
-												.base64Encode(_naaAttachmentApproveNumber
-														.toString()));
-						_uploadNAAAttachmentRequestParam
-								.put(_mContext
-										.getResources()
-										.getString(
-												R.string.rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_taskId),
-										_naaAttachmentTaskId.toString());
+							// upload the new approve application attachment
+							// uploading flag
+							_mContentResolver.update(
+									ContentUris
+											.withAppendedId(
+													GeneratingNAATaskAttachment.GENERATINGNAATASKATTACHMENT_CONTENT_URI,
+													_naaAttachmentLSRowId),
+									_naaAttachmentUpdateContentValues, null,
+									null);
 
-						// define upload new approve application request url
-						StringBuilder _uploadNAAAttachmentRequestUrlStringBuilder = new StringBuilder(
-								_mContext.getResources().getString(
-										R.string.server_url)
-										+ _mContext
-												.getResources()
-												.getString(
-														R.string.upload_userEnterpriseApproveApplicationAttachment_url));
-						_uploadNAAAttachmentRequestUrlStringBuilder.append('?');
-						for (String _uploadNAAAttachmentRequestParamKey : _uploadNAAAttachmentRequestParam
-								.keySet()) {
+							// upload new approve application attachment
+							// generate upload new approve application
+							// attachment request param
+							Map<String, Object> _uploadNAAAttachmentRequestParam = new HashMap<String, Object>();
+
+							_uploadNAAAttachmentRequestParam
+									.put(_mContext
+											.getResources()
+											.getString(
+													R.string.rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_enterpriseId),
+											StringUtils
+													.base64Encode(_naaAttachmentEnterpriseId
+															.toString()));
+							_uploadNAAAttachmentRequestParam
+									.put(_mContext
+											.getResources()
+											.getString(
+													R.string.rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_approveNumber),
+											StringUtils
+													.base64Encode(_naaAttachmentApproveNumber
+															.toString()));
+							_uploadNAAAttachmentRequestParam
+									.put(_mContext
+											.getResources()
+											.getString(
+													R.string.rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_taskId),
+											_naaAttachmentTaskId.toString());
+
+							// define upload new approve application request url
+							StringBuilder _uploadNAAAttachmentRequestUrlStringBuilder = new StringBuilder(
+									_mContext.getResources().getString(
+											R.string.server_url)
+											+ _mContext
+													.getResources()
+													.getString(
+															R.string.upload_userEnterpriseApproveApplicationAttachment_url));
 							_uploadNAAAttachmentRequestUrlStringBuilder
-									.append(_uploadNAAAttachmentRequestParamKey)
-									.append('=')
-									.append(_uploadNAAAttachmentRequestParam
-											.get(_uploadNAAAttachmentRequestParamKey))
-									.append('&');
-						}
-						String _uploadNAAAttachmentRequestUrl = _uploadNAAAttachmentRequestUrlStringBuilder
-								.substring(0,
-										_uploadNAAAttachmentRequestUrlStringBuilder
-												.length() - 1);
-						;
+									.append('?');
+							for (String _uploadNAAAttachmentRequestParamKey : _uploadNAAAttachmentRequestParam
+									.keySet()) {
+								_uploadNAAAttachmentRequestUrlStringBuilder
+										.append(_uploadNAAAttachmentRequestParamKey)
+										.append('=')
+										.append(_uploadNAAAttachmentRequestParam
+												.get(_uploadNAAAttachmentRequestParamKey))
+										.append('&');
+							}
+							String _uploadNAAAttachmentRequestUrl = _uploadNAAAttachmentRequestUrlStringBuilder
+									.substring(0,
+											_uploadNAAAttachmentRequestUrlStringBuilder
+													.length() - 1);
+							;
 
-						Map<String, File> _uploadNAAAttachmentRequestFileParam = new HashMap<String, File>();
-						_uploadNAAAttachmentRequestFileParam
-								.put(_mContext
-										.getResources()
-										.getString(
-												R.string.rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_fileName),
-										new File(_naaAttachmentPath));
+							Map<String, File> _uploadNAAAttachmentRequestFileParam = new HashMap<String, File>();
+							_uploadNAAAttachmentRequestFileParam
+									.put(_mContext
+											.getResources()
+											.getString(
+													R.string.rbgServer_uploadNewUserEnterpriseApproveApplicationReqParam_fileName),
+											new File(_naaAttachmentPath));
 
-						// send upload new approve application attachment
-						// post http request
-						try {
-							UploadFileUtils
-									.post(_uploadNAAAttachmentRequestUrl,
-											null,
-											_uploadNAAAttachmentRequestFileParam,
-											new UploadUserEnterpriseNAAAttachmentPostHttpRequestListener(
-													_naaAttachmentLSRowId,
-													_naaAttachmentTaskId));
-						} catch (IOException e) {
-							Log.e(LOG_TAG,
-									"Upload new approve application attachment error, exception message = "
-											+ e.getMessage());
+							// send upload new approve application attachment
+							// post http request
+							try {
+								UploadFileUtils
+										.post(_uploadNAAAttachmentRequestUrl,
+												null,
+												_uploadNAAAttachmentRequestFileParam,
+												new UploadUserEnterpriseNAAAttachmentPostHttpRequestListener(
+														_naaAttachmentLSRowId,
+														_naaAttachmentTaskId));
+							} catch (IOException e) {
+								Log.e(LOG_TAG,
+										"Upload new approve application attachment error, exception message = "
+												+ e.getMessage());
 
-							e.printStackTrace();
+								e.printStackTrace();
+							}
 						}
 					}
 
@@ -530,16 +555,6 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 					.array2List(StringUtils.split(
 							_mNAALocalStorageAttachmentPath, ","));
 
-			// insert new approve application attachment to local storage
-			ContentValues _insertContentValues = new ContentValues();
-			_insertContentValues.put(GeneratingNAATaskAttachment.TASK_ID,
-					_mNAATaskId.toString());
-			_insertContentValues.put(GeneratingNAATaskAttachment.ENTERPRISE_ID,
-					_mEnterpriseId.toString());
-			_insertContentValues.put(
-					GeneratingNAATaskAttachment.APPROVE_NUMBER, UserManager
-							.getInstance().getUser().getName());
-
 			if (null == _naaLocalStorageAttachmentPathList
 					|| 0 == _naaLocalStorageAttachmentPathList.size()) {
 				// synchronized enterprise new approve application attachment
@@ -576,9 +591,20 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 								HttpRequestType.ASYNCHRONOUS,
 								new SynchronizedEnterpriseNAAAttachmentPostHttpRequestListener());
 			} else {
+				// insert new approve application attachment to local storage
+				ContentValues _insertContentValues = new ContentValues();
+				_insertContentValues.put(GeneratingNAATaskAttachment.TASK_ID,
+						_mNAATaskId.toString());
+				_insertContentValues.put(
+						GeneratingNAATaskAttachment.ENTERPRISE_ID,
+						_mEnterpriseId.toString());
+				_insertContentValues.put(
+						GeneratingNAATaskAttachment.APPROVE_NUMBER, UserManager
+								.getInstance().getUser().getName());
+
 				for (String naaTaskAttachmentPath : _naaLocalStorageAttachmentPathList) {
 					_insertContentValues.put(
-							GeneratingNAATaskAttachment.ATTACHMENTPATH,
+							GeneratingNAATaskAttachment.ATTACHMENT_PATH,
 							naaTaskAttachmentPath);
 
 					_mContentResolver
@@ -691,7 +717,21 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 
 		@Override
 		public void onFailed(Integer responseCode) {
-			// nothing to do
+			// define new approve application attachment update
+			// content values
+			ContentValues _naaAttachmentUpdateContentValues = new ContentValues();
+			_naaAttachmentUpdateContentValues.put(
+					GeneratingNAATaskAttachment.ATTACHMENT_UPLOADING,
+					Boolean.valueOf(false));
+
+			// upload the new approve application attachment
+			// uploading flag
+			_mContentResolver
+					.update(ContentUris
+							.withAppendedId(
+									GeneratingNAATaskAttachment.GENERATINGNAATASKATTACHMENT_CONTENT_URI,
+									_mNAAAttachmentLocalStorageRowId),
+							_naaAttachmentUpdateContentValues, null, null);
 		}
 
 	}

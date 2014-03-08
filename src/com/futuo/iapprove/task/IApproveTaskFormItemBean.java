@@ -3,6 +3,7 @@ package com.futuo.iapprove.task;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -359,7 +360,7 @@ public class IApproveTaskFormItemBean implements
 												_taskFormItemValuesJSONObject,
 												_taskFormItem
 														.getItemPhysicalName()
-														.toLowerCase());
+														.toLowerCase(Locale.US));
 								if (null != _taskFormItemValue
 										&& !"".equalsIgnoreCase(_taskFormItemValue)) {
 									_taskFormItem

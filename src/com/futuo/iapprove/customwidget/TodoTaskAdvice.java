@@ -24,6 +24,9 @@ public class TodoTaskAdvice extends FrameLayout {
 	// to-do list task advisor name textView
 	private TextView _mTodoTaskAdvisorNameTextView;
 
+	// to-do task advice on click listener
+	private OnClickListener _mTodoTaskAdviceOnClickListener;
+
 	private TodoTaskAdvice(Context context) {
 		super(context);
 
@@ -34,8 +37,9 @@ public class TodoTaskAdvice extends FrameLayout {
 		// get to-do list task advisor name textView
 		_mTodoTaskAdvisorNameTextView = (TextView) findViewById(R.id.tdlta_advisorName_textView);
 
-		// set to-do task advice clickable default
-		setClickable(true);
+		// set its on long click listener
+		_mTodoTaskAdvisorNameTextView
+				.setOnClickListener(new TodoTaskAdvisorNameTextViewOnClickListener());
 	}
 
 	private TodoTaskAdvice(Context context,
@@ -52,16 +56,25 @@ public class TodoTaskAdvice extends FrameLayout {
 		// list task advice background
 		if (todoTaskAdvice.modified()) {
 			// modified
-			setBackgroundResource(R.drawable.todo_task_modifiedadvice_bg);
+			_mTodoTaskAdvisorNameTextView
+					.setBackgroundResource(R.drawable.todo_task_modifiedadvice_bg);
 		} else {
 			if (todoTaskAdvice.agreed()) {
 				// agreed
-				setBackgroundResource(R.drawable.todo_task_agreedadvice_bg);
+				_mTodoTaskAdvisorNameTextView
+						.setBackgroundResource(R.drawable.todo_task_agreedadvice_bg);
 			} else {
 				// disagreed
-				setBackgroundResource(R.drawable.todo_task_disagreedadvice_bg);
+				_mTodoTaskAdvisorNameTextView
+						.setBackgroundResource(R.drawable.todo_task_disagreedadvice_bg);
 			}
 		}
+	}
+
+	@Override
+	public void setOnClickListener(OnClickListener l) {
+		// save to-do task advice on click listener
+		_mTodoTaskAdviceOnClickListener = l;
 	}
 
 	public IApproveTaskAdviceBean getAdvice() {
@@ -78,14 +91,17 @@ public class TodoTaskAdvice extends FrameLayout {
 		// list task advice background
 		if (todoTaskAdvice.modified()) {
 			// modified
-			setBackgroundResource(R.drawable.todo_task_modifiedadvice_bg);
+			_mTodoTaskAdvisorNameTextView
+					.setBackgroundResource(R.drawable.todo_task_modifiedadvice_bg);
 		} else {
 			if (todoTaskAdvice.agreed()) {
 				// agreed
-				setBackgroundResource(R.drawable.todo_task_agreedadvice_bg);
+				_mTodoTaskAdvisorNameTextView
+						.setBackgroundResource(R.drawable.todo_task_agreedadvice_bg);
 			} else {
 				// disagreed
-				setBackgroundResource(R.drawable.todo_task_disagreedadvice_bg);
+				_mTodoTaskAdvisorNameTextView
+						.setBackgroundResource(R.drawable.todo_task_disagreedadvice_bg);
 			}
 		}
 	}
@@ -116,6 +132,19 @@ public class TodoTaskAdvice extends FrameLayout {
 	}
 
 	// inner class
+	// to-do list task advisor name textView on click listener
+	class TodoTaskAdvisorNameTextViewOnClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// check to-do task advice on click listener
+			if (null != _mTodoTaskAdviceOnClickListener) {
+				_mTodoTaskAdviceOnClickListener.onClick(TodoTaskAdvice.this);
+			}
+		}
+
+	}
+
 	// to-do list task advice separator
 	static class TodoTaskAdviceSeparator extends View {
 

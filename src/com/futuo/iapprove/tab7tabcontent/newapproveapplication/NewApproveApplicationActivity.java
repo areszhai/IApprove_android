@@ -1,6 +1,7 @@
 package com.futuo.iapprove.tab7tabcontent.newapproveapplication;
 
-import java.io.FileOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,11 +17,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
@@ -33,8 +34,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -61,7 +66,7 @@ import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
 import com.futuo.iapprove.customwidget.NAAFormAttachmentFormItem;
 import com.futuo.iapprove.customwidget.NAAFormAttachmentFormItem.NAAFormVoiceAttachmentInfoDataKeys;
-import com.futuo.iapprove.customwidget.SubmitContact;
+import com.futuo.iapprove.customwidget.NAATDTSubmitContact;
 import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormAttachmentType;
 import com.futuo.iapprove.form.FormItemBean;
 import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees.Employee;
@@ -133,6 +138,9 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 	// more plus input parent relativeLayout
 	private RelativeLayout _mMorePlusInputParentRelativeLayout;
+
+	// capture or select photo file path
+	private String _mCaptureOrSelectPhotoFilePath;
 
 	// input method manager
 	private InputMethodManager _mInputMethodManager;
@@ -240,6 +248,10 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 		// set its choice mode
 		_mSubmitContactListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+		// set its on item click listener
+		_mSubmitContactListView
+				.setOnItemClickListener(new NAASubmitContactListViewOnItemClickListener());
 
 		// get change to text input mode image button and bind its on click
 		// listener
@@ -365,14 +377,6 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 			case NewApproveApplicationRequestCode.NAA_SELECTPHOTO_REQCODE:
 				// check data
 				if (null != data) {
-					// define photo file path
-					String _photoFilePath = null;
-
-					// define image attachment image bitmap
-					Bitmap _imageAttachmentImgBitmap = null;
-
-					Log.d(LOG_TAG, "@, data = " + data);
-
 					// get and check photo uri
 					Uri _photoUri = data.getData();
 					if (null != _photoUri) {
@@ -386,105 +390,79 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 							// move to first
 							_cursor.moveToFirst();
 
-							// get photo file path
-							_photoFilePath = _cursor
+							// get select photo file path
+							_mCaptureOrSelectPhotoFilePath = _cursor
 									.getString(_cursor
 											.getColumnIndex(MediaStore.Images.Media.DATA));
 
 							// close the cursor
 							_cursor.close();
 						}
-					} else {
-						// get and check data extra bundle
-						Bundle _dataExtraBundle = data.getExtras();
-						if (null != _dataExtraBundle) {
-							_imageAttachmentImgBitmap = (Bitmap) _dataExtraBundle
-									.get("data");
-
-							//
-						}
 					}
+				}
 
-					// check image attachment image bitmap
-					if (null == _imageAttachmentImgBitmap) {
-						// test by ares
-						try {
-							_imageAttachmentImgBitmap = BitmapFactory
-									.decodeFile(_photoFilePath);
-							int nh = (int) (_imageAttachmentImgBitmap
-									.getHeight() * (256.0 / _imageAttachmentImgBitmap
-									.getWidth()));
-							_imageAttachmentImgBitmap = Bitmap
-									.createScaledBitmap(
-											_imageAttachmentImgBitmap, 256, nh,
-											true);
-						} catch (OutOfMemoryError e) {
-							e.printStackTrace();
+				// define image scaled min
+				int _imgScaledMin = 270;
 
-							System.gc();
+				// define image attachment image bitmap
+				Bitmap _imageAttachmentImgBitmap = null;
 
-							BitmapFactory.Options options = new BitmapFactory.Options();
-							options.inSampleSize = 6;
-							_imageAttachmentImgBitmap = BitmapFactory
-									.decodeFile(_photoFilePath, options);
-							int nh = (int) (_imageAttachmentImgBitmap
-									.getHeight() * (256.0 / _imageAttachmentImgBitmap
-									.getWidth()));
-							_imageAttachmentImgBitmap = Bitmap
-									.createScaledBitmap(
-											_imageAttachmentImgBitmap, 256, nh,
-											true);
-						}
-					} else {
-						// save image attachment image bitmap to local storage
-						String _takePhotoFileName = Long.toString(System
-								.currentTimeMillis()) + ".jpg";
+				// define bitmap factory options
+				BitmapFactory.Options _options = new BitmapFactory.Options();
 
-						FileOutputStream _fos = null;
-						try {
-							_fos = openFileOutput(_takePhotoFileName,
-									Context.MODE_PRIVATE);
+				// just get image bounds
+				_options.inJustDecodeBounds = true;
 
-							_imageAttachmentImgBitmap.compress(
-									CompressFormat.JPEG, 100, _fos);
-							_fos.flush();
-							_fos.close();
+				// get image width and height
+				BitmapFactory.decodeFile(_mCaptureOrSelectPhotoFilePath,
+						_options);
+				int _imageWidth = _options.outWidth;
+				int _imageHeight = _options.outHeight;
 
-							_photoFilePath = getFileStreamPath(
-									_takePhotoFileName).getAbsolutePath();
-						} catch (Exception e) {
-							Log.e(LOG_TAG,
-									"Take photo error, exception message = "
-											+ e.getMessage());
+				// get real image bitmap
+				_options.inJustDecodeBounds = false;
+				_options.inSampleSize = Math.min(_imageWidth, _imageHeight)
+						/ _imgScaledMin;
 
-							e.printStackTrace();
+				// decode image file
+				_imageAttachmentImgBitmap = BitmapFactory.decodeFile(
+						_mCaptureOrSelectPhotoFilePath, _options);
 
-							return;
-						}
-					}
+				// check image width and height, then scaled the image bitmap
+				if (_imageWidth <= _imageHeight) {
+					_imageHeight = _imageHeight * _imgScaledMin / _imageWidth;
+					_imageWidth = _imgScaledMin;
+				} else {
+					_imageWidth = _imageWidth * _imgScaledMin / _imageHeight;
+					_imageHeight = _imgScaledMin;
+				}
 
-					// generate image attachment info with file path and image
-					Map<String, Object> _imageAttachmentInfo = new HashMap<String, Object>();
-					_imageAttachmentInfo
-							.put(NAAFormVoiceAttachmentInfoDataKeys.ATTACHMENT_FILEPATH,
-									_photoFilePath);
-					_imageAttachmentInfo
-							.put(NAAFormVoiceAttachmentInfoDataKeys.IMAGEATTACHMENT_IMAGE_BITMAP,
-									_imageAttachmentImgBitmap);
+				// scaled the image bitmap
+				_imageAttachmentImgBitmap = Bitmap.createScaledBitmap(
+						_imageAttachmentImgBitmap, _imageWidth, _imageHeight,
+						true);
 
-					// get the image and set as image attachment,
-					// then add to form attachment form linearLayout
-					addNAAFormAttachmentFormItem(
-							TaskFormAttachmentType.IMAGE_ATTACHMENT,
-							_imageAttachmentInfo,
-							new NAAFormImageAttachmentFormItemOnClickListener());
+				// generate image attachment info with file path and image
+				Map<String, Object> _imageAttachmentInfo = new HashMap<String, Object>();
+				_imageAttachmentInfo.put(
+						NAAFormVoiceAttachmentInfoDataKeys.ATTACHMENT_FILEPATH,
+						_mCaptureOrSelectPhotoFilePath);
+				_imageAttachmentInfo
+						.put(NAAFormVoiceAttachmentInfoDataKeys.IMAGEATTACHMENT_IMAGE_BITMAP,
+								_imageAttachmentImgBitmap);
 
-					// hide more plus input parent relativeLayout if needed
-					if (View.VISIBLE == _mMorePlusInputParentRelativeLayout
-							.getVisibility()) {
-						_mMorePlusInputParentRelativeLayout
-								.setVisibility(View.GONE);
-					}
+				// get the image and set as image attachment,
+				// then add to form attachment form linearLayout
+				addNAAFormAttachmentFormItem(
+						TaskFormAttachmentType.IMAGE_ATTACHMENT,
+						_imageAttachmentInfo,
+						new NAAFormImageAttachmentFormItemOnClickListener());
+
+				// hide more plus input parent relativeLayout if needed
+				if (View.VISIBLE == _mMorePlusInputParentRelativeLayout
+						.getVisibility()) {
+					_mMorePlusInputParentRelativeLayout
+							.setVisibility(View.GONE);
 				}
 				break;
 			}
@@ -773,7 +751,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 					.getChildCount()) {
 				// get new approve application submit contacts gridLayout
 				// subview submit contact user id
-				Long _naaSubmitContactsGridLayoutSubviewSubmitContactUserId = ((SubmitContact) _mSelectedSubmitContactsGridLayout
+				Long _naaSubmitContactsGridLayoutSubviewSubmitContactUserId = ((NAATDTSubmitContact) _mSelectedSubmitContactsGridLayout
 						.getChildAt(_submitContactGridLayoutSubviewIndex))
 						.getSubmitContact().getUserId();
 				if (_naaSubmitContactListUserIdList
@@ -804,7 +782,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 				if (LocalStorageDataDirtyType.DELETE != _submitContact
 						.getLocalStorageDataDirtyType()) {
 					// generate new added submit contact
-					SubmitContact _newAddedSubmitContact = SubmitContact
+					NAATDTSubmitContact _newAddedSubmitContact = NAATDTSubmitContact
 							.generateNAA6TodoTaskSubmitContact(_submitContact);
 
 					// set its on long click listener
@@ -1145,7 +1123,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 			for (ABContactBean _submitContact : _mSubmitContactList) {
 				// check the selected submit contact user id and delete the
 				// selected submit contact from submit contact list
-				if (_submitContact.getUserId().longValue() == ((SubmitContact) v)
+				if (_submitContact.getUserId().longValue() == ((NAATDTSubmitContact) v)
 						.getSubmitContact().getUserId().longValue()) {
 					_mSubmitContactList.remove(_submitContact);
 
@@ -1220,7 +1198,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		public NAASubmitContactListCursorAdapter() {
 			super(
 					NewApproveApplicationActivity.this,
-					android.R.layout.simple_list_item_multiple_choice,
+					R.layout.naagenerating_tdtapproving_submitcontacts_select_layout,
 					getContentResolver()
 							.query(ContentUris
 									.withAppendedId(
@@ -1228,8 +1206,9 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 											IAUserExtension
 													.getUserLoginEnterpriseId(_mLoginUser)),
 									null, null, null, null),
-					new String[] { Employee.NAME },
-					new int[] { android.R.id.text1 },
+					new String[] { Employee.NAME, Employee.APPROVE_NUMBER },
+					new int[] { R.id.naagtdta_submitContactName_textView,
+							R.id.naagtdta_submitContactApproveNumber_textView },
 					CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 		}
 
@@ -1246,6 +1225,34 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 							IAUserExtension
 									.getUserLoginEnterpriseId(_mLoginUser)),
 					null, null, null, null));
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// get the got view
+			View _gotView = super.getView(position, convertView, parent);
+
+			// set checked text view checked
+			((CheckedTextView) _gotView
+					.findViewById(R.id.naagtdta_submitContactSelect_checkedTextView))
+					.setChecked(((ListView) parent).isItemChecked(position));
+
+			return _gotView;
+		}
+
+	}
+
+	// new approve application submit contact list view on item click listener
+	class NAASubmitContactListViewOnItemClickListener implements
+			OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			// set checked text view checked
+			((CheckedTextView) view
+					.findViewById(R.id.naagtdta_submitContactSelect_checkedTextView))
+					.setChecked(((ListView) parent).isItemChecked(position));
 		}
 
 	}
@@ -1946,15 +1953,21 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(LOG_TAG, "Click more plus photos input item image button = "
-					+ v);
-
 			// select photo
-			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-			intent.addCategory(Intent.CATEGORY_OPENABLE);
-			intent.setType("image/*");
+			// define get photo intent
+			Intent _getPhotoIntent = new Intent(Intent.ACTION_GET_CONTENT);
+
+			// set image file type and category
+			_getPhotoIntent.setType("image/*");
+			_getPhotoIntent.addCategory(Intent.CATEGORY_OPENABLE);
+
+			// start get photo activity for photo selecting
 			startActivityForResult(
-					Intent.createChooser(intent, "Select photo"),
+					Intent.createChooser(
+							_getPhotoIntent,
+							getResources()
+									.getString(
+											R.string.naa_morePlus_photosInput_photosSelect_title)),
 					NewApproveApplicationRequestCode.NAA_SELECTPHOTO_REQCODE);
 		}
 
@@ -1967,13 +1980,63 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 		@Override
 		public void onClick(View v) {
-			Log.d(LOG_TAG, "Click more plus camera input item image button = "
-					+ v);
-
 			// take photo
-			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			startActivityForResult(intent,
-					NewApproveApplicationRequestCode.NAA_TAKEPHOTO_REQCODE);
+			try {
+				// define and initialize the captured photo saved file name
+				StringBuilder _capturedPhotoSavedFileName = new StringBuilder();
+				_capturedPhotoSavedFileName.append(System.currentTimeMillis())
+						.append(".jpg");
+
+				// check external writeable environment
+				if (!Environment.getExternalStorageState().equals(
+						Environment.MEDIA_MOUNTED)) {
+					Log.e(LOG_TAG,
+							"SD card is not avaiable/writeable right now.");
+				} else {
+					String _filePathName = Environment
+							.getExternalStorageDirectory().getPath()
+							+ "/DCIM/iApprove/";
+					File _filePath = new File(_filePathName);
+					File _file = new File(_filePathName
+							+ _capturedPhotoSavedFileName);
+					if (!_filePath.exists()) {
+						Log.d(LOG_TAG, "Create the path:" + _filePathName);
+
+						// make dir
+						_filePath.mkdir();
+					}
+					if (!_file.exists()) {
+						Log.d(LOG_TAG, "Create the file:"
+								+ _capturedPhotoSavedFileName);
+
+						// create file
+						_file.createNewFile();
+
+						// get capture photo file path
+						_mCaptureOrSelectPhotoFilePath = _file
+								.getAbsolutePath();
+					}
+
+					// define capture photo intent
+					Intent _capturePhotoIntent = new Intent(
+							MediaStore.ACTION_IMAGE_CAPTURE);
+
+					// put captured photo output path
+					_capturePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+							Uri.fromFile(_file));
+
+					// start capture photo activity
+					startActivityForResult(
+							_capturePhotoIntent,
+							NewApproveApplicationRequestCode.NAA_TAKEPHOTO_REQCODE);
+				}
+			} catch (IOException e) {
+				Log.e(LOG_TAG,
+						"Captured photo error, exception message = "
+								+ e.getMessage());
+
+				e.printStackTrace();
+			}
 		}
 
 	}

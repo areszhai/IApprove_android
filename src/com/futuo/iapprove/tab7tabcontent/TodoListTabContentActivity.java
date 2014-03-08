@@ -35,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.user.IAUserExtension;
@@ -491,7 +492,12 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 										@Override
 										public void onClick(View v) {
-											Log.d(LOG_TAG, "@@, view = " + v);
+											Toast.makeText(
+													TodoListTabContentActivity.this,
+													"@@, view = " + v,
+													Toast.LENGTH_SHORT).show();
+
+											//
 										}
 
 									});

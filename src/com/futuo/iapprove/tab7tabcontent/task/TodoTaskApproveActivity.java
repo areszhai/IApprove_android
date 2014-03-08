@@ -1,5 +1,6 @@
 package com.futuo.iapprove.tab7tabcontent.task;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -23,7 +25,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.CursorAdapter;
@@ -37,6 +43,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SlidingDrawer;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -47,10 +54,11 @@ import com.futuo.iapprove.addressbook.person.PersonBean;
 import com.futuo.iapprove.customwidget.CommonFormSeparator;
 import com.futuo.iapprove.customwidget.IApproveImageBarButtonItem;
 import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
-import com.futuo.iapprove.customwidget.SubmitContact;
+import com.futuo.iapprove.customwidget.NAATDTSubmitContact;
 import com.futuo.iapprove.customwidget.TaskFormAdviceFormItem;
 import com.futuo.iapprove.customwidget.TaskFormAdviceFormItem.TaskFormAdviceType;
 import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem;
+import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormApplicationAttachmentInfoDataKeys;
 import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormAttachmentType;
 import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormVoiceAttachmentInfoDataKeys;
 import com.futuo.iapprove.customwidget.TaskFormItemFormItem;
@@ -63,8 +71,10 @@ import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.Tod
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.service.CoreService.LocalBinder;
+import com.futuo.iapprove.tab7tabcontent.task.TaskApplicationAttachmentViewActivity.TaskApplicationAttachmentViewExtraData;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentBean;
+import com.futuo.iapprove.task.IApproveTaskAttachmentType;
 import com.futuo.iapprove.task.IApproveTaskFormItemBean;
 import com.futuo.iapprove.task.TodoTaskStatus;
 import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
@@ -270,6 +280,10 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 		// set its choice mode
 		_mSubmitContactListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+		// set its on item click listener
+		_mSubmitContactListView
+				.setOnItemClickListener(new SubmitContactListViewOnItemClickListener());
 
 		// set my advice judge default value
 		_mMyAdviceJudge = false;
@@ -480,9 +494,11 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 				// and form attachment form item view map key set
 				if (!_mFormAttachmentId7FormAttachmentFormItemMap.keySet()
 						.contains(_todoTaskAttachment.getAttachmentId())) {
-					// define task form attachment info and on click listener
+					// define task form attachment info, on click and on long
+					// click listener
 					Object _attachmentInfo = null;
 					OnClickListener _attachmentOnClickListener = null;
+					OnLongClickListener _attachmentOnLongClickListener = null;
 
 					// get, check task form attachment type then initialize task
 					// form attachment info and on click listener
@@ -494,6 +510,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 						_attachmentInfo = _todoTaskAttachment
 								.getAttachmentUrl();
 						_attachmentOnClickListener = new TodoTaskFormTextAttachmentFormItemOnClickListener();
+						_attachmentOnLongClickListener = new TodoTaskFormTextAttachmentFormItemOnLongClickListener();
 						break;
 
 					case IMAGE_ATTACHMENT:
@@ -504,6 +521,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 									.decodeFile(_todoTaskAttachment
 											.getAttachmentUrl());
 							_attachmentOnClickListener = new TodoTaskFormImageAttachmentFormItemOnClickListener();
+							_attachmentOnLongClickListener = new TodoTaskFormImageAttachmentFormItemOnLongClickListener();
 						}
 						break;
 
@@ -526,17 +544,27 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 						break;
 
 					case APPLICATION_ATTACHMENT:
-						Log.d(LOG_TAG,
-								"@@@, _todoTaskAttachment.getAttachmentUrl() = "
-										+ _todoTaskAttachment
-												.getAttachmentUrl()
-										+ ", origin name = "
-										+ _todoTaskAttachment
-												.getAttachmentOriginName()
-										+ " and suffix = "
-										+ _todoTaskAttachment
-												.getAttachmentSuffix());
-						// nothing to do
+						// application
+						// check application attachment type
+						if (IApproveTaskAttachmentType.COMMON_FILE == _todoTaskAttachment
+								.getAttachmentType()) {
+							// check application attachment url
+							if (null != _todoTaskAttachment.getAttachmentUrl()) {
+								_attachmentInfo = new HashMap<String, String>();
+								((Map<String, String>) _attachmentInfo)
+										.put(TaskFormApplicationAttachmentInfoDataKeys.APPLICATIONATTACHMENT_SHOWN_TIP,
+												_todoTaskAttachment
+														.getAttachmentOriginName()
+														+ '.'
+														+ _todoTaskAttachment
+																.getAttachmentSuffix());
+								((Map<String, String>) _attachmentInfo)
+										.put(TaskFormApplicationAttachmentInfoDataKeys.APPLICATIONATTACHMENT_OPEN_URL,
+												_todoTaskAttachment
+														.getAttachmentUrl());
+								_attachmentOnClickListener = new TodoTaskFormApplicationAttachmentFormItemOnClickListener();
+							}
+						}
 						break;
 					}
 
@@ -559,11 +587,16 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 										_taskFormAttachmentType,
 										_attachmentInfo);
 
-						// check attachment on click listener and set new to-do
-						// list task form attachment form item on click listener
+						// check attachment on click, long click listener and
+						// set new to-do list task form attachment form item on
+						// click, long click listener
 						if (null != _attachmentOnClickListener) {
 							_todoTaskFormAttachmentFormItem
 									.setOnClickListener(_attachmentOnClickListener);
+						}
+						if (null != _attachmentOnLongClickListener) {
+							_todoTaskFormAttachmentFormItem
+									.setOnLongClickListener(_attachmentOnLongClickListener);
 						}
 
 						// add to-do list task form attachment form item to form
@@ -659,7 +692,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 					.getChildCount()) {
 				// get to-do task submit contacts gridLayout subview submit
 				// contact user id
-				Long _tdtaSubmitContactsGridLayoutSubviewSubmitContactUserId = ((SubmitContact) _mSelectedSubmitContactsGridLayout
+				Long _tdtaSubmitContactsGridLayoutSubviewSubmitContactUserId = ((NAATDTSubmitContact) _mSelectedSubmitContactsGridLayout
 						.getChildAt(_submitContactGridLayoutSubviewIndex))
 						.getSubmitContact().getUserId();
 				if (_tdtaSubmitContactListUserIdList
@@ -690,7 +723,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 				if (LocalStorageDataDirtyType.DELETE != _submitContact
 						.getLocalStorageDataDirtyType()) {
 					// generate new added submit contact
-					SubmitContact _newAddedSubmitContact = SubmitContact
+					NAATDTSubmitContact _newAddedSubmitContact = NAATDTSubmitContact
 							.generateNAA6TodoTaskSubmitContact(_submitContact);
 
 					// set its on long click listener
@@ -945,6 +978,21 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 	}
 
+	// to-do list task form text attachment form item on long click listener
+	class TodoTaskFormTextAttachmentFormItemOnLongClickListener implements
+			OnLongClickListener {
+
+		@Override
+		public boolean onLongClick(View v) {
+			Log.d(LOG_TAG,
+					"Form text attachment form item on long click listener, view = "
+							+ v);
+
+			return true;
+		}
+
+	}
+
 	// to-do list task form image attachment form item on click listener
 	class TodoTaskFormImageAttachmentFormItemOnClickListener implements
 			OnClickListener {
@@ -956,6 +1004,21 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 							+ v);
 
 			//
+		}
+
+	}
+
+	// to-do list task form image attachment form item on long click listener
+	class TodoTaskFormImageAttachmentFormItemOnLongClickListener implements
+			OnLongClickListener {
+
+		@Override
+		public boolean onLongClick(View v) {
+			Log.d(LOG_TAG,
+					"Form image attachment form item on long click listener, view = "
+							+ v);
+
+			return true;
 		}
 
 	}
@@ -980,6 +1043,60 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 				// stop play the voice
 				AudioUtils.stopPlayRecorderAudio();
+			}
+		}
+
+	}
+
+	// to-do list task form application attachment form item on click listener
+	class TodoTaskFormApplicationAttachmentFormItemOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// get and check the clicked response view tag
+			Object _clickedResponseViewTag = v.getTag();
+			if (null != _clickedResponseViewTag) {
+				// get to-do task application attachment open url
+				String _todoTaskApplicationAttachmentOpenUrl = (String) _clickedResponseViewTag;
+
+				// get and check the suffix
+				String _todoTaskApplicationAttachmentLSFileSuffix = _todoTaskApplicationAttachmentOpenUrl
+						.substring(_todoTaskApplicationAttachmentOpenUrl
+								.lastIndexOf('.') + 1);
+				if (!"txt"
+						.equalsIgnoreCase(_todoTaskApplicationAttachmentLSFileSuffix)) {
+					Intent intent = new Intent("android.intent.action.VIEW");
+
+					intent.addCategory("android.intent.category.DEFAULT");
+					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					intent.setDataAndType(Uri.fromFile(new File(
+							_todoTaskApplicationAttachmentOpenUrl)),
+							"application/pdf");
+
+					startActivity(intent);
+				} else {
+					// go to task application attachment view activity
+					// define task application attachment view extra data map
+					Map<String, String> _extraMap = new HashMap<String, String>();
+
+					// put to-do task application attachment name and open url
+					// to
+					// extra data map as param
+					_extraMap
+							.put(TaskApplicationAttachmentViewExtraData.TASK_APPLICATIONATTCHMENT_NAME,
+									((TextView) v).getText().toString());
+					_extraMap
+							.put(TaskApplicationAttachmentViewExtraData.TASK_APPLICATIONATTCHMENT_OPEN_URL,
+									"file://"
+											+ _todoTaskApplicationAttachmentOpenUrl);
+
+					// go to task application attachment view activity with
+					// extra
+					// data map
+					pushActivity(TaskApplicationAttachmentViewActivity.class,
+							_extraMap);
+				}
 			}
 		}
 
@@ -1040,7 +1157,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 			for (ABContactBean _submitContact : _mSubmitContactList) {
 				// check the selected submit contact user id and delete the
 				// selected submit contact from submit contact list
-				if (_submitContact.getUserId().longValue() == ((SubmitContact) v)
+				if (_submitContact.getUserId().longValue() == ((NAATDTSubmitContact) v)
 						.getSubmitContact().getUserId().longValue()) {
 					_mSubmitContactList.remove(_submitContact);
 
@@ -1117,7 +1234,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		public SubmitContactListCursorAdapter() {
 			super(
 					TodoTaskApproveActivity.this,
-					android.R.layout.simple_list_item_multiple_choice,
+					R.layout.naagenerating_tdtapproving_submitcontacts_select_layout,
 					getContentResolver()
 							.query(ContentUris
 									.withAppendedId(
@@ -1125,8 +1242,9 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 											IAUserExtension
 													.getUserLoginEnterpriseId(_mLoginUser)),
 									null, null, null, null),
-					new String[] { Employee.NAME },
-					new int[] { android.R.id.text1 },
+					new String[] { Employee.NAME, Employee.APPROVE_NUMBER },
+					new int[] { R.id.naagtdta_submitContactName_textView,
+							R.id.naagtdta_submitContactApproveNumber_textView },
 					CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 		}
 
@@ -1143,6 +1261,34 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 							IAUserExtension
 									.getUserLoginEnterpriseId(_mLoginUser)),
 					null, null, null, null));
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// get the got view
+			View _gotView = super.getView(position, convertView, parent);
+
+			// set checked text view checked
+			((CheckedTextView) _gotView
+					.findViewById(R.id.naagtdta_submitContactSelect_checkedTextView))
+					.setChecked(((ListView) parent).isItemChecked(position));
+
+			return _gotView;
+		}
+
+	}
+
+	// submit contact list view on item click listener
+	class SubmitContactListViewOnItemClickListener implements
+			OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			// set checked text view checked
+			((CheckedTextView) view
+					.findViewById(R.id.naagtdta_submitContactSelect_checkedTextView))
+					.setChecked(((ListView) parent).isItemChecked(position));
 		}
 
 	}
