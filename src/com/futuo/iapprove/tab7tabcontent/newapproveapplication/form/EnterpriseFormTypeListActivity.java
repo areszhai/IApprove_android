@@ -48,7 +48,7 @@ public class EnterpriseFormTypeListActivity extends
 		if (null != _extraData) {
 			// get the new approve application submit contact
 			_mSubmitContact = (ABContactBean) _extraData
-					.getSerializable(NewApproveApplicationExtraData.NEW_APPROVEAPPLICATION_SUBMIT_CONTACT);
+					.getSerializable(NewApproveApplicationExtraData.NEW_APPROVEAPPLICATION_SUBMIT_CONTACTS);
 		}
 
 		// set subViews
@@ -213,7 +213,7 @@ public class EnterpriseFormTypeListActivity extends
 			// map as param if needed
 			if (null != _mSubmitContact) {
 				_extraMap
-						.put(NewApproveApplicationExtraData.NEW_APPROVEAPPLICATION_SUBMIT_CONTACT,
+						.put(NewApproveApplicationExtraData.NEW_APPROVEAPPLICATION_SUBMIT_CONTACTS,
 								_mSubmitContact);
 			}
 

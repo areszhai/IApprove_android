@@ -7,6 +7,17 @@
         <item>@string/abc_female_sex_name</item>
     </string-array>
 
+    <!-- iApprove list common -->
+    <string-array name="taskAdvice_givenTimestamp_daysOfWeek" translatable="false">
+        <item>@string/taskAdvice_sundayGiven_givenTimestamp</item>
+        <item>@string/taskAdvice_mondayGiven_givenTimestamp</item>
+        <item>@string/taskAdvice_tuesdayGiven_givenTimestamp</item>
+        <item>@string/taskAdvice_wednesdayGiven_givenTimestamp</item>
+        <item>@string/taskAdvice_thursdayGiven_givenTimestamp</item>
+        <item>@string/taskAdvice_fridayGiven_givenTimestamp</item>
+        <item>@string/taskAdvice_saturdayGiven_givenTimestamp</item>
+    </string-array>
+
     <!-- to-do list task submit timestamp days of week -->
     <string-array name="tdl_task_submitTimestamp_daysOfWeek" translatable="false">
         <item>@string/tdl_task_sundaySubmit_submitTimestamp</item>

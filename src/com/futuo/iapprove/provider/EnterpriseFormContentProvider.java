@@ -378,14 +378,316 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
+		int _updateNumber = 0;
+
+		// get local storage database writable instance
+		SQLiteDatabase _lswDB = _mLocalStorageDBHelper.getWritableDatabase();
+
+		// define where condition string and update table name
+		String _where = null;
+		String _updateTableName = null;
+
+		// define enterprise form item and its selector content info selection
+		String _formItemSelection = selection;
+		String _formItemSelectorContentInfoSelection = selection;
+
+		// check uri
+		switch (URI_MATCHER.match(uri)) {
+		// form type
+		case EnterpriseFormTypeTableAccessType.FORMTYPES:
+		case EnterpriseFormTypeTableAccessType.FORMTYPE:
+			// nothing to do
+			break;
+
+		case EnterpriseFormTypeTableAccessType.FORMTYPE_ID:
+		case EnterpriseFormTypeTableAccessType.FORMTYPE_ENTERPRISEID:
+			// define and get lookup key
+			String _lookupKey = null;
+			if (EnterpriseFormTypeTableAccessType.FORMTYPE_ID == URI_MATCHER
+					.match(uri)) {
+				_lookupKey = FormType._ID;
+			} else if (EnterpriseFormTypeTableAccessType.FORMTYPE_ENTERPRISEID == URI_MATCHER
+					.match(uri)) {
+				_lookupKey = FormType.ENTERPRISE_ID;
+			}
+
+			// check lookup key
+			if (null != _lookupKey) {
+				// get update enterprise form type id or enterprise id and
+				// generate where
+				// condition
+				_where = _lookupKey + "=" + ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += SimpleBaseColumns._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG, "Update enterprise form type with selection = "
+					+ _formItemSelection + " and update values = " + values);
+
+			// set enterprise form type table as update table
+			_updateTableName = FormTypes.FORMTYPES_TABLE;
+			break;
+
+		// form
+		case EnterpriseFormTableAccessType.FORMS:
+		case EnterpriseFormTableAccessType.FORM:
+			// nothing to do
+			break;
+
+		case EnterpriseFormTableAccessType.FORM_ID:
+			// get update enterprise form id and generate where condition
+			if (EnterpriseFormTableAccessType.FORM_ID == URI_MATCHER.match(uri)) {
+				_where = Form._ID + "=" + ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += Form._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG,
+					"Update user enterprise to-do list task form item with selection = "
+							+ selection + " and update values = " + values);
+
+			// set enterprise form table as update table
+			_updateTableName = Forms.FORMS_TABLE;
+			break;
+
+		// form item
+		case EnterpriseFormItemTableAccessType.FORMITEMS:
+		case EnterpriseFormItemTableAccessType.FORMITEM:
+			// nothing to do
+			break;
+
+		case EnterpriseFormItemTableAccessType.FORMITEM_ID:
+			// get update enterprise form item id and generate where condition
+			if (EnterpriseFormItemTableAccessType.FORMITEM_ID == URI_MATCHER
+					.match(uri)) {
+				_where = FormItem._ID + "=" + ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					_formItemSelection += FormItem._AND_SELECTION + _where;
+				} else {
+					_formItemSelection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG, "Update enterprise form item with selection = "
+					+ selection + " and update values = " + values);
+
+			// set enterprise form item table as update table
+			_updateTableName = FormItems.FORMITEMS_TABLE;
+			break;
+
+		default:
+			throw new UnknownCPContentUriException(uri);
+		}
+
+		// check uri again, only for enterprise form item insert
+		if (EnterpriseFormItemTableAccessType.FORMITEM_ID == URI_MATCHER
+				.match(uri)) {
+			// begin transaction
+			_lswDB.beginTransaction();
+
+			try {
+				// get enterprise form item and its selector content info
+				// content values list map
+				Map<String, List<ContentValues>> _enterpriseFormItemAndSelectorContentInfoContentValuesMap = getFormItemAndSelectorContentInfoContentValuesMap(values);
+
+				// get enterprise form item content values
+				ContentValues _enterpriseFormItemContentValues = _enterpriseFormItemAndSelectorContentInfoContentValuesMap
+						.get(FormItems.FORMITEMS_TABLE).get(0);
+
+				// update enterprise form item into enterprise form items table
+				// with selection
+				_updateNumber = _lswDB.update(_updateTableName,
+						_enterpriseFormItemContentValues, _formItemSelection,
+						selectionArgs);
+
+				// check uri again
+				if (EnterpriseFormItemTableAccessType.FORMITEM_ID == URI_MATCHER
+						.match(uri)) {
+					// get enterprise form item selector content info id and
+					// generate where condition
+					_where = FormItemSelectorContent.FORMITEM_ROWID + "="
+							+ ContentUris.parseId(uri);
+
+					// check and update selection
+					if (null != selection && !"".equalsIgnoreCase(selection)) {
+						_formItemSelectorContentInfoSelection += FormItemSelectorContent._AND_SELECTION
+								+ _where;
+					} else {
+						_formItemSelectorContentInfoSelection = _where;
+					}
+				}
+
+				for (ContentValues formItemSelectorContentInfoContentValues : _enterpriseFormItemAndSelectorContentInfoContentValuesMap
+						.get(FormItems.FORMITEM_SELECTORCONTENTS_TABLE)) {
+
+					Log.d(LOG_TAG,
+							"Update enterprise form item selector content info with selection = "
+									+ formItemSelectorContentInfoContentValues);
+
+					// update enterprise form item selector content info from
+					// enterprise form item selector content info table with
+					// selection
+					_lswDB.update(FormItems.FORMITEM_SELECTORCONTENTS_TABLE,
+							formItemSelectorContentInfoContentValues,
+							_formItemSelectorContentInfoSelection,
+							selectionArgs);
+				}
+
+				// set transaction successful
+				_lswDB.setTransactionSuccessful();
+			} catch (Exception e) {
+				Log.e(LOG_TAG,
+						"Update object to local storage database error, exception message = "
+								+ e.getMessage());
+
+				e.printStackTrace();
+			} finally {
+				// end transaction
+				_lswDB.endTransaction();
+			}
+		} else {
+			// update object from its local storage table with selection
+			_updateNumber = _lswDB.update(_updateTableName, values, selection,
+					selectionArgs);
+		}
+
+		// notify data has been changed
+		getContext().getContentResolver().notifyChange(uri, null);
+
+		return _updateNumber;
 	}
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
+		int _deleteNumber = 0;
+
+		// get local storage database writable instance
+		SQLiteDatabase _lswDB = _mLocalStorageDBHelper.getWritableDatabase();
+
+		// define where condition string and delete table name
+		String _where = null;
+		String _deleteTableName = null;
+
+		// check uri
+		switch (URI_MATCHER.match(uri)) {
+		// form type
+		case EnterpriseFormTypeTableAccessType.FORMTYPES:
+		case EnterpriseFormTypeTableAccessType.FORMTYPE:
+			// nothing to do
+			break;
+
+		case EnterpriseFormTypeTableAccessType.FORMTYPE_ID:
+		case EnterpriseFormTypeTableAccessType.FORMTYPE_ENTERPRISEID:
+			// define and get lookup key
+			String _lookupKey = null;
+			if (EnterpriseFormTypeTableAccessType.FORMTYPE_ID == URI_MATCHER
+					.match(uri)) {
+				_lookupKey = FormType._ID;
+			} else if (EnterpriseFormTypeTableAccessType.FORMTYPE_ENTERPRISEID == URI_MATCHER
+					.match(uri)) {
+				_lookupKey = FormType.ENTERPRISE_ID;
+			}
+
+			// check lookup key
+			if (null != _lookupKey) {
+				// get delete enterprise form type id or enterprise id and
+				// generate where condition
+				_where = _lookupKey + "=" + ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += SimpleBaseColumns._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG, "Delete enterprise form type with selection = "
+					+ selection);
+
+			// set enterprise form type table as delete table
+			_deleteTableName = FormTypes.FORMTYPES_TABLE;
+			break;
+
+		// form
+		case EnterpriseFormTableAccessType.FORMS:
+		case EnterpriseFormTableAccessType.FORM:
+			// nothing to do
+			break;
+
+		case EnterpriseFormTableAccessType.FORM_ID:
+			// get delete enterprise form id and generate where condition
+			if (EnterpriseFormTableAccessType.FORM_ID == URI_MATCHER.match(uri)) {
+				_where = Form._ID + "=" + ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += Form._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG, "Delete enterprise form with selection = "
+					+ selection);
+
+			// set enterprise form table as delete table
+			_deleteTableName = Forms.FORMS_TABLE;
+			break;
+
+		// form item
+		case EnterpriseFormItemTableAccessType.FORMITEMS:
+		case EnterpriseFormItemTableAccessType.FORMITEM:
+			// nothing to do
+			break;
+
+		case EnterpriseFormItemTableAccessType.FORMITEM_ID:
+			// get delete to-do task attachment id and generate where condition
+			if (EnterpriseFormItemTableAccessType.FORMITEM_ID == URI_MATCHER
+					.match(uri)) {
+				_where = FormItem._ID + "=" + ContentUris.parseId(uri);
+
+				// check and update selection
+				if (null != selection && !"".equalsIgnoreCase(selection)) {
+					selection += FormItem._AND_SELECTION + _where;
+				} else {
+					selection = _where;
+				}
+			}
+
+			Log.d(LOG_TAG, "Delete enterprise form item with selection = "
+					+ selection);
+
+			// set enterprise form item table as query table
+			_deleteTableName = FormItems.FORMITEMS_TABLE;
+			break;
+
+		default:
+			throw new UnknownCPContentUriException(uri);
+		}
+
+		Log.d(LOG_TAG, "Delete enterprise form with selection = " + selection);
+
+		// delete object from its local storage table with selection
+		_deleteNumber = _lswDB.delete(_deleteTableName, selection,
+				selectionArgs);
+
+		// notify data has been changed
+		getContext().getContentResolver().notifyChange(uri, null);
+
+		return _deleteNumber;
 	}
 
 	// get form item and its selector content info content values list map with
@@ -453,10 +755,10 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseFormTypeTableAccessType {
 
 		// enterprise form type table access type
-		private static final int FORMTYPES = 60;
-		private static final int FORMTYPE = 61;
-		private static final int FORMTYPE_ID = 62;
-		private static final int FORMTYPE_ENTERPRISEID = 63;
+		private static final int FORMTYPES = 30;
+		private static final int FORMTYPE = 31;
+		private static final int FORMTYPE_ID = 32;
+		private static final int FORMTYPE_ENTERPRISEID = 33;
 
 	}
 
@@ -503,9 +805,9 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseFormTableAccessType {
 
 		// enterprise form table access type
-		private static final int FORMS = 70;
-		private static final int FORM = 71;
-		private static final int FORM_ID = 72;
+		private static final int FORMS = 34;
+		private static final int FORM = 35;
+		private static final int FORM_ID = 36;
 
 	}
 
@@ -527,6 +829,7 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 			public static final String FORMTYPE_ID = "formTypeId";
 			public static final String ENTERPRISE_ID = "enterpriseId";
 			public static final String NAME = "formName";
+			public static final String DEFAULT_SUBMITCONTACTS = "defaultSubmitContacts";
 
 			// content uri
 			private static final Uri FORMS_NOTIFICATION_CONTENT_URI = Uri
@@ -554,9 +857,9 @@ public class EnterpriseFormContentProvider extends LocalStorageContentProvider {
 	static class EnterpriseFormItemTableAccessType {
 
 		// enterprise form item table access type
-		private static final int FORMITEMS = 80;
-		private static final int FORMITEM = 81;
-		private static final int FORMITEM_ID = 82;
+		private static final int FORMITEMS = 37;
+		private static final int FORMITEM = 38;
+		private static final int FORMITEM_ID = 39;
 
 	}
 

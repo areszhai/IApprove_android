@@ -661,6 +661,29 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 					.setOnLongClickListener(new TodoTaskFormAdviceFormItemOnLongClickListener());
 		}
 
+		// get the last my advice form item added in advice form linearLayout
+		// get and check advice form linearLayout subviews count
+		int _adviceFormLinearLayoutSubviewsCount = _mAdviceFormLinearLayout
+				.getChildCount();
+		if (1 < _adviceFormLinearLayoutSubviewsCount) {
+			// miliSceonds of minute
+			final Long MILLISECONDS_PER_MINUTE = 60 * 1000L;
+
+			// compare to-do task advice the last form item advice given
+			// timestamp with new added my advice given timestamp
+			if (((TaskFormAdviceFormItem) _mAdviceFormLinearLayout
+					.getChildAt(_adviceFormLinearLayoutSubviewsCount - 1))
+					.getAdviceGivenTimestamp()
+					+ MILLISECONDS_PER_MINUTE <= _newAddedMyAdviceFormItem
+						.getAdviceGivenTimestamp()) {
+				// show new add my advice given timestamp
+				_newAddedMyAdviceFormItem.showAdviceGivenTimestampTextView();
+			}
+		} else {
+			// show new add my advice given timestamp
+			_newAddedMyAdviceFormItem.showAdviceGivenTimestampTextView();
+		}
+
 		// add new added my advice to advice form linearLayout
 		_mAdviceFormLinearLayout.addView(_newAddedMyAdviceFormItem,
 				new LayoutParams(LayoutParams.MATCH_PARENT,

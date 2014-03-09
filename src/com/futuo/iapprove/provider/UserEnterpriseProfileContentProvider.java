@@ -165,9 +165,9 @@ public class UserEnterpriseProfileContentProvider extends
 	static class UserEnterpriseProfileTableAccessType {
 
 		// user enterprise profile table access type
-		private static final int ENTERPRISEPROFILES = 11;
-		private static final int ENTERPRISEPROFILE = 12;
-		private static final int ENTERPRISEPROFILE_ID = 13;
+		private static final int ENTERPRISEPROFILES = 10;
+		private static final int ENTERPRISEPROFILE = 11;
+		private static final int ENTERPRISEPROFILE_ID = 12;
 
 	}
 

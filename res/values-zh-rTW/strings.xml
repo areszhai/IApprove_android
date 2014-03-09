@@ -55,6 +55,15 @@
 
     <!-- iApprove list common -->
     <string name="task_formItem_infoLabel_capitalFormat">%s（大写）</string>
+    <string name="taskAdvice_yesterdayGiven_givenTimestamp">昨天</string>
+    <string name="taskAdvice_sundayGiven_givenTimestamp">周日</string>
+    <string name="taskAdvice_mondayGiven_givenTimestamp">周一</string>
+    <string name="taskAdvice_tuesdayGiven_givenTimestamp">周二</string>
+    <string name="taskAdvice_wednesdayGiven_givenTimestamp">周三</string>
+    <string name="taskAdvice_thursdayGiven_givenTimestamp">周四</string>
+    <string name="taskAdvice_fridayGiven_givenTimestamp">周五</string>
+    <string name="taskAdvice_saturdayGiven_givenTimestamp">周六</string>
+    <string name="task_adviceItem_modify_adviceInfo">修改</string>
 
     <!-- to-do list tab content activity -->
     <string name="todoList_tab_title">未审批</string>

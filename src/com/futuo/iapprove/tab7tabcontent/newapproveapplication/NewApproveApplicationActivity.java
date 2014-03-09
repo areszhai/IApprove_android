@@ -3,6 +3,7 @@ package com.futuo.iapprove.tab7tabcontent.newapproveapplication;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,7 @@ import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormAttach
 import com.futuo.iapprove.form.FormItemBean;
 import com.futuo.iapprove.provider.EnterpriseABContentProvider.Employees.Employee;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems.FormItem;
+import com.futuo.iapprove.provider.EnterpriseFormContentProvider.Forms.Form;
 import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyType;
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATasks.GeneratingNAATask;
 import com.futuo.iapprove.service.CoreService;
@@ -161,6 +163,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 					new NAAMorePlusApplicationsInputItemIconImgBtnOnClickListener(),
 					R.string.naa_morePlus_applicationsInput_label } };
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -184,10 +187,15 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 					.getLong(NewApproveApplicationExtraData.ENTERPRISE_FROM_ID);
 			_mFormName = _extraData
 					.getString(NewApproveApplicationExtraData.ENTERPRISE_FROM_NAME);
-			ABContactBean _submitContact = (ABContactBean) _extraData
-					.getSerializable(NewApproveApplicationExtraData.NEW_APPROVEAPPLICATION_SUBMIT_CONTACT);
-			if (null != _submitContact) {
-				_mSubmitContactList.add(_submitContact);
+			Object _submitContacts = _extraData
+					.get(NewApproveApplicationExtraData.NEW_APPROVEAPPLICATION_SUBMIT_CONTACTS);
+			if (null != _submitContacts) {
+				if (_submitContacts instanceof ABContactBean) {
+					_mSubmitContactList.add((ABContactBean) _submitContacts);
+				} else if (_submitContacts instanceof List) {
+					_mSubmitContactList
+							.addAll((Collection<? extends ABContactBean>) _submitContacts);
+				}
 			}
 		}
 
@@ -813,7 +821,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		public static final String ENTERPRISE_FROM_TYPE_ID = "enterprise_form_type_id";
 		public static final String ENTERPRISE_FROM_ID = "enterprise_form_id";
 		public static final String ENTERPRISE_FROM_NAME = "enterprise_form_name";
-		public static final String NEW_APPROVEAPPLICATION_SUBMIT_CONTACT = "new_approveapplication_submit_contact";
+		public static final String NEW_APPROVEAPPLICATION_SUBMIT_CONTACTS = "new_approveapplication_submit_contacts";
 
 		// new approve application form item editor need to update info value
 		// form item id and update info value
@@ -871,14 +879,19 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 					}
 				}
 
-				// define and initialize submit contacts name string builder
-				StringBuilder _submitContactsNameStringBuilder = new StringBuilder();
+				// define and initialize submit contacts user id, approve number
+				// string builder
+				StringBuilder _submitContactsUserIdStringBuilder = new StringBuilder();
+				StringBuilder _submitContactsApproveNumberStringBuilder = new StringBuilder();
 				for (ABContactBean _submitContact : _mSubmitContactList) {
-					_submitContactsNameStringBuilder.append(_submitContact
-							.getApproveNumber());
+					_submitContactsUserIdStringBuilder.append(_submitContact
+							.getUserId());
+					_submitContactsApproveNumberStringBuilder
+							.append(_submitContact.getApproveNumber());
 					if (_mSubmitContactList.size() - 1 != _mSubmitContactList
 							.indexOf(_submitContact)) {
-						_submitContactsNameStringBuilder.append(',');
+						_submitContactsUserIdStringBuilder.append(',');
+						_submitContactsApproveNumberStringBuilder.append(',');
 					}
 				}
 
@@ -906,6 +919,23 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 					}
 				}
 
+				// update form default submit contacts
+				// define and initialize the form update content values
+				ContentValues _updateContentValues = new ContentValues();
+				_updateContentValues.put(Form.DEFAULT_SUBMITCONTACTS,
+						_submitContactsUserIdStringBuilder.toString());
+
+				// update the new approve application form data
+				getContentResolver().update(
+						ContentUris.withAppendedId(Form.FORM_CONTENT_URI,
+								_mFormId),
+						_updateContentValues,
+						Form.ENTERPRISE_FORMS_WITHTYPEID_CONDITION,
+						new String[] {
+								IAUserExtension.getUserLoginEnterpriseId(
+										UserManager.getInstance().getUser())
+										.toString(), _mFormTypeId.toString() });
+
 				// insert the new approve application for generating to local
 				// storage
 				// define and initialize the new approve application approving
@@ -918,7 +948,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 				_insertContentValues.put(GeneratingNAATask.APPROVE_NUMBER,
 						_mLoginUser.getName());
 				_insertContentValues.put(GeneratingNAATask.SUBMITCONTACTS,
-						_submitContactsNameStringBuilder.toString());
+						_submitContactsApproveNumberStringBuilder.toString());
 				_insertContentValues.put(GeneratingNAATask.FORM_NAME,
 						_mFormName);
 				_insertContentValues.put(GeneratingNAATask.FORMITEM_VALUE,

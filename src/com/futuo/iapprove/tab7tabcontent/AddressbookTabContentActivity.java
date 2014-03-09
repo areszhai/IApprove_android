@@ -50,8 +50,6 @@ public class AddressbookTabContentActivity extends IApproveTabContentActivity {
 		// set title
 		setTitle(R.string.addressbook_tab7nav_title);
 
-		//
-
 		// get address book contact listView
 		ListView _addressbookContactListView = (ListView) findViewById(R.id.ab_contact_listView);
 

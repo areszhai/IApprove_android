@@ -9,136 +9,174 @@
 
     <RelativeLayout
         android:id="@+id/taskfafi_myAdvice_relativeLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|right"
-        android:layout_marginLeft="48dp"
+        android:layout_gravity="center_vertical"
         android:visibility="gone" >
 
+        <TextView
+            android:id="@+id/taskfafi_myAdvice_givenTimestamp_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/task_formadvice_giventimestamp_textview_bg"
+            android:padding="4dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
+
         <RelativeLayout
-            android:id="@+id/taskfafi_myAdvice_userInfo_relativeLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerVertical="true"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp" >
+            android:layout_below="@id/taskfafi_myAdvice_givenTimestamp_textView"
+            android:layout_gravity="right"
+            android:layout_marginLeft="48dp" >
 
-            <ImageView
-                android:id="@+id/taskfafi_myAdvice_userAvatar_imageView"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:layout_centerHorizontal="true"
-                android:contentDescription="@string/task_advice_advisorAvatar_imageView_contentDescription"
-                android:scaleType="centerCrop"
-                android:src="@drawable/img_default_large_avatar" />
-
-            <TextView
-                android:id="@+id/taskfafi_myAdvice_userName_textView"
+            <RelativeLayout
+                android:id="@+id/taskfafi_myAdvice_userInfo_relativeLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/taskfafi_myAdvice_userAvatar_imageView"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="4dp"
-                android:ellipsize="marquee"
-                android:maxWidth="44dp"
-                android:singleLine="true"
-                android:textColor="@color/gray" />
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp" >
+
+                <ImageView
+                    android:id="@+id/taskfafi_myAdvice_userAvatar_imageView"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@string/task_advice_advisorAvatar_imageView_contentDescription"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/img_default_large_avatar" />
+
+                <TextView
+                    android:id="@+id/taskfafi_myAdvice_userName_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/taskfafi_myAdvice_userAvatar_imageView"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="marquee"
+                    android:maxWidth="44dp"
+                    android:singleLine="true"
+                    android:textColor="@color/gray" />
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/taskfafi_myAdvice_parent_frameLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/taskfafi_myAdvice_userInfo_relativeLayout"
+                android:background="@drawable/task_formadvice_formitem_myadvice_bg"
+                android:clickable="true"
+                android:paddingBottom="12dp"
+                android:paddingLeft="14dp"
+                android:paddingRight="20dp"
+                android:paddingTop="4dp" >
+
+                <TextView
+                    android:id="@+id/taskfafi_myAdvice_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:lineSpacingExtra="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="2dp"
+                    android:paddingRight="2dp"
+                    android:paddingTop="6dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+            </FrameLayout>
         </RelativeLayout>
-
-        <FrameLayout
-            android:id="@+id/taskfafi_myAdvice_parent_frameLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/taskfafi_myAdvice_userInfo_relativeLayout"
-            android:background="@drawable/task_formadvice_formitem_myadvice_bg"
-            android:clickable="true"
-            android:paddingBottom="12dp"
-            android:paddingLeft="14dp"
-            android:paddingRight="20dp"
-            android:paddingTop="4dp" >
-
-            <TextView
-                android:id="@+id/taskfafi_myAdvice_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:lineSpacingExtra="2dp"
-                android:paddingBottom="2dp"
-                android:paddingLeft="2dp"
-                android:paddingRight="2dp"
-                android:paddingTop="6dp"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
-        </FrameLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/taskfafi_othersAdvice_relativeLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|left"
-        android:layout_marginRight="48dp"
+        android:layout_gravity="center_vertical"
         android:visibility="gone" >
 
+        <TextView
+            android:id="@+id/taskfafi_othersAdvice_givenTimestamp_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/task_formadvice_giventimestamp_textview_bg"
+            android:padding="4dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
+
         <RelativeLayout
-            android:id="@+id/taskfafi_othersAdvice_userInfo_relativeLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerVertical="true"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp" >
+            android:layout_below="@id/taskfafi_othersAdvice_givenTimestamp_textView"
+            android:layout_gravity="left"
+            android:layout_marginRight="48dp" >
 
-            <ImageView
-                android:id="@+id/taskfafi_othersAdvice_userAvatar_imageView"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:layout_centerHorizontal="true"
-                android:contentDescription="@string/task_advice_advisorAvatar_imageView_contentDescription"
-                android:scaleType="centerCrop"
-                android:src="@drawable/img_default_large_avatar" />
-
-            <TextView
-                android:id="@+id/taskfafi_othersAdvice_userName_textView"
+            <RelativeLayout
+                android:id="@+id/taskfafi_othersAdvice_userInfo_relativeLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/taskfafi_othersAdvice_userAvatar_imageView"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="4dp"
-                android:ellipsize="marquee"
-                android:maxWidth="44dp"
-                android:singleLine="true"
-                android:textColor="@color/gray" />
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp" >
+
+                <ImageView
+                    android:id="@+id/taskfafi_othersAdvice_userAvatar_imageView"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@string/task_advice_advisorAvatar_imageView_contentDescription"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/img_default_large_avatar" />
+
+                <TextView
+                    android:id="@+id/taskfafi_othersAdvice_userName_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/taskfafi_othersAdvice_userAvatar_imageView"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="marquee"
+                    android:maxWidth="44dp"
+                    android:singleLine="true"
+                    android:textColor="@color/gray" />
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/taskfafi_othersAdvice_parent_frameLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/taskfafi_othersAdvice_userInfo_relativeLayout"
+                android:background="@drawable/task_formadvice_formitem_othersagreeadvice_bg"
+                android:clickable="true"
+                android:paddingBottom="12dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="14dp"
+                android:paddingTop="4dp" >
+
+                <TextView
+                    android:id="@+id/taskfafi_othersAdvice_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:lineSpacingExtra="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="2dp"
+                    android:paddingRight="2dp"
+                    android:paddingTop="6dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+            </FrameLayout>
         </RelativeLayout>
-
-        <FrameLayout
-            android:id="@+id/taskfafi_othersAdvice_parent_frameLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/taskfafi_othersAdvice_userInfo_relativeLayout"
-            android:background="@drawable/task_formadvice_formitem_othersagreeadvice_bg"
-            android:clickable="true"
-            android:paddingBottom="12dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="14dp"
-            android:paddingTop="4dp" >
-
-            <TextView
-                android:id="@+id/taskfafi_othersAdvice_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:lineSpacingExtra="2dp"
-                android:paddingBottom="2dp"
-                android:paddingLeft="2dp"
-                android:paddingRight="2dp"
-                android:paddingTop="6dp"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
-        </FrameLayout>
     </RelativeLayout>
 
 </FrameLayout>

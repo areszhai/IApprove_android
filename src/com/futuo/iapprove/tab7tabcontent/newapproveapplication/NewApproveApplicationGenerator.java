@@ -115,7 +115,7 @@ public class NewApproveApplicationGenerator {
 													.getColumnIndex(FormType.NAME)));
 							_enterpriseFormIntent
 									.putExtra(
-											NewApproveApplicationExtraData.NEW_APPROVEAPPLICATION_SUBMIT_CONTACT,
+											NewApproveApplicationExtraData.NEW_APPROVEAPPLICATION_SUBMIT_CONTACTS,
 											submitContact);
 
 							// start enterprise form list activity
@@ -135,7 +135,7 @@ public class NewApproveApplicationGenerator {
 							// bean to extra data map as param
 							_enterpriseFormTypeIntent
 									.putExtra(
-											NewApproveApplicationExtraData.NEW_APPROVEAPPLICATION_SUBMIT_CONTACT,
+											NewApproveApplicationExtraData.NEW_APPROVEAPPLICATION_SUBMIT_CONTACTS,
 											submitContact);
 
 							// start enterprise form type list activity

@@ -568,9 +568,9 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 	static class TodoTaskApprovingTableAccessType {
 
 		// user enterprise to-do task approving table access type
-		private static final int APPROVINGTODOTASKS = 90;
-		private static final int APPROVINGTODOTASK = 91;
-		private static final int APPROVINGTODOTASK_ID = 92;
+		private static final int APPROVINGTODOTASKS = 50;
+		private static final int APPROVINGTODOTASK = 51;
+		private static final int APPROVINGTODOTASK_ID = 52;
 
 	}
 
@@ -629,9 +629,9 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 	static class NAATaskGeneratingTableAccessType {
 
 		// user enterprise new approve application generating table access type
-		private static final int GENERATINGNAATASKS = 94;
-		private static final int GENERATINGNAATASK = 95;
-		private static final int GENERATINGNAATASK_ID = 96;
+		private static final int GENERATINGNAATASKS = 53;
+		private static final int GENERATINGNAATASK = 54;
+		private static final int GENERATINGNAATASK_ID = 55;
 
 	}
 
@@ -686,9 +686,9 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 
 		// user enterprise new approve application generating attachment table
 		// access type
-		private static final int GENERATINGNAATASKATTACHMENTS = 97;
-		private static final int GENERATINGNAATASKATTACHMENT = 98;
-		private static final int GENERATINGNAATASKATTACHMENT_ID = 99;
+		private static final int GENERATINGNAATASKATTACHMENTS = 56;
+		private static final int GENERATINGNAATASKATTACHMENT = 57;
+		private static final int GENERATINGNAATASKATTACHMENT_ID = 58;
 
 	}
 

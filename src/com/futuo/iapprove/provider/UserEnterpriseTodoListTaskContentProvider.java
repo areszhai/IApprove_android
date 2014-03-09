@@ -1004,9 +1004,9 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 	static class UserEnterpriseTodoTaskFormItemInfoTableAccessType {
 
 		// user enterprise to-do task form item info table access type
-		private static final int TODOTASKFORMITEMS = 30;
-		private static final int TODOTASKFORMITEM = 31;
-		private static final int TODOTASKFORMITEM_ID = 32;
+		private static final int TODOTASKFORMITEMS = 24;
+		private static final int TODOTASKFORMITEM = 25;
+		private static final int TODOTASKFORMITEM_ID = 26;
 
 	}
 
@@ -1066,9 +1066,9 @@ public class UserEnterpriseTodoListTaskContentProvider extends
 	static class UserEnterpriseTodoTaskAttachmentTableAccessType {
 
 		// user enterprise to-do task attachment table access type
-		private static final int TODOTASKATTACHMENTS = 40;
-		private static final int TODOTASKATTACHMENT = 41;
-		private static final int TODOTASKATTACHMENT_ID = 42;
+		private static final int TODOTASKATTACHMENTS = 27;
+		private static final int TODOTASKATTACHMENT = 28;
+		private static final int TODOTASKATTACHMENT_ID = 29;
 
 	}
 

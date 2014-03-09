@@ -577,6 +577,7 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 					// check time different
 					if (_today7submitTimestampCalendarTimeDifferent <= MILLISECONDS_PER_DAY) {
+						// yesterday
 						_ret.append(_mContext
 								.getResources()
 								.getString(
@@ -593,9 +594,11 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 						if (_submitTimestampCalendarInstance
 								.before(_firstDayOfWeekZeroCalendarInstance)) {
+							// one day before days of one week
 							_ret.append(_todoTaskSubmitTimeDayFormat
 									.format(submitTimestamp));
 						} else {
+							// in the week
 							_ret.append(_mContext
 									.getResources()
 									.getStringArray(
@@ -604,6 +607,7 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 						}
 					}
 				} else {
+					// today
 					_ret.append(_todoTaskSubmitTimeTimeFormat
 							.format(submitTimestamp));
 				}

@@ -3,6 +3,10 @@ package com.futuo.iapprove.customwidget;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -24,10 +28,11 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 	private static final String LOG_TAG = TaskFormAdviceFormItem.class
 			.getCanonicalName();
 
-	// iApprove task form advice relativeLayout, advisor avatar imageView,
-	// advisor name textView, advice info parent frameLayout and advice info
-	// textView
+	// iApprove task form advice relativeLayout, advice given timestamp
+	// textView, advisor avatar imageView, advisor name textView, advice info
+	// parent frameLayout and advice info textView
 	private RelativeLayout _mAdviceRelativeLayout;
+	private TextView _mAdviceGivenTimestampTextView;
 	private ImageView _mAdvisorAvatarImageView;
 	private TextView _mAdvisorNameTextView;
 	private FrameLayout _mAdviceInfoParentFrameLayout;
@@ -35,6 +40,9 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 
 	// iApprove task form advice type
 	private TaskFormAdviceType _mAdviceType;
+
+	// iApprove task form advice given timestamp
+	private Long _mAdviceGivenTimestamp;
 
 	// iApprove task form advice form item on click and long click listener
 	private OnClickListener _mAdviceFormItemOnClickListener;
@@ -50,10 +58,11 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 		// set iApprove task form advice type default value
 		_mAdviceType = TaskFormAdviceType.MY_ADVICE;
 
-		// get iApprove task form my advice relativeLayout, advisor avatar
-		// imageView, advisor name textView, advice info parent frameLayout,
-		// adviceinfo textView as default
+		// get iApprove task form my advice relativeLayout, advice given
+		// timestamp textView, advisor avatar imageView, advisor name textView,
+		// advice info parent frameLayout, advice info textView as default
 		_mAdviceRelativeLayout = (RelativeLayout) findViewById(R.id.taskfafi_myAdvice_relativeLayout);
+		_mAdviceGivenTimestampTextView = (TextView) findViewById(R.id.taskfafi_myAdvice_givenTimestamp_textView);
 		_mAdvisorAvatarImageView = (ImageView) findViewById(R.id.taskfafi_myAdvice_userAvatar_imageView);
 		_mAdvisorNameTextView = (TextView) findViewById(R.id.taskfafi_myAdvice_userName_textView);
 		_mAdviceInfoParentFrameLayout = (FrameLayout) findViewById(R.id.taskfafi_myAdvice_parent_frameLayout);
@@ -90,10 +99,12 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 
 			switch (adviceType) {
 			case MY_ADVICE:
-				// get iApprove task form my advice relativeLayout, advisor
-				// avatar imageView, advisor name textView, advice info parent
-				// frameLayout and advice info textView
+				// get iApprove task form my advice relativeLayout, advice given
+				// timestamp textView, advisor avatar imageView, advisor name
+				// textView, advice info parent frameLayout and advice info
+				// textView
 				_mAdviceRelativeLayout = (RelativeLayout) findViewById(R.id.taskfafi_myAdvice_relativeLayout);
+				_mAdviceGivenTimestampTextView = (TextView) findViewById(R.id.taskfafi_myAdvice_givenTimestamp_textView);
 				_mAdvisorAvatarImageView = (ImageView) findViewById(R.id.taskfafi_myAdvice_userAvatar_imageView);
 				_mAdvisorNameTextView = (TextView) findViewById(R.id.taskfafi_myAdvice_userName_textView);
 				_mAdviceInfoParentFrameLayout = (FrameLayout) findViewById(R.id.taskfafi_myAdvice_parent_frameLayout);
@@ -101,10 +112,12 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 				break;
 
 			case OTHERS_ADVICE:
-				// get iApprove task form others advice relativeLayout, advisor
-				// avatar imageView, advisor name textView, advice info parent
-				// frameLayout and advice info textView
+				// get iApprove task form others advice relativeLayout, advice
+				// given timestamp textView, advisor avatar imageView, advisor
+				// name textView, advice info parent frameLayout and advice info
+				// textView
 				_mAdviceRelativeLayout = (RelativeLayout) findViewById(R.id.taskfafi_othersAdvice_relativeLayout);
+				_mAdviceGivenTimestampTextView = (TextView) findViewById(R.id.taskfafi_othersAdvice_givenTimestamp_textView);
 				_mAdvisorAvatarImageView = (ImageView) findViewById(R.id.taskfafi_othersAdvice_userAvatar_imageView);
 				_mAdvisorNameTextView = (TextView) findViewById(R.id.taskfafi_othersAdvice_userName_textView);
 				_mAdviceInfoParentFrameLayout = (FrameLayout) findViewById(R.id.taskfafi_othersAdvice_parent_frameLayout);
@@ -154,6 +167,107 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 		return (String) _mAdviceInfoTextView.getText();
 	}
 
+	public Long getAdviceGivenTimestamp() {
+		return _mAdviceGivenTimestamp;
+	}
+
+	private void setAdviceGivenTimestamp(Long adviceGivenTimestamp) {
+		// task advice given time day and time format, format timeStamp
+		final DateFormat _taskAdviceGivenTimeDayFormat = new SimpleDateFormat(
+				"yy-MM-dd HH:mm:ss", Locale.getDefault());
+		final DateFormat _taskAdviceGivenTimeTimeFormat = new SimpleDateFormat(
+				"HH:mm:ss", Locale.getDefault());
+
+		// miliSceonds of day
+		final Long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000L;
+
+		// define task advice given time string
+		String _taskAdviceGivenTime = "";
+
+		// get current system time
+		Long _currentSystemTime = System.currentTimeMillis();
+
+		// compare current system time and submit timestamp
+		if (_currentSystemTime - adviceGivenTimestamp >= 0) {
+			// get today zero o'clock calendar instance
+			Calendar _todayZeroCalendarInstance = Calendar.getInstance(Locale
+					.getDefault());
+			_todayZeroCalendarInstance.set(Calendar.AM_PM, 0);
+			_todayZeroCalendarInstance.set(Calendar.HOUR, 0);
+			_todayZeroCalendarInstance.set(Calendar.MINUTE, 0);
+			_todayZeroCalendarInstance.set(Calendar.SECOND, 0);
+			_todayZeroCalendarInstance.set(Calendar.MILLISECOND, 0);
+
+			// get task advice given timestamp calendar instance
+			Calendar _adviceGivenTimestampCalendarInstance = Calendar
+					.getInstance(Locale.getDefault());
+			_adviceGivenTimestampCalendarInstance
+					.setTimeInMillis(adviceGivenTimestamp);
+
+			// format day and time
+			if (_adviceGivenTimestampCalendarInstance
+					.before(_todayZeroCalendarInstance)) {
+				// get today zero o'clock and advice given timestamp time
+				// different
+				Long _today7adviceGivenTimestampCalendarTimeDifferent = _todayZeroCalendarInstance
+						.getTimeInMillis()
+						- _adviceGivenTimestampCalendarInstance
+								.getTimeInMillis();
+
+				// check time different
+				if (_today7adviceGivenTimestampCalendarTimeDifferent <= MILLISECONDS_PER_DAY) {
+					// yesterday
+					_taskAdviceGivenTime = getResources().getString(
+							R.string.taskAdvice_yesterdayGiven_givenTimestamp)
+							+ _taskAdviceGivenTimeTimeFormat
+									.format(adviceGivenTimestamp);
+				} else {
+					// get first day zero o'clock of week calendar instance
+					Calendar _firstDayOfWeekZeroCalendarInstance = Calendar
+							.getInstance(Locale.getDefault());
+					_firstDayOfWeekZeroCalendarInstance
+							.setTimeInMillis(_todayZeroCalendarInstance
+									.getTimeInMillis());
+					_firstDayOfWeekZeroCalendarInstance.set(
+							Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+
+					if (_adviceGivenTimestampCalendarInstance
+							.before(_firstDayOfWeekZeroCalendarInstance)) {
+						// one day before days of one week
+						_taskAdviceGivenTime = _taskAdviceGivenTimeDayFormat
+								.format(adviceGivenTimestamp);
+					} else {
+						// in the week
+						_taskAdviceGivenTime = getResources().getStringArray(
+								R.array.taskAdvice_givenTimestamp_daysOfWeek)[_adviceGivenTimestampCalendarInstance
+								.get(Calendar.DAY_OF_WEEK) - 1]
+								+ _taskAdviceGivenTimeTimeFormat
+										.format(adviceGivenTimestamp);
+					}
+				}
+			} else {
+				// today
+				_taskAdviceGivenTime = _taskAdviceGivenTimeTimeFormat
+						.format(adviceGivenTimestamp);
+			}
+		} else {
+			Log.e(LOG_TAG,
+					"Format task advice given time error, task advice given timestamp greater than current system time");
+
+			_taskAdviceGivenTime = _taskAdviceGivenTimeTimeFormat
+					.format(adviceGivenTimestamp);
+		}
+
+		// set advice given timestamp and set it as advice given timestamp
+		// textView text
+		_mAdviceGivenTimestamp = adviceGivenTimestamp;
+		_mAdviceGivenTimestampTextView.setText(_taskAdviceGivenTime);
+	}
+
+	public void showAdviceGivenTimestampTextView() {
+		_mAdviceGivenTimestampTextView.setVisibility(View.VISIBLE);
+	}
+
 	// generate iApprove task form advice form item with type, advisor and info
 	public static TaskFormAdviceFormItem generateTaskFormAdviceFormItem(
 			TaskFormAdviceType type, PersonBean advisor,
@@ -182,6 +296,10 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 		// get, check advice info then set iApprove task advice info parent
 		// frameLayout background and textView text
 		if (null != advice) {
+			// set advice given timestamp
+			_newTaskFormAdviceFormItem.setAdviceGivenTimestamp(advice
+					.getAdviceGivenTimestamp());
+
 			// check iApprove task form advice type again
 			if (null != type && TaskFormAdviceType.MY_ADVICE != type) {
 				// check others advice info agreed and modified
@@ -205,7 +323,10 @@ public class TaskFormAdviceFormItem extends FrameLayout {
 			_newTaskFormAdviceFormItem._mAdviceInfoTextView
 					.setText(null != _adviceInfo
 							&& !"".equalsIgnoreCase(_adviceInfo) ? _adviceInfo
-							: (advice.modified() ? "修改"
+							: (advice.modified() ? _newTaskFormAdviceFormItem
+									.getResources()
+									.getString(
+											R.string.task_adviceItem_modify_adviceInfo)
 									: (advice.agreed() ? _newTaskFormAdviceFormItem
 											.getResources()
 											.getString(
