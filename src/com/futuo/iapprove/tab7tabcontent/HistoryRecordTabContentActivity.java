@@ -143,10 +143,10 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 				|| 0 == _mHisrotyRecordTaskListAdapterDataList.size()) {
 			// history record task list view pull to refresh listView refreshing
 			_mHisrotyRecordTaskPull2RefreshListView.setRefreshing();
-		}
 
-		// refresh history record task list
-		getHistoryRecordTaskList(null);
+			// refresh history record task list
+			getHistoryRecordTaskList(null);
+		}
 	}
 
 	// generate history record title segment
@@ -301,9 +301,10 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 			_dataMap.put(
 					HistoryRecordTaskListAdapter.TASKSTATE_KEY,
 					_historyRecordTask.ended() ? BitmapFactory.decodeResource(
-							getResources(), android.R.drawable.ic_media_pause)
+							getResources(),
+							android.R.drawable.presence_invisible)
 							: BitmapFactory.decodeResource(getResources(),
-									android.R.drawable.ic_media_play));
+									android.R.drawable.presence_online));
 			_dataMap.put(
 					HistoryRecordTaskListAdapter.TASKTITLE7APPLICANT_KEY,
 					String.format(
@@ -438,6 +439,10 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 				_mHisrotyRecordTaskListView
 						.setOnItemClickListener(_mHisrotyRecordTaskListViewOnItemClickListener);
 
+				// history record task list view pull to refresh listView
+				// refreshing
+				_mHisrotyRecordTaskPull2RefreshListView.setRefreshing();
+
 				// refresh history record task list
 				getHistoryRecordTaskList(null);
 				break;
@@ -468,6 +473,10 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 				// reset history record task list item on click listener
 				_mHisrotyRecordTaskListView
 						.setOnItemClickListener(_mHisrotyRecordTaskListViewOnItemClickListener);
+
+				// history record task list view pull to refresh listView
+				// refreshing
+				_mHisrotyRecordTaskPull2RefreshListView.setRefreshing();
 
 				// refresh history record task list
 				getHistoryRecordTaskList(null);

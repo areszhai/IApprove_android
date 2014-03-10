@@ -79,6 +79,14 @@
     <string name="tdl_task_fridaySubmit_submitTimestamp">周五</string>
     <string name="tdl_task_saturdaySubmit_submitTimestamp">周六</string>
 
+    <!-- iApprove alert dialog common -->
+    <string name="iApprove_alertDialog_title">审批提醒</string>
+    <string name="iApprove_alertDialog_cancelButton_title">取消</string>
+
+    <!-- to-do task end alert dialog -->
+    <string name="todoTask_endAlertDialog_message">确定要结束此表单审批流程吗？</string>
+    <string name="todoTask_endAlertDialog_endButton_title">结束</string>
+
     <!-- to-do task approve activity -->
     <string name="tdta_form_info_label">表单信息</string>
     <string name="tdta_attachment_info_label">附件信息</string>
@@ -187,9 +195,7 @@
     <string name="privacy_nav_title">使用条款和隐私政策</string>
 
     <!-- iApprove exit alert dialog -->
-    <string name="iApprove_exitAlertDialog_title">审批提醒</string>
     <string name="iApprove_exitAlertDialog_message">确定要退出审批应用吗？</string>
     <string name="iApprove_exitAlertDialog_exitButton_title">退出</string>
-    <string name="iApprove_exitAlertDialog_cancelButton_title">取消</string>
 
 </resources>

@@ -61,7 +61,8 @@
     <string name="rbgServer_getIApproveListReqResp_task_advice_adviceGivenTimestamp" translatable="false">datetime</string>
 
     <!-- iApprove list task form info common -->
-    <string name="rbgServer_getIApproveListTaskFormInfoReqParam_action" translatable="false">getInfoDetail</string>
+    <!-- <string name="rbgServer_getIApproveListTaskFormInfoReqParam_action" translatable="false">getInfoDetail</string> -->
+    <string name="rbgServer_getIApproveListTaskFormInfoReqParam_action" translatable="false">getInfoDetailByType</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskId" translatable="false">infoid</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskSenderFakeId" translatable="false">interflowid</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskStatus" translatable="false">interflowdetailstate</string>

@@ -653,7 +653,9 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 						// set new generate enterprise form item capital form
 						// item as new enterprise form item form item tag
-						_formItemFormItem.setTag(_formItemCapitalFormItem);
+						_formItemFormItem.setTag(
+								NAAFormItemTagKey.NEED_CAPITAL.hashCode(),
+								_formItemCapitalFormItem);
 
 						// add need capital enterprise form item form item text
 						// changed listener
@@ -695,6 +697,40 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 			// close cursor
 			_cursor.close();
+		}
+
+		// traversal enterprise form item id(key) and form item form item
+		// view(value) map
+		for (EnterpriseFormItemFormItem _formItemFormItem : _mFormItemId7FormItemFormItemMap
+				.values()) {
+			// get and check enterprise form item formula
+			String _formItemFormula = _formItemFormItem.getFormItem()
+					.getFormula();
+			if (null != _formItemFormula) {
+				// define new approve application formula operand form item info
+				// text watcher
+				NAAFormulaOperandFormItemInfoTextWatcher _naaFormulaOperandFormItemInfoTextWatcher = new NAAFormulaOperandFormItemInfoTextWatcher();
+
+				// traversal enterprise form item formula operand form item id
+				// list
+				for (Double _formItemIdDouble : CalculateStringUtils
+						.getCalculateExpressionNumbers(_formItemFormula)) {
+					// get form item formula operand form item
+					EnterpriseFormItemFormItem _formItemFormulaOperandFormItem = _mFormItemId7FormItemFormItemMap
+							.get(_formItemIdDouble.longValue());
+
+					// set enterprise form item with formula as its operand form
+					// item tag
+					_formItemFormulaOperandFormItem.setTag(
+							NAAFormItemTagKey.WITH_FORMULA.hashCode(),
+							_formItemFormItem);
+
+					// add formula operand enterprise form item form item text
+					// changed listener
+					_formItemFormulaOperandFormItem
+							.addTextChangedListener(_naaFormulaOperandFormItemInfoTextWatcher);
+				}
+			}
 		}
 	}
 
@@ -866,15 +902,41 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 							// get new approve application form item form item
 							EnterpriseFormItemFormItem _naaFormItemFormItem = (EnterpriseFormItemFormItem) _naaFormItemFormLinearLayoutSubview;
 
-							// add enterprise form item physical name, value and
-							// separate character to form item value string
-							// builder
-							_naaFormItemValueStringBuilder
-									.append("[$zy$")
-									.append(_naaFormItemFormItem.getFormItem()
-											.getItemPhysicalName()).append(':')
-									.append(_naaFormItemFormItem.getInfo())
-									.append(']');
+							// get new approve application form item form item
+							// info
+							String _naaFormItemFormItemInfo = _naaFormItemFormItem
+									.getInfo();
+
+							// check new approve application form item must
+							// write flag and info
+							if (_naaFormItemFormItem.getFormItem().mustWrite()
+									&& (null == _naaFormItemFormItemInfo || ""
+											.equalsIgnoreCase(_naaFormItemFormItemInfo))) {
+								Log.d(LOG_TAG,
+										"There is at least one must write form item not fill its content");
+
+								// show there is at least one must write form
+								// item not fill content toast
+								Toast.makeText(
+										NewApproveApplicationActivity.this,
+										R.string.toast_fill_mustWriteFormItemContent,
+										Toast.LENGTH_SHORT).show();
+
+								// return immediately
+								return;
+							} else {
+								// add enterprise form item physical name, value
+								// and separate character to form item value
+								// string builder
+								_naaFormItemValueStringBuilder
+										.append("[$zy$")
+										.append(_naaFormItemFormItem
+												.getFormItem()
+												.getItemPhysicalName())
+										.append(':')
+										.append(_naaFormItemFormItemInfo)
+										.append(']');
+							}
 						}
 					}
 				}
@@ -1011,6 +1073,14 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 	}
 
+	// new approve application form item tag key
+	enum NAAFormItemTagKey {
+
+		// need capital and with formula form item
+		NEED_CAPITAL, WITH_FORMULA
+
+	}
+
 	// new approve application form item need capital form item info text
 	// watcher
 	class NAAFormItemCapitalFormItemInfoTextWatcher implements
@@ -1023,7 +1093,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 			// get and check enterprise form item form item tag as form item
 			// capital form item
 			EnterpriseFormItemFormItem _formItemCapitalFormItem = (EnterpriseFormItemFormItem) enterpriseFormItemFormItem
-					.getTag();
+					.getTag(NAAFormItemTagKey.NEED_CAPITAL.hashCode());
 			if (null != _formItemCapitalFormItem) {
 				// get and check editable info capital
 				String _capitalString = CalculateStringUtils.calculateCapital(s
@@ -1040,6 +1110,69 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 			} else {
 				Log.e(LOG_TAG,
 						"New approve application form item capital form item info text watcher error");
+			}
+		}
+
+		@Override
+		public void beforeTextChanged(
+				EnterpriseFormItemFormItem enterpriseFormItemFormItem,
+				CharSequence s, int start, int count, int after) {
+			// nothing to do
+		}
+
+		@Override
+		public void onTextChanged(
+				EnterpriseFormItemFormItem enterpriseFormItemFormItem,
+				CharSequence s, int start, int before, int count) {
+			// nothing to do
+		}
+
+	}
+
+	// new approve application formula operand form item info text watcher
+	class NAAFormulaOperandFormItemInfoTextWatcher implements
+			EnterpriseFormItemInfoTextWatcher {
+
+		@Override
+		public void afterTextChanged(
+				EnterpriseFormItemFormItem enterpriseFormItemFormItem,
+				Editable s) {
+			// get and check formula operand form item tag as form item with
+			// formula form item
+			EnterpriseFormItemFormItem _withFormulaFormItem = (EnterpriseFormItemFormItem) enterpriseFormItemFormItem
+					.getTag(NAAFormItemTagKey.WITH_FORMULA.hashCode());
+			if (null != _withFormulaFormItem) {
+				// get and check formula operand and operator list
+				List<Object> _formulaOperandAndOperatorList = CalculateStringUtils
+						.getCalculateExpressionTokens(_withFormulaFormItem
+								.getFormItem().getFormula());
+				for (Object _formulaToken : _formulaOperandAndOperatorList) {
+					if (_formulaToken instanceof Double) {
+						// get and check the formula operand form item info
+						String _formulaOperandFormItemInfo = _mFormItemId7FormItemFormItemMap
+								.get(((Double) _formulaToken).longValue())
+								.getInfo();
+						if (null == _formulaOperandFormItemInfo
+								|| "".equalsIgnoreCase(_formulaOperandFormItemInfo)) {
+							_formulaOperandAndOperatorList.set(
+									_formulaOperandAndOperatorList
+											.indexOf(_formulaToken), Double
+											.valueOf(0));
+						} else {
+							_formulaOperandAndOperatorList
+									.set(_formulaOperandAndOperatorList
+											.indexOf(_formulaToken),
+											Double.parseDouble(_formulaOperandFormItemInfo));
+						}
+					}
+				}
+
+				// set with formula form item info
+				_withFormulaFormItem.setInfo(CalculateStringUtils
+						.calculateExpression(_formulaOperandAndOperatorList));
+			} else {
+				Log.e(LOG_TAG,
+						"New approve application formula operand form item info text watcher error");
 			}
 		}
 

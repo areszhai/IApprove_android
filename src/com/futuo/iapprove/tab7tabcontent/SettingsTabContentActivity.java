@@ -246,7 +246,7 @@ public class SettingsTabContentActivity extends IApproveTabContentActivity {
 		public void onClick(View v) {
 			// show exit iApprove client alert dialog
 			new AlertDialog.Builder(SettingsTabContentActivity.this)
-					.setTitle(R.string.iApprove_exitAlertDialog_title)
+					.setTitle(R.string.iApprove_alertDialog_title)
 					.setMessage(R.string.iApprove_exitAlertDialog_message)
 					.setPositiveButton(
 							R.string.iApprove_exitAlertDialog_exitButton_title,
@@ -265,7 +265,7 @@ public class SettingsTabContentActivity extends IApproveTabContentActivity {
 								}
 							})
 					.setNegativeButton(
-							R.string.iApprove_exitAlertDialog_cancelButton_title,
+							R.string.iApprove_alertDialog_cancelButton_title,
 							null).show();
 		}
 

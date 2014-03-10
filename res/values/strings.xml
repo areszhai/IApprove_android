@@ -108,6 +108,10 @@
     <string name="tdl_task_fridaySubmit_submitTimestamp">Friday</string>
     <string name="tdl_task_saturdaySubmit_submitTimestamp">Saturday</string>
 
+    <!-- iApprove alert dialog common -->
+    <string name="iApprove_alertDialog_title">IApprove remind</string>
+    <string name="iApprove_alertDialog_cancelButton_title">Cancel</string>
+
     <!-- to-do task approve activity -->
     <string name="title_activity_todo_task_approve" translatable="false">TodoTaskApproveActivity</string>
     <string name="tdta_form_info_label">Form Info</string>
@@ -123,6 +127,10 @@
     <string name="tdta_adviceSwitch_onText">Agree</string>
     <string name="tdta_adviceSwitch_offText">Disagree</string>
     <string name="tdta_adviceSend_button_title">Send</string>
+
+    <!-- to-do task end alert dialog -->
+    <string name="todoTask_endAlertDialog_message">Are you sure to end the to-do task?</string>
+    <string name="todoTask_endAlertDialog_endButton_title">End</string>
 
     <!-- task application attachment view activity -->
     <string name="title_activity_task_application_attachment_view" translatable="false">TaskApplicationAttachmentViewActivity</string>
@@ -251,9 +259,7 @@
     <string name="tp_bottomToolbar_operation_imageButton_contentDescription" translatable="false">terms and privacy bottom toolbar operation imageButton</string>
 
     <!-- iApprove exit alert dialog -->
-    <string name="iApprove_exitAlertDialog_title">IApprove remind</string>
     <string name="iApprove_exitAlertDialog_message">Are you sure to exit iApprove application?</string>
     <string name="iApprove_exitAlertDialog_exitButton_title">Exit</string>
-    <string name="iApprove_exitAlertDialog_cancelButton_title">Cancel</string>
 
 </resources>

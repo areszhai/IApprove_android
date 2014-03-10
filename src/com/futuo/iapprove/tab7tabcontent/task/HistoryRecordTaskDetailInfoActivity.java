@@ -1,5 +1,6 @@
 package com.futuo.iapprove.tab7tabcontent.task;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,13 +12,18 @@ import org.apache.http.HttpResponse;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.futuo.iapprove.R;
@@ -28,11 +34,15 @@ import com.futuo.iapprove.customwidget.IApproveNavigationActivity;
 import com.futuo.iapprove.customwidget.TaskFormAdviceFormItem;
 import com.futuo.iapprove.customwidget.TaskFormAdviceFormItem.TaskFormAdviceType;
 import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem;
+import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormApplicationAttachmentInfoDataKeys;
 import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormAttachmentType;
 import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormVoiceAttachmentInfoDataKeys;
 import com.futuo.iapprove.customwidget.TaskFormItemFormItem;
+import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity;
+import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity.NAATDTTextImgAttachmentViewExtraData;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentBean;
+import com.futuo.iapprove.task.IApproveTaskAttachmentType;
 import com.futuo.iapprove.task.IApproveTaskFormItemBean;
 import com.futuo.iapprove.task.TodoTaskStatus;
 import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
@@ -52,7 +62,9 @@ public class HistoryRecordTaskDetailInfoActivity extends
 	private static final String LOG_TAG = HistoryRecordTaskDetailInfoActivity.class
 			.getCanonicalName();
 
-	// history record list task form item form linearLayout
+	// history record list task form item form parent frameLayout and form
+	// linearLayout
+	private FrameLayout _mFormItemFormParentFrameLayout;
 	private LinearLayout _mFormItemFormLinearLayout;
 
 	// history record list task form item id(key) and form item form item
@@ -123,7 +135,9 @@ public class HistoryRecordTaskDetailInfoActivity extends
 		// map
 		_mFormItemId7FormItemFormItemMap = new HashMap<Long, TaskFormItemFormItem>();
 
-		// get history record list task form item form linearLayout
+		// get history record list task form item form parent frameLayout and
+		// form linearLayout
+		_mFormItemFormParentFrameLayout = (FrameLayout) findViewById(R.id.hrta_formItemForm_parent_frameLayout);
 		_mFormItemFormLinearLayout = (LinearLayout) findViewById(R.id.hrta_formItemForm_linearLayout);
 
 		// initialize history record list task form attachment id and form
@@ -267,6 +281,29 @@ public class HistoryRecordTaskDetailInfoActivity extends
 		_newAddedMyAdviceFormItem
 				.setOnClickListener(new HistoryRecordTaskFormAdviceFormItemOnClickListener());
 
+		// get the last my advice form item added in advice form linearLayout
+		// get and check advice form linearLayout subviews count
+		int _adviceFormLinearLayoutSubviewsCount = _mAdviceFormLinearLayout
+				.getChildCount();
+		if (1 < _adviceFormLinearLayoutSubviewsCount) {
+			// miliSceonds of minute
+			final Long MILLISECONDS_PER_MINUTE = 60 * 1000L;
+
+			// compare to-do task advice the last form item advice given
+			// timestamp with new added my advice given timestamp
+			if (((TaskFormAdviceFormItem) _mAdviceFormLinearLayout
+					.getChildAt(_adviceFormLinearLayoutSubviewsCount - 1))
+					.getAdviceGivenTimestamp()
+					+ MILLISECONDS_PER_MINUTE <= _newAddedMyAdviceFormItem
+						.getAdviceGivenTimestamp()) {
+				// show new add my advice given timestamp
+				_newAddedMyAdviceFormItem.showAdviceGivenTimestampTextView();
+			}
+		} else {
+			// show new add my advice given timestamp
+			_newAddedMyAdviceFormItem.showAdviceGivenTimestampTextView();
+		}
+
 		// add new added my advice to advice form linearLayout
 		_mAdviceFormLinearLayout.addView(_newAddedMyAdviceFormItem,
 				new LayoutParams(LayoutParams.MATCH_PARENT,
@@ -312,7 +349,7 @@ public class HistoryRecordTaskDetailInfoActivity extends
 					.getHttpResponseEntityString(response);
 
 			Log.d(LOG_TAG,
-					"Send get user enterprise history record list task form info post http request successful, response entity string = "
+					"@@@, Send get user enterprise history record list task form info post http request successful, response entity string = "
 							+ _respEntityString);
 
 			// get and check http response entity string error json data
@@ -349,6 +386,16 @@ public class HistoryRecordTaskDetailInfoActivity extends
 						if (!_mFormItemId7FormItemFormItemMap
 								.keySet()
 								.contains(historyRecordTaskFormItem.getItemId())) {
+							// check history record task form item form parent
+							// frameLayout visibility
+							if (View.VISIBLE != _mFormItemFormParentFrameLayout
+									.getVisibility()) {
+								// show history record task form item form
+								// parent frameLayout
+								_mFormItemFormParentFrameLayout
+										.setVisibility(View.VISIBLE);
+							}
+
 							// generate new to-do list task form item form item
 							_historyRecordTaskFormItemFormItem = TaskFormItemFormItem
 									.generateTaskFormItemFormItem(historyRecordTaskFormItem);
@@ -409,7 +456,10 @@ public class HistoryRecordTaskDetailInfoActivity extends
 											.getAttachmentType());
 							switch (_taskFormAttachmentType) {
 							case TEXT_ATTACHMENT:
-								// nothing to do
+								// text
+								_attachmentInfo = historyRecordTaskAttachment
+										.getAttachmentUrl();
+								_attachmentOnClickListener = new HistoryRecordTaskFormTextAttachmentFormItemOnClickListener();
 								break;
 
 							case IMAGE_ATTACHMENT:
@@ -443,7 +493,23 @@ public class HistoryRecordTaskDetailInfoActivity extends
 								break;
 
 							case APPLICATION_ATTACHMENT:
-								// nothing to do
+								// check application attachment type
+								if (IApproveTaskAttachmentType.COMMON_FILE == historyRecordTaskAttachment
+										.getAttachmentType()) {
+									_attachmentInfo = new HashMap<String, String>();
+									((Map<String, String>) _attachmentInfo)
+											.put(TaskFormApplicationAttachmentInfoDataKeys.APPLICATIONATTACHMENT_SHOWN_TIP,
+													historyRecordTaskAttachment
+															.getAttachmentOriginName()
+															+ '.'
+															+ historyRecordTaskAttachment
+																	.getAttachmentSuffix());
+									((Map<String, String>) _attachmentInfo)
+											.put(TaskFormApplicationAttachmentInfoDataKeys.APPLICATIONATTACHMENT_OPEN_URL,
+													historyRecordTaskAttachment
+															.getAttachmentRemoteUrl());
+									_attachmentOnClickListener = new HistoryRecordTaskFormApplicationAttachmentFormItemOnClickListener();
+								}
 								break;
 							}
 
@@ -527,6 +593,31 @@ public class HistoryRecordTaskDetailInfoActivity extends
 
 	}
 
+	// history record list task form text attachment form item on click listener
+	class HistoryRecordTaskFormTextAttachmentFormItemOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// go to new approve application or history record task text or
+			// image attachment view activity
+			// define new approve application or history record task text or
+			// image attachment view extra data map
+			Map<String, String> _extraMap = new HashMap<String, String>();
+
+			// put history record task text attachment text to extra data map as
+			// param
+			_extraMap
+					.put(NAATDTTextImgAttachmentViewExtraData.NAA_TDT_TEXT_IMAGE_ATTCHMENT_OBJECT,
+							((TextView) v).getText().toString());
+
+			// go to new approve application or history record task text or
+			// image attachment view activity with extra data map
+			pushActivity(NAATDTTextImgAttachmentViewActivity.class, _extraMap);
+		}
+
+	}
+
 	// history record list task form image attachment form item on click
 	// listener
 	class HistoryRecordTaskFormImageAttachmentFormItemOnClickListener implements
@@ -534,11 +625,30 @@ public class HistoryRecordTaskDetailInfoActivity extends
 
 		@Override
 		public void onClick(View v) {
-			Log.d(LOG_TAG,
-					"Form image attachment form item on click listener, view = "
-							+ v);
+			// get and check tag of the imageView
+			Object _imageViewTag = ((ImageView) v).getTag();
+			if (null != _imageViewTag) {
+				// go to new approve application or history record task text or
+				// image attachment view activity
+				// define new approve application or history record task text or
+				// image attachment view extra data map
+				Map<String, Bitmap> _extraMap = new HashMap<String, Bitmap>();
 
-			//
+				// put history record task image attachment image bitmap to
+				// extra data map as param
+				_extraMap
+						.put(NAATDTTextImgAttachmentViewExtraData.NAA_TDT_TEXT_IMAGE_ATTCHMENT_OBJECT,
+								(Bitmap) _imageViewTag);
+
+				// go to new approve application or history record task text or
+				// image attachment view activity with extra data map
+				pushActivity(NAATDTTextImgAttachmentViewActivity.class,
+						_extraMap);
+			} else {
+				Log.e(LOG_TAG,
+						"Get history record task form image attachment image view error, view = "
+								+ v);
+			}
 		}
 
 	}
@@ -564,6 +674,54 @@ public class HistoryRecordTaskDetailInfoActivity extends
 
 				// stop play the voice
 				AudioUtils.stopPlayRecorderAudio();
+			}
+		}
+
+	}
+
+	// history record list task form application attachment form item on click
+	// listener
+	class HistoryRecordTaskFormApplicationAttachmentFormItemOnClickListener
+			implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// get and check the clicked response view tag
+			Object _clickedResponseViewTag = v.getTag();
+			if (null != _clickedResponseViewTag) {
+				// get history record task application attachment open url
+				String _historyRecordTaskApplicationAttachmentOpenUrl = (String) _clickedResponseViewTag;
+
+				// go to open the application attachment activity
+				Intent _viewIntent = new Intent("android.intent.action.VIEW");
+
+				// set data, type, flags and category
+				_viewIntent.setDataAndType(Uri.fromFile(new File(
+						_historyRecordTaskApplicationAttachmentOpenUrl)),
+						"application/pdf");
+				_viewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				_viewIntent.addCategory("android.intent.category.DEFAULT");
+
+				startActivity(_viewIntent);
+
+				// // go to task application attachment view activity
+				// // define task application attachment view extra data map
+				// Map<String, String> _extraMap = new HashMap<String,
+				// String>();
+				//
+				// // put history record task application attachment name and
+				// open url to extra data map as param
+				// _extraMap
+				// .put(TaskApplicationAttachmentViewExtraData.TASK_APPLICATIONATTCHMENT_NAME,
+				// ((TextView) v).getText().toString());
+				// _extraMap
+				// .put(TaskApplicationAttachmentViewExtraData.TASK_APPLICATIONATTCHMENT_OPEN_URL,
+				// _historyRecordTaskApplicationAttachmentOpenUrl);
+				//
+				// // go to task application attachment view activity with
+				// // extra data map
+				// pushActivity(TaskApplicationAttachmentViewActivity.class,
+				// _extraMap);
 			}
 		}
 

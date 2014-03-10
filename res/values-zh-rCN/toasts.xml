@@ -9,5 +9,6 @@
 
     <!-- new approve application or to-do task approve submit contact -->
     <string name="toast_select_submitContact">请至少选择一个审批提交人</string>
+    <string name="toast_fill_mustWriteFormItemContent">请填写表单必填项</string>
 
 </resources>

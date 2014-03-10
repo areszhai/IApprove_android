@@ -315,13 +315,13 @@ public class TaskFormAttachmentFormItem extends FrameLayout {
 		Drawable _applicationAttachmentIcon = getContext().getResources()
 				.getDrawable(R.drawable.img_document_attachment_icon);
 
-		// get and check application attachment open url
-		String _applicationAttachmentOpenUrl = getApplicationAttachmentOpenUrl();
-		if (null != _applicationAttachmentOpenUrl) {
-			// get and check application attachment open url suffix
-			String _suffix = _applicationAttachmentOpenUrl.substring(
-					_applicationAttachmentOpenUrl.lastIndexOf('.') + 1,
-					_applicationAttachmentOpenUrl.length());
+		// get and check application attachment shown tip
+		String _applicationAttachmentShownTip = getApplicationAttachmentShownTip();
+		if (null != _applicationAttachmentShownTip) {
+			// get and check application attachment file suffix
+			String _suffix = _applicationAttachmentShownTip.substring(
+					_applicationAttachmentShownTip.lastIndexOf('.') + 1,
+					_applicationAttachmentShownTip.length());
 			if (null != _suffix) {
 				// enum the suffix
 				if ("doc".equalsIgnoreCase(_suffix)

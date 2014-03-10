@@ -9,5 +9,6 @@
 
     <!-- new approve application or to-do task approve submit contact -->
     <string name="toast_select_submitContact">Please select at least one submit contact</string>
+    <string name="toast_fill_mustWriteFormItemContent">There is at least one must write form item not fill its content</string>
 
 </resources>

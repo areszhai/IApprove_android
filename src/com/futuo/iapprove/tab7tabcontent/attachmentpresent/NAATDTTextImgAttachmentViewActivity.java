@@ -7,10 +7,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.futuo.iapprove.R;
 import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
+import com.richitec.commontoolkit.utils.DisplayScreenUtils;
 
 public class NAATDTTextImgAttachmentViewActivity extends Activity {
 
@@ -59,11 +61,16 @@ public class NAATDTTextImgAttachmentViewActivity extends Activity {
 						.setOnClickListener(new NAATDTTextImgAttachmentOnClickListener());
 			} else if (_naa6tdtText6ImgAttachmentObject instanceof String) {
 				// text attachment object
+				// shown text attachment textView container scrollView
+				((ScrollView) findViewById(R.id.naatdt_textAttachment_textView_container_scrollView))
+						.setVisibility(View.VISIBLE);
+
 				// get text attachment text textView
 				TextView _textAttachmentTextView = (TextView) findViewById(R.id.naatdt_textAttachment_text_textView);
 
-				// shown it
-				_textAttachmentTextView.setVisibility(View.VISIBLE);
+				// set text attachment textView min height
+				_textAttachmentTextView.setMinHeight(DisplayScreenUtils
+						.screenHeight() - DisplayScreenUtils.statusBarHeight());
 
 				// set its text
 				_textAttachmentTextView

@@ -3,8 +3,8 @@
 
     <!-- approve remote background server url -->
     <!-- <string name="server_url" translatable="false">http://sync.walkwork.net/TouchRemoting_IF_Super</string> -->
-    <!-- <string name="server_url" translatable="false">http://192.168.1.234:10086/TouchRemoting_IF_Super</string> -->
-    <string name="server_url" translatable="false">http://122.96.24.174:10086/TouchRemoting_IF_Super</string>
+    <string name="server_url" translatable="false">http://192.168.1.234:10086/TouchRemoting_IF_Super</string>
+    <!-- <string name="server_url" translatable="false">http://122.96.24.174:10086/TouchRemoting_IF_Super</string> -->
     <!-- <string name="server_url" translatable="false">http://192.168.1.188:8080/TouchRemoting_IF_Super</string> -->
 
 

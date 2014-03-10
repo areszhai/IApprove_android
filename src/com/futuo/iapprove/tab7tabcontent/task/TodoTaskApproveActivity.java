@@ -7,10 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
@@ -903,86 +905,126 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		public boolean onLongClick(View v) {
 			// check to-do task status
 			if (TodoTaskStatus.ENDED != _mTodoTaskStatus) {
-				// get my advice
-				// define my advice string builder
-				StringBuilder _myAdviceStringBuilder = new StringBuilder();
+				// show end the to-do task alert dialog
+				new AlertDialog.Builder(TodoTaskApproveActivity.this)
+						.setTitle(R.string.iApprove_alertDialog_title)
+						.setMessage(R.string.todoTask_endAlertDialog_message)
+						.setPositiveButton(
+								R.string.todoTask_endAlertDialog_endButton_title,
+								new DialogInterface.OnClickListener() {
 
-				// get and check advice form linearLayout subviews count
-				int _adviceFormLinearLayoutSubviewsCount = _mAdviceFormLinearLayout
-						.getChildCount();
-				if (1 < _adviceFormLinearLayoutSubviewsCount) {
-					// traversal advice form linearLayout all subviews
-					for (int i = 1; i < _adviceFormLinearLayoutSubviewsCount; i++) {
-						// get to-do task advice form item
-						TaskFormAdviceFormItem _todoTaskAdviceFormItem = (TaskFormAdviceFormItem) _mAdviceFormLinearLayout
-								.getChildAt(i);
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										// get my advice
+										// define my advice string builder
+										StringBuilder _myAdviceStringBuilder = new StringBuilder();
 
-						// check to-do task advice type and get my advice
-						if (TaskFormAdviceType.MY_ADVICE == _todoTaskAdviceFormItem
-								.getAdviceType()) {
-							// add my advice and separate character to my
-							// advice string builder
-							_myAdviceStringBuilder
-									.append(_todoTaskAdviceFormItem
-											.getAdviceInfo());
-							if (_adviceFormLinearLayoutSubviewsCount - 1 != i) {
-								_myAdviceStringBuilder.append("\n");
-							}
-						}
-					}
-				}
+										// get and check advice form
+										// linearLayout subviews count
+										int _adviceFormLinearLayoutSubviewsCount = _mAdviceFormLinearLayout
+												.getChildCount();
+										if (1 < _adviceFormLinearLayoutSubviewsCount) {
+											// traversal advice form
+											// linearLayout all subviews
+											for (int i = 1; i < _adviceFormLinearLayoutSubviewsCount; i++) {
+												// get to-do task advice form
+												// item
+												TaskFormAdviceFormItem _todoTaskAdviceFormItem = (TaskFormAdviceFormItem) _mAdviceFormLinearLayout
+														.getChildAt(i);
 
-				// hide the to-do task local storage
-				// define and initialize the update content values
-				ContentValues _updateContentValues = new ContentValues();
-				_updateContentValues.put(TodoTask.TASK_STATUS,
-						TodoTask.HIDDEN_STATUS.toString());
+												// check to-do task advice type
+												// and get my advice
+												if (TaskFormAdviceType.MY_ADVICE == _todoTaskAdviceFormItem
+														.getAdviceType()) {
+													// add my advice and
+													// separate character to my
+													// advice string builder
+													_myAdviceStringBuilder
+															.append(_todoTaskAdviceFormItem
+																	.getAdviceInfo());
+													if (_adviceFormLinearLayoutSubviewsCount - 1 != i) {
+														_myAdviceStringBuilder
+																.append("\n");
+													}
+												}
+											}
+										}
 
-				// update user enterprise to-do list task local storage
-				getContentResolver()
-						.update(ContentUris.withAppendedId(
-								TodoTask.ENTERPRISE_CONTENT_URI,
-								IAUserExtension
-										.getUserLoginEnterpriseId(_mLoginUser)),
-								_updateContentValues,
-								TodoTask.APPROVE_USER_ENTERPRISETODOLISTTASK_WITHSENDERFAKEID_CONDITION,
-								new String[] { _mTodoTaskSenderFakeId
-										.toString() });
+										// hide the to-do task local storage
+										// define and initialize the update
+										// content values
+										ContentValues _updateContentValues = new ContentValues();
+										_updateContentValues.put(
+												TodoTask.TASK_STATUS,
+												TodoTask.HIDDEN_STATUS
+														.toString());
 
-				// insert the to-do task for approving to local storage
-				// define and initialize the to-do task approving for
-				// inserting content values
-				ContentValues _insertContentValues = new ContentValues();
-				_insertContentValues.put(ApprovingTodoTask.TASK_ID,
-						_mTodoTaskId.toString());
-				_insertContentValues.put(ApprovingTodoTask.ENTERPRISE_ID,
-						IAUserExtension.getUserLoginEnterpriseId(_mLoginUser));
-				_insertContentValues.put(ApprovingTodoTask.APPROVE_NUMBER,
-						_mLoginUser.getName());
-				_insertContentValues
-						.put(ApprovingTodoTask.JUDGE,
-								_mMyAdviceJudge ? getResources()
-										.getString(
-												R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myAgreedJudge)
-										: getResources()
-												.getString(
-														R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myDisAgreedJudge));
-				_insertContentValues.put(ApprovingTodoTask.ADVICE_INFO,
-						_myAdviceStringBuilder.toString());
-				_insertContentValues.put(ApprovingTodoTask.SENDER_FAKEID,
-						_mTodoTaskSenderFakeId.toString());
-				_insertContentValues.put(ApprovingTodoTask.TASK_STATUS,
-						_mTodoTaskStatus.getValue());
-				_insertContentValues.put(ApprovingTodoTask.TASK_OPERATESTATE,
-						ApprovingTodoTask.TASK_OPERATESTATE_ENDED);
+										// update user enterprise to-do list
+										// task local storage
+										getContentResolver()
+												.update(ContentUris
+														.withAppendedId(
+																TodoTask.ENTERPRISE_CONTENT_URI,
+																IAUserExtension
+																		.getUserLoginEnterpriseId(_mLoginUser)),
+														_updateContentValues,
+														TodoTask.APPROVE_USER_ENTERPRISETODOLISTTASK_WITHSENDERFAKEID_CONDITION,
+														new String[] { _mTodoTaskSenderFakeId
+																.toString() });
 
-				// insert the to-do task for approving to local storage
-				getContentResolver().insert(
-						ApprovingTodoTask.APPROVINGTODOTASKS_CONTENT_URI,
-						_insertContentValues);
+										// insert the to-do task for approving
+										// to local storage
+										// define and initialize the to-do task
+										// approving for inserting content
+										// values
+										ContentValues _insertContentValues = new ContentValues();
+										_insertContentValues.put(
+												ApprovingTodoTask.TASK_ID,
+												_mTodoTaskId.toString());
+										_insertContentValues
+												.put(ApprovingTodoTask.ENTERPRISE_ID,
+														IAUserExtension
+																.getUserLoginEnterpriseId(_mLoginUser));
+										_insertContentValues
+												.put(ApprovingTodoTask.APPROVE_NUMBER,
+														_mLoginUser.getName());
+										_insertContentValues
+												.put(ApprovingTodoTask.JUDGE,
+														_mMyAdviceJudge ? getResources()
+																.getString(
+																		R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myAgreedJudge)
+																: getResources()
+																		.getString(
+																				R.string.rbgServer_userEnterpriseTodoListTaskApprove6FinApproveReqParam_myDisAgreedJudge));
+										_insertContentValues.put(
+												ApprovingTodoTask.ADVICE_INFO,
+												_myAdviceStringBuilder
+														.toString());
+										_insertContentValues
+												.put(ApprovingTodoTask.SENDER_FAKEID,
+														_mTodoTaskSenderFakeId
+																.toString());
+										_insertContentValues.put(
+												ApprovingTodoTask.TASK_STATUS,
+												_mTodoTaskStatus.getValue());
+										_insertContentValues
+												.put(ApprovingTodoTask.TASK_OPERATESTATE,
+														ApprovingTodoTask.TASK_OPERATESTATE_ENDED);
 
-				// popup to-do task approve activity
-				popActivity();
+										// insert the to-do task for approving
+										// to local storage
+										getContentResolver()
+												.insert(ApprovingTodoTask.APPROVINGTODOTASKS_CONTENT_URI,
+														_insertContentValues);
+
+										// popup to-do task approve activity
+										popActivity();
+									}
+								})
+						.setNegativeButton(
+								R.string.iApprove_alertDialog_cancelButton_title,
+								null).show();
 			}
 
 			return true;
@@ -1023,6 +1065,8 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 			Log.d(LOG_TAG,
 					"Form text attachment form item on long click listener, view = "
 							+ v);
+
+			//
 
 			return true;
 		}
@@ -1072,6 +1116,8 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 					"Form image attachment form item on long click listener, view = "
 							+ v);
 
+			//
+
 			return true;
 		}
 
@@ -1120,15 +1166,18 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 								.lastIndexOf('.') + 1);
 				if (!"txt"
 						.equalsIgnoreCase(_todoTaskApplicationAttachmentLSFileSuffix)) {
-					Intent intent = new Intent("android.intent.action.VIEW");
+					// go to open the application attachment activity
+					Intent _viewIntent = new Intent(
+							"android.intent.action.VIEW");
 
-					intent.addCategory("android.intent.category.DEFAULT");
-					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					intent.setDataAndType(Uri.fromFile(new File(
+					// set data, type, flags and category
+					_viewIntent.setDataAndType(Uri.fromFile(new File(
 							_todoTaskApplicationAttachmentOpenUrl)),
 							"application/pdf");
+					_viewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					_viewIntent.addCategory("android.intent.category.DEFAULT");
 
-					startActivity(intent);
+					startActivity(_viewIntent);
 				} else {
 					// go to task application attachment view activity
 					// define task application attachment view extra data map

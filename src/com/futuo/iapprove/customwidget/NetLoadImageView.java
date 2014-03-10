@@ -25,11 +25,17 @@ public class NetLoadImageView extends ImageView implements ImageCallback {
 	public void loadUrl(String url) {
 		Bitmap img = AsyncImageLoader.getInstance().loadImage(url, this);
 		setImageBitmap(img);
+
+		// also set the image bitmap as tag
+		setTag(img);
 	}
 
 	@Override
 	public void imageLoaded(Bitmap bitmap) {
 		setImageBitmap(bitmap);
+
+		// also set the image bitmap as tag
+		setTag(bitmap);
 	}
 
 }

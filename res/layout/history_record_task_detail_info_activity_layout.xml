@@ -12,8 +12,11 @@
         android:orientation="vertical" >
 
         <FrameLayout
+            android:id="@+id/hrta_formItemForm_parent_frameLayout"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone" >
 
             <FrameLayout
                 android:layout_width="fill_parent"
@@ -51,7 +54,7 @@
             android:id="@+id/hrta_attachmentForm_parent_frameLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:visibility="gone" >
 
             <FrameLayout
@@ -96,7 +99,7 @@
             android:id="@+id/hrta_adviceForm_parent_frameLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:visibility="gone" >
 
             <FrameLayout
