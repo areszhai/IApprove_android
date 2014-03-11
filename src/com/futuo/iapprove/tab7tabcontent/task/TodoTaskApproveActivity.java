@@ -20,17 +20,22 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.MediaStore;
+import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
@@ -86,8 +91,10 @@ import com.futuo.iapprove.task.TodoTaskStatus;
 import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.futuo.iapprove.utils.AudioUtils;
 import com.futuo.iapprove.utils.CalculateStringUtils;
+import com.richitec.commontoolkit.customcomponent.CTPopupWindow;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
+import com.richitec.commontoolkit.utils.CommonUtils;
 
 @SuppressWarnings("deprecation")
 public class TodoTaskApproveActivity extends IApproveNavigationActivity {
@@ -95,8 +102,9 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 	private static final String LOG_TAG = TodoTaskApproveActivity.class
 			.getCanonicalName();
 
-	// user enterprise to-do list task id, sender fake id and status
+	// user enterprise to-do list task id, title, sender fake id and status
 	private Long _mTodoTaskId;
+	private String _mTodoTaskTitle;
 	private Long _mTodoTaskSenderFakeId;
 	private TodoTaskStatus _mTodoTaskStatus;
 
@@ -118,6 +126,11 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 	// to-do list task attachment id(key) and form attachment form item
 	// view(value) map
 	private Map<Long, TaskFormAttachmentFormItem> _mFormAttachmentId7FormAttachmentFormItemMap;
+
+	// to-do task text and image attachment more operation select popup window
+	private final TodoTaskTextImgAttachmentMoreOperationSelectPopupWindow TODOTASK_TEXTIMGATTACHMENT_MOREOPERATION_SELECT_POPUPWINDOW = new TodoTaskTextImgAttachmentMoreOperationSelectPopupWindow(
+			R.layout.task_textimgattachment_moreoperation_select_popupwindow_layout,
+			LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
 	// to-do list task form advice form parent frameLayout and form linearLayout
 	private FrameLayout _mAdviceFormParentFrameLayout;
@@ -159,8 +172,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		// get the extra data
 		final Bundle _extraData = getIntent().getExtras();
 
-		// define user enterprise to-do list task title and advice list
-		String _todoTaskTitle = "";
+		// define user enterprise to-do list task advice list
 		List<IApproveTaskAdviceBean> _todoTaskAdvices = new ArrayList<IApproveTaskAdviceBean>();
 
 		// initialize to-do task submit contact list
@@ -172,7 +184,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 			// list
 			_mTodoTaskId = _extraData
 					.getLong(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKID);
-			_todoTaskTitle = _extraData
+			_mTodoTaskTitle = _extraData
 					.getString(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKTITLE);
 			_mTodoTaskSenderFakeId = _extraData
 					.getLong(TodoTaskApproveExtraData.TODOTASK_APPROVE_TASKSENDERFAKEID);
@@ -210,7 +222,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 		// set subViews
 		// set title
-		setTitle(_todoTaskTitle);
+		setTitle(_mTodoTaskTitle);
 
 		// define to-do list task submit bar button item
 		IApproveImageBarButtonItem _todoTaskSubmitBarBtnItem;
@@ -1032,6 +1044,96 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 	}
 
+	// to-do task text and image attachment more operation select popup window
+	class TodoTaskTextImgAttachmentMoreOperationSelectPopupWindow extends
+			CTPopupWindow {
+
+		// to-do task title textView
+		private TextView _mTaskTitleTextView;
+
+		// to-do task text or image attachment more operation select listView
+		// and its operate listener
+		private ListView _mTaskTextImgAttachmentMoreOperationSelectListView;
+		private List<OnClickListener> _mTaskTextImgAttachmentMoreOperationOperateListeners;
+
+		public TodoTaskTextImgAttachmentMoreOperationSelectPopupWindow(
+				int resource, int width, int height) {
+			super(resource, width, height);
+		}
+
+		@Override
+		protected void bindPopupWindowComponentsListener() {
+			// get to-do task title textView
+			_mTaskTitleTextView = (TextView) getContentView().findViewById(
+					R.id.ttiamospw_task_title_textView);
+
+			// get to-do task text or image attachment more operation select
+			// listView
+			_mTaskTextImgAttachmentMoreOperationSelectListView = (ListView) getContentView()
+					.findViewById(
+							R.id.ttiamospw_task_textOrImgAttachment_moreOperation_listView);
+
+			// set its on item click listener
+			_mTaskTextImgAttachmentMoreOperationSelectListView
+					.setOnItemClickListener(new TaskTextImgAttachmentMoreOperationListViewOnItemClickListener());
+		}
+
+		@Override
+		protected void resetPopupWindow() {
+			// nothing to do
+		}
+
+		// set to-do task text or image attachment more operation select popup
+		// window title
+		public void setTaskTextImgAttachmentMoreOperationSelectPopupWindowTitle(
+				String title) {
+			_mTaskTitleTextView.setText(title);
+		}
+
+		// set to-do task text or image attachment more operation name and
+		// operate listener
+		public void initTaskTextImgAttachmentMoreOperation(
+				List<String> operateName, List<OnClickListener> operateListener) {
+			// update to-do task text or image attachment more operation operate
+			// listener
+			_mTaskTextImgAttachmentMoreOperationOperateListeners = operateListener;
+
+			// set to-do task text or image attachment more operation listView
+			// adapter
+			_mTaskTextImgAttachmentMoreOperationSelectListView
+					.setAdapter(new ArrayAdapter<String>(
+							TodoTaskApproveActivity.this,
+							R.layout.task_textimgattachment_moreoperation_listview_item_layout,
+							operateName));
+		}
+
+		// inner class
+		// to-do task text or image attachment more operation listView on item
+		// click listener
+		class TaskTextImgAttachmentMoreOperationListViewOnItemClickListener
+				implements OnItemClickListener {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// get and check to-do task text or image attachment more
+				// operation operate listener
+				OnClickListener _operateListener = _mTaskTextImgAttachmentMoreOperationOperateListeners
+						.get(position);
+				if (null != _operateListener) {
+					_operateListener
+							.onClick((View) TodoTaskTextImgAttachmentMoreOperationSelectPopupWindow.this
+									.getContentView().getTag());
+				}
+
+				// close the popup window
+				dismiss();
+			}
+
+		}
+
+	}
+
 	// to-do list task form text attachment form item on click listener
 	class TodoTaskFormTextAttachmentFormItemOnClickListener implements
 			OnClickListener {
@@ -1060,15 +1162,56 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 	class TodoTaskFormTextAttachmentFormItemOnLongClickListener implements
 			OnLongClickListener {
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public boolean onLongClick(View v) {
-			Log.d(LOG_TAG,
-					"Form text attachment form item on long click listener, view = "
-							+ v);
+			// set to-do task text attachment more operation select popup window
+			// title
+			TODOTASK_TEXTIMGATTACHMENT_MOREOPERATION_SELECT_POPUPWINDOW
+					.setTaskTextImgAttachmentMoreOperationSelectPopupWindowTitle(_mTodoTaskTitle);
 
-			//
+			// initialize to-do task text attachment more operation operate
+			// listView
+			TODOTASK_TEXTIMGATTACHMENT_MOREOPERATION_SELECT_POPUPWINDOW
+					.initTaskTextImgAttachmentMoreOperation(
+							(List<String>) CommonUtils
+									.array2List(getResources()
+											.getStringArray(
+													R.array.ttiamospw_textAttachment_moreOperations)),
+							(List<OnClickListener>) CommonUtils
+									.array2List(new OnClickListener[] {
+											new CopyTodoTaskTextAttachmentText2Clipboard(),
+											null }));
+
+			// set the clicked view as tag of the popup window content view
+			TODOTASK_TEXTIMGATTACHMENT_MOREOPERATION_SELECT_POPUPWINDOW
+					.getContentView().setTag(v);
+
+			// show to-do task text attachment more operation select popup
+			// window
+			TODOTASK_TEXTIMGATTACHMENT_MOREOPERATION_SELECT_POPUPWINDOW
+					.showAtLocation(v, Gravity.CENTER, 0, 0);
 
 			return true;
+		}
+
+		// inner class
+		// copy the to-do task text attachment text to system clipboard
+		class CopyTodoTaskTextAttachmentText2Clipboard implements
+				OnClickListener {
+
+			@Override
+			public void onClick(View v) {
+				// copy to-do task text attachment to system clipboard
+				((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
+						.setText(((TextView) v).getText());
+
+				// show talking group invite note copy successful toast
+				Toast.makeText(TodoTaskApproveActivity.this,
+						R.string.toast_taskTextAttachment_text_cpoySuccessful,
+						Toast.LENGTH_SHORT).show();
+			}
+
 		}
 
 	}
@@ -1110,15 +1253,80 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 	class TodoTaskFormImageAttachmentFormItemOnLongClickListener implements
 			OnLongClickListener {
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public boolean onLongClick(View v) {
-			Log.d(LOG_TAG,
-					"Form image attachment form item on long click listener, view = "
-							+ v);
+			// set to-do task image attachment more operation select popup
+			// window title
+			TODOTASK_TEXTIMGATTACHMENT_MOREOPERATION_SELECT_POPUPWINDOW
+					.setTaskTextImgAttachmentMoreOperationSelectPopupWindowTitle(_mTodoTaskTitle);
 
-			//
+			// initialize to-do task image attachment more operation operate
+			// listView
+			TODOTASK_TEXTIMGATTACHMENT_MOREOPERATION_SELECT_POPUPWINDOW
+					.initTaskTextImgAttachmentMoreOperation(
+							(List<String>) CommonUtils
+									.array2List(getResources()
+											.getStringArray(
+													R.array.ttiamospw_imageAttachment_moreOperations)),
+							(List<OnClickListener>) CommonUtils
+									.array2List(new OnClickListener[] {
+											new SaveTodoTaskImgAttachmentImage2Album(),
+											null }));
+
+			// set the clicked view as tag of the popup window content view
+			TODOTASK_TEXTIMGATTACHMENT_MOREOPERATION_SELECT_POPUPWINDOW
+					.getContentView().setTag(v);
+
+			// show to-do task image attachment more operation select popup
+			// window
+			TODOTASK_TEXTIMGATTACHMENT_MOREOPERATION_SELECT_POPUPWINDOW
+					.showAtLocation(v, Gravity.CENTER, 0, 0);
 
 			return true;
+		}
+
+		// inner class
+		// save the to-do task image attachment image to system album
+		class SaveTodoTaskImgAttachmentImage2Album implements OnClickListener {
+
+			@Override
+			public void onClick(View v) {
+				// get and check tag of the imageView
+				Object _imageViewTag = ((ImageView) v).getTag();
+				if (null != _imageViewTag) {
+					// insert to-do task image attachment image bitmap to system
+					// album
+					String _theSavedPath = MediaStore.Images.Media.insertImage(
+							getContentResolver(), (Bitmap) _imageViewTag,
+							"photo", "this is a photo");
+
+					// check the saved path
+					if (null != _theSavedPath) {
+						sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+								Uri.parse("file://"
+										+ Environment
+												.getExternalStorageDirectory())));
+
+						Toast.makeText(
+								TodoTaskApproveActivity.this,
+								R.string.toast_taskImageAttachment_image_saveSuccessful,
+								Toast.LENGTH_SHORT).show();
+					} else {
+						Log.e(LOG_TAG,
+								"Save the to-do task image attachment image bitmap to system album error");
+
+						Toast.makeText(
+								TodoTaskApproveActivity.this,
+								R.string.toast_taskImageAttachment_image_saveFailed,
+								Toast.LENGTH_SHORT).show();
+					}
+				} else {
+					Log.e(LOG_TAG,
+							"Get to-do task form image attachment image view error");
+				}
+			}
+
 		}
 
 	}
@@ -1167,15 +1375,14 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 				if (!"txt"
 						.equalsIgnoreCase(_todoTaskApplicationAttachmentLSFileSuffix)) {
 					// go to open the application attachment activity
-					Intent _viewIntent = new Intent(
-							"android.intent.action.VIEW");
+					Intent _viewIntent = new Intent(Intent.ACTION_VIEW);
 
 					// set data, type, flags and category
 					_viewIntent.setDataAndType(Uri.fromFile(new File(
 							_todoTaskApplicationAttachmentOpenUrl)),
 							"application/pdf");
 					_viewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					_viewIntent.addCategory("android.intent.category.DEFAULT");
+					_viewIntent.addCategory(Intent.CATEGORY_DEFAULT);
 
 					startActivity(_viewIntent);
 				} else {

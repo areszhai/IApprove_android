@@ -1,6 +1,5 @@
 package com.futuo.iapprove.tab7tabcontent.task;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,6 +46,7 @@ import com.futuo.iapprove.task.IApproveTaskFormItemBean;
 import com.futuo.iapprove.task.TodoTaskStatus;
 import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
 import com.futuo.iapprove.utils.AudioUtils;
+import com.futuo.iapprove.utils.CalculateStringUtils;
 import com.futuo.iapprove.utils.HttpRequestParamUtils;
 import com.richitec.commontoolkit.user.UserManager;
 import com.richitec.commontoolkit.utils.HttpUtils;
@@ -108,6 +108,10 @@ public class HistoryRecordTaskDetailInfoActivity extends
 		TodoTaskStatus _historyRecordTaskStatus = null;
 		List<IApproveTaskAdviceBean> _historyRecordTaskAdvices = new ArrayList<IApproveTaskAdviceBean>();
 
+		// define get user enterprise history record list task info request
+		// action
+		String _getHistoryRecordTaskInfoReqAction = null;
+
 		// check the data
 		if (null != _extraData) {
 			// get history record list task id, title, sender fake id, status
@@ -124,6 +128,10 @@ public class HistoryRecordTaskDetailInfoActivity extends
 			_historyRecordTaskAdvices
 					.addAll((Collection<? extends IApproveTaskAdviceBean>) _extraData
 							.getSerializable(HistoryRecordTaskListTaskDetailInfoExtraData.HISTORYRECORDTASK_DETAILINFO_TASKADVICES));
+
+			// get history record list task info request action
+			_getHistoryRecordTaskInfoReqAction = _extraData
+					.getString(HistoryRecordTaskListTaskDetailInfoExtraData.HISTORYRECORDTASK_DETAILINFO_REQACTION);
 		}
 
 		// set subViews
@@ -176,12 +184,10 @@ public class HistoryRecordTaskDetailInfoActivity extends
 				.genUserSigHttpReqParam();
 
 		// put get user enterprise history record list task form info action in
-		_getUserEnterpriseHistoryRecordListTaskFormInfoPostHttpReqParam
-				.put(getResources().getString(
+		_getUserEnterpriseHistoryRecordListTaskFormInfoPostHttpReqParam.put(
+				getResources().getString(
 						R.string.rbgServer_commonReqParam_action),
-						getResources()
-								.getString(
-										R.string.rbgServer_getIApproveListTaskFormInfoReqParam_action));
+				_getHistoryRecordTaskInfoReqAction);
 
 		// put get user enterprise history record list task form info user
 		// enterprise id in
@@ -322,6 +328,9 @@ public class HistoryRecordTaskDetailInfoActivity extends
 		public static final String HISTORYRECORDTASK_DETAILINFO_TASKSTATUS = "historyrecord_task_detailinfo__taskstatus";
 		public static final String HISTORYRECORDTASK_DETAILINFO_TASKADVICES = "historyrecord_task_detailinfo__taskadvices";
 
+		// get history record task info request info
+		public static final String HISTORYRECORDTASK_DETAILINFO_REQACTION = "historyrecord_task_detailinfo_requestaction";
+
 	}
 
 	// get user enterprise history record list task form info post http request
@@ -349,7 +358,7 @@ public class HistoryRecordTaskDetailInfoActivity extends
 					.getHttpResponseEntityString(response);
 
 			Log.d(LOG_TAG,
-					"@@@, Send get user enterprise history record list task form info post http request successful, response entity string = "
+					"Send get user enterprise history record list task form info post http request successful, response entity string = "
 							+ _respEntityString);
 
 			// get and check http response entity string error json data
@@ -414,6 +423,45 @@ public class HistoryRecordTaskDetailInfoActivity extends
 									_historyRecordTaskFormItemFormItem,
 									new LayoutParams(LayoutParams.MATCH_PARENT,
 											LayoutParams.WRAP_CONTENT, 1));
+
+							// need capital
+							if (historyRecordTaskFormItem.itemNeedCapital()) {
+								// clone history record list task form item copy
+								IApproveTaskFormItemBean _historyRecordTaskFormItemCopy = new IApproveTaskFormItemBean();
+								_historyRecordTaskFormItemCopy
+										.setItemName(String
+												.format(getResources()
+														.getString(
+																R.string.task_formItem_infoLabel_capitalFormat),
+														historyRecordTaskFormItem
+																.getItemName()));
+								_historyRecordTaskFormItemCopy
+										.setItemInfo(CalculateStringUtils
+												.calculateCapital(historyRecordTaskFormItem
+														.getItemInfo()));
+
+								// generate new history record list task capital
+								// form item form item
+								TaskFormItemFormItem _historyRecordTaskFormItemCapitalFormItem = TaskFormItemFormItem
+										.generateTaskFormItemFormItem(_historyRecordTaskFormItemCopy);
+
+								// add separator line and history record list
+								// task form item form item to form item form
+								_mFormItemFormLinearLayout
+										.addView(
+												new CommonFormSeparator(
+														HistoryRecordTaskDetailInfoActivity.this),
+												new LayoutParams(
+														LayoutParams.MATCH_PARENT,
+														LayoutParams.WRAP_CONTENT));
+								_mFormItemFormLinearLayout
+										.addView(
+												_historyRecordTaskFormItemCapitalFormItem,
+												new LayoutParams(
+														LayoutParams.MATCH_PARENT,
+														LayoutParams.WRAP_CONTENT,
+														1));
+							}
 						} else {
 							// get the existed to-do list task form item form
 							// item and
@@ -691,16 +739,18 @@ public class HistoryRecordTaskDetailInfoActivity extends
 			if (null != _clickedResponseViewTag) {
 				// get history record task application attachment open url
 				String _historyRecordTaskApplicationAttachmentOpenUrl = (String) _clickedResponseViewTag;
+				Log.d(LOG_TAG,
+						"History record task application attachment open url = "
+								+ _historyRecordTaskApplicationAttachmentOpenUrl);
 
 				// go to open the application attachment activity
-				Intent _viewIntent = new Intent("android.intent.action.VIEW");
+				Intent _viewIntent = new Intent(
+						Intent.ACTION_VIEW,
+						Uri.parse(_historyRecordTaskApplicationAttachmentOpenUrl));
 
-				// set data, type, flags and category
-				_viewIntent.setDataAndType(Uri.fromFile(new File(
-						_historyRecordTaskApplicationAttachmentOpenUrl)),
-						"application/pdf");
+				// set flags and category
 				_viewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				_viewIntent.addCategory("android.intent.category.DEFAULT");
+				_viewIntent.addCategory(Intent.CATEGORY_DEFAULT);
 
 				startActivity(_viewIntent);
 

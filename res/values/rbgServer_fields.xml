@@ -62,7 +62,6 @@
 
     <!-- iApprove list task form info common -->
     <!-- <string name="rbgServer_getIApproveListTaskFormInfoReqParam_action" translatable="false">getInfoDetail</string> -->
-    <string name="rbgServer_getIApproveListTaskFormInfoReqParam_action" translatable="false">getInfoDetailByType</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskId" translatable="false">infoid</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskSenderFakeId" translatable="false">interflowid</string>
     <string name="rbgServer_getIApproveListTaskFormInfoReqParam_taskStatus" translatable="false">interflowdetailstate</string>
@@ -195,5 +194,9 @@
     <string name="rbgServer_getEnterpriseFormInfoReqResp_formula_id" translatable="false">id</string>
     <string name="rbgServer_getEnterpriseFormInfoReqResp_formula_formId" translatable="false">manageid</string>
     <string name="rbgServer_getEnterpriseFormInfoReqResp_formula_formula" translatable="false">formula</string>
+
+    <!-- history record task detail info -->
+    <string name="rbgServer_getCheckedTaskFormInfoReqParam_action" translatable="false">getInfoDetailByType</string>
+    <string name="rbgServer_getMyApplicationTaskFormInfoReqParam_action" translatable="false">getMyInfoDetailByType</string>
 
 </resources>

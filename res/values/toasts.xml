@@ -11,4 +11,9 @@
     <string name="toast_select_submitContact">Please select at least one submit contact</string>
     <string name="toast_fill_mustWriteFormItemContent">There is at least one must write form item not fill its content</string>
 
+    <!-- task text or image attachment more operation select popup window -->
+    <string name="toast_taskTextAttachment_text_cpoySuccessful">Task text attachment text has been copied to clipboard</string>
+    <string name="toast_taskImageAttachment_image_saveSuccessful">Task image attachment image has been saved to album</string>
+    <string name="toast_taskImageAttachment_image_saveFailed">Task image attachment image saved to album failed</string>
+
 </resources>

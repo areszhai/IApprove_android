@@ -96,6 +96,11 @@
     <string name="tdta_adviceSwitch_offText">不同意</string>
     <string name="tdta_adviceSend_button_title">发送</string>
 
+    <!-- task text or image attachment more operation select popup window -->
+    <string name="ttiamospw_more_operate">更多</string>
+    <string name="ttiamospw_cpoyText2Clipboard_operate">复制到粘贴板</string>
+    <string name="ttiamospw_saveImg2Album_operate">保存到相册</string>
+
     <!-- address book tab content activity -->
     <string name="addressbook_tab7nav_title">通讯录</string>
     <string name="ab_contactSearch_editText_hint">按名字或拼音搜索联系人</string>

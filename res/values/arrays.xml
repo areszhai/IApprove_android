@@ -29,4 +29,14 @@
         <item>@string/tdl_task_saturdaySubmit_submitTimestamp</item>
     </string-array>
 
+    <!-- task text or image attachment more operation select popup window -->
+    <string-array name="ttiamospw_textAttachment_moreOperations" translatable="false">
+        <item>@string/ttiamospw_cpoyText2Clipboard_operate</item>
+        <item>@string/ttiamospw_more_operate</item>
+    </string-array>
+    <string-array name="ttiamospw_imageAttachment_moreOperations" translatable="false">
+        <item>@string/ttiamospw_saveImg2Album_operate</item>
+        <item>@string/ttiamospw_more_operate</item>
+    </string-array>
+
 </resources>

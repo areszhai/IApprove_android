@@ -128,6 +128,11 @@
     <string name="tdta_adviceSwitch_offText">Disagree</string>
     <string name="tdta_adviceSend_button_title">Send</string>
 
+    <!-- task text or image attachment more operation select popup window -->
+    <string name="ttiamospw_more_operate">More</string>
+    <string name="ttiamospw_cpoyText2Clipboard_operate">Copy to clipboard</string>
+    <string name="ttiamospw_saveImg2Album_operate">Save to album</string>
+
     <!-- to-do task end alert dialog -->
     <string name="todoTask_endAlertDialog_message">Are you sure to end the to-do task?</string>
     <string name="todoTask_endAlertDialog_endButton_title">End</string>

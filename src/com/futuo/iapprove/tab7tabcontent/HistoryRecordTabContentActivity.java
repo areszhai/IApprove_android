@@ -605,8 +605,8 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 			IApproveTaskBean _clickedHistoryRecordTask = _mHisrotyRecordTaskList
 					.get((int) id);
 
-			// put user enterprise to-do list task id, title, sender fake id,
-			// status and advice list to extra data map as param
+			// put user enterprise history record list task id, title, sender
+			// fake id, status and advice list to extra data map as param
 			_extraMap
 					.put(HistoryRecordTaskListTaskDetailInfoExtraData.HISTORYRECORDTASK_DETAILINFO_TASKID,
 							_clickedHistoryRecordTask.getTaskId());
@@ -622,6 +622,28 @@ public class HistoryRecordTabContentActivity extends IApproveTabContentActivity 
 			_extraMap
 					.put(HistoryRecordTaskListTaskDetailInfoExtraData.HISTORYRECORDTASK_DETAILINFO_TASKADVICES,
 							_clickedHistoryRecordTask.getAdvices());
+
+			// put get user enterprise history record list task info request
+			// action to to extra data map as param
+			// check history record title segment radioGroup checked id
+			switch (_mHistoryRecordTitleSegment.getCheckedRadioButtonId()) {
+			case R.id.hr_checked_segment_radioButton:
+				_extraMap
+						.put(HistoryRecordTaskListTaskDetailInfoExtraData.HISTORYRECORDTASK_DETAILINFO_REQACTION,
+								getResources()
+										.getString(
+												R.string.rbgServer_getCheckedTaskFormInfoReqParam_action));
+				break;
+
+			case R.id.hr_myApplication_segment_radioButton:
+			default:
+				_extraMap
+						.put(HistoryRecordTaskListTaskDetailInfoExtraData.HISTORYRECORDTASK_DETAILINFO_REQACTION,
+								getResources()
+										.getString(
+												R.string.rbgServer_getMyApplicationTaskFormInfoReqParam_action));
+				break;
+			}
 
 			// go to history record task list task detail info activity with
 			// extra data map

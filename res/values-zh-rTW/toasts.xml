@@ -11,4 +11,9 @@
     <string name="toast_select_submitContact">请至少选择一个审批提交人</string>
     <string name="toast_fill_mustWriteFormItemContent">请填写表单必填项</string>
 
+    <!-- task text or image attachment more operation select popup window -->
+    <string name="toast_taskTextAttachment_text_cpoySuccessful">表单文本附件信息已拷贝到粘贴板</string>
+    <string name="toast_taskImageAttachment_image_saveSuccessful">表单图片附件图片已保存到系统相册</string>
+    <string name="toast_taskImageAttachment_image_saveFailed">表单图片附件图片保存到系统相册失败</string>
+
 </resources>
