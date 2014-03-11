@@ -37,8 +37,8 @@ import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormApplic
 import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormAttachmentType;
 import com.futuo.iapprove.customwidget.TaskFormAttachmentFormItem.TaskFormVoiceAttachmentInfoDataKeys;
 import com.futuo.iapprove.customwidget.TaskFormItemFormItem;
-import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity;
-import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity.NAATDTTextImgAttachmentViewExtraData;
+import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATaskTextImgAttachmentViewActivity;
+import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATaskTextImgAttachmentViewActivity.NAATaskTextImgAttachmentViewExtraData;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentType;
@@ -656,12 +656,12 @@ public class HistoryRecordTaskDetailInfoActivity extends
 			// put history record task text attachment text to extra data map as
 			// param
 			_extraMap
-					.put(NAATDTTextImgAttachmentViewExtraData.NAA_TDT_TEXT_IMAGE_ATTCHMENT_OBJECT,
+					.put(NAATaskTextImgAttachmentViewExtraData.NAA_TASK_TEXT_IMAGE_ATTCHMENT_OBJECT,
 							((TextView) v).getText().toString());
 
-			// go to new approve application or history record task text or
-			// image attachment view activity with extra data map
-			pushActivity(NAATDTTextImgAttachmentViewActivity.class, _extraMap);
+			// go to new approve application or iApprove task text or image
+			// attachment view activity with extra data map
+			pushActivity(NAATaskTextImgAttachmentViewActivity.class, _extraMap);
 		}
 
 	}
@@ -685,12 +685,12 @@ public class HistoryRecordTaskDetailInfoActivity extends
 				// put history record task image attachment image bitmap to
 				// extra data map as param
 				_extraMap
-						.put(NAATDTTextImgAttachmentViewExtraData.NAA_TDT_TEXT_IMAGE_ATTCHMENT_OBJECT,
+						.put(NAATaskTextImgAttachmentViewExtraData.NAA_TASK_TEXT_IMAGE_ATTCHMENT_OBJECT,
 								(Bitmap) _imageViewTag);
 
-				// go to new approve application or history record task text or
-				// image attachment view activity with extra data map
-				pushActivity(NAATDTTextImgAttachmentViewActivity.class,
+				// go to new approve application or iApprove task text or image
+				// attachment view activity with extra data map
+				pushActivity(NAATaskTextImgAttachmentViewActivity.class,
 						_extraMap);
 			} else {
 				Log.e(LOG_TAG,

@@ -2,10 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity" >
+    tools:context=".tab7tabcontent.attachmentpresent.NAATaskTextImgAttachmentViewActivity" >
 
     <ScrollView
-        android:id="@+id/naatdt_textAttachment_textView_container_scrollView"
+        android:id="@+id/naatask_textAttachment_textView_container_scrollView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:visibility="gone" >
@@ -16,7 +16,7 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/naatdt_textAttachment_text_textView"
+                android:id="@+id/naatask_textAttachment_text_textView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -25,11 +25,11 @@
     </ScrollView>
 
     <ImageView
-        android:id="@+id/naatdt_imgAttachment_image_imageView"
+        android:id="@+id/naatask_imgAttachment_image_imageView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@android:color/black"
-        android:contentDescription="@string/naa_tdt_imgAttachment_image_imageView_contentDescription"
+        android:contentDescription="@string/naa_task_imgAttachment_image_imageView_contentDescription"
         android:scaleType="fitCenter"
         android:visibility="gone" />
 

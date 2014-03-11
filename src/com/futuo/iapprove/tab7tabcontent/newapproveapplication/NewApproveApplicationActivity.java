@@ -77,8 +77,8 @@ import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyTyp
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATasks.GeneratingNAATask;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.service.CoreService.LocalBinder;
-import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity;
-import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATDTTextImgAttachmentViewActivity.NAATDTTextImgAttachmentViewExtraData;
+import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATaskTextImgAttachmentViewActivity;
+import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATaskTextImgAttachmentViewActivity.NAATaskTextImgAttachmentViewExtraData;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NAAFormItemEditorActivity.NAAFormItemEditorExtraData;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationActivity.NAAMorePlusInputListAdapter.NAAMorePlusInputListAdapterIconItemDataKey;
 import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
@@ -1207,12 +1207,12 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 			// put new approve application text attachment text to extra data
 			// map as param
 			_extraMap
-					.put(NAATDTTextImgAttachmentViewExtraData.NAA_TDT_TEXT_IMAGE_ATTCHMENT_OBJECT,
+					.put(NAATaskTextImgAttachmentViewExtraData.NAA_TASK_TEXT_IMAGE_ATTCHMENT_OBJECT,
 							((TextView) v).getText().toString());
 
-			// go to new approve application or to-do task text or image
+			// go to new approve application or iApprove task text or image
 			// attachment view activity with extra data map
-			pushActivity(NAATDTTextImgAttachmentViewActivity.class, _extraMap);
+			pushActivity(NAATaskTextImgAttachmentViewActivity.class, _extraMap);
 		}
 
 	}
@@ -1235,12 +1235,12 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 				// put new approve application image attachment image bitmap to
 				// extra data map as param
 				_extraMap
-						.put(NAATDTTextImgAttachmentViewExtraData.NAA_TDT_TEXT_IMAGE_ATTCHMENT_OBJECT,
+						.put(NAATaskTextImgAttachmentViewExtraData.NAA_TASK_TEXT_IMAGE_ATTCHMENT_OBJECT,
 								(Bitmap) _imageViewTag);
 
-				// go to new approve application or to-do task text or image
+				// go to new approve application or iApprove task text or image
 				// attachment view activity with extra data map
-				pushActivity(NAATDTTextImgAttachmentViewActivity.class,
+				pushActivity(NAATaskTextImgAttachmentViewActivity.class,
 						_extraMap);
 			} else {
 				Log.e(LOG_TAG,
