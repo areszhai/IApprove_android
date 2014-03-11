@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 
@@ -21,6 +22,7 @@ import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems.FormI
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormTypes.FormType;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.Forms.Form;
 import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyType;
+import com.futuo.iapprove.receiver.EnterpriseFormItemBroadcastReceiver;
 import com.futuo.iapprove.utils.HttpRequestParamUtils;
 import com.richitec.commontoolkit.utils.HttpUtils;
 import com.richitec.commontoolkit.utils.HttpUtils.HttpRequestType;
@@ -881,6 +883,30 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 											null, null);
 								}
 							}
+
+							// send enterprise form item changed broadcast
+							// define enterprise form item changed broadcast
+							// intent
+							Intent _enterpriseFormItemChangedBroadcastIntent = new Intent(
+									EnterpriseFormItemBroadcastReceiver.A_FORMITEMCHANGE);
+
+							// set enterprise form item changed message
+							_enterpriseFormItemChangedBroadcastIntent
+									.putExtra(
+											EnterpriseFormItemBroadcastReceiver.EK_FORMITEMCHANGED,
+											true);
+							_enterpriseFormItemChangedBroadcastIntent
+									.putExtra(
+											EnterpriseFormItemBroadcastReceiver.EK_CHANGEDEDFORMTYPEID,
+											_mFormTypeId);
+							_enterpriseFormItemChangedBroadcastIntent
+									.putExtra(
+											EnterpriseFormItemBroadcastReceiver.EK_CHANGEDEDFORMID,
+											_mFormId);
+
+							// send normal broadcast
+							_mContext
+									.sendBroadcast(_enterpriseFormItemChangedBroadcastIntent);
 						}
 
 					}).start();

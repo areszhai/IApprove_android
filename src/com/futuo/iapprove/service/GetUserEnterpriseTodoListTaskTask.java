@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Environment;
 import android.util.Log;
@@ -27,6 +28,7 @@ import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyTyp
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskAttachments.TodoTaskAttachment;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskFormItems.TodoTaskFormItem;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
+import com.futuo.iapprove.receiver.EnterpriseTodoTaskBroadcastReceiver;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentDownloadStatus;
@@ -954,6 +956,27 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 								}
 							}
 
+							// send enterprise to-do task changed broadcast
+							// define enterprise to-do task changed broadcast
+							// intent
+							Intent _enterpriseTodoTaskChangedBroadcastIntent = new Intent(
+									EnterpriseTodoTaskBroadcastReceiver.A_FORMITEMCHANGE);
+
+							// set enterprise to-do task form item changed
+							// message
+							_enterpriseTodoTaskChangedBroadcastIntent
+									.putExtra(
+											EnterpriseTodoTaskBroadcastReceiver.EK_FORMITEM6ATTACHMENTCHANGED,
+											true);
+							_enterpriseTodoTaskChangedBroadcastIntent
+									.putExtra(
+											EnterpriseTodoTaskBroadcastReceiver.EK_CHANGEDEDFORMSENDERFAKEID,
+											_mTaskSenderFakeId);
+
+							// send normal broadcast
+							_mContext
+									.sendBroadcast(_enterpriseTodoTaskChangedBroadcastIntent);
+
 							// get local storage user enterprise to-do list task
 							// attachments task attachment id as key and bean as
 							// value map
@@ -1090,6 +1113,35 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 																			_newInsertTodoTaskAttachmentLSRowId),
 															_todoTaskAttachmentContentValues,
 															null, null);
+
+													// send enterprise to-do
+													// task changed broadcast
+													// define enterprise to-do
+													// task changed broadcast
+													// intent
+													Intent _enterpriseTodoTaskChangedBroadcastIntent = new Intent(
+															EnterpriseTodoTaskBroadcastReceiver.A_FORMATTACHMENTCHANGE);
+
+													// set enterprise to-do task
+													// form attachment changed
+													// message
+													_enterpriseTodoTaskChangedBroadcastIntent
+															.putExtra(
+																	EnterpriseTodoTaskBroadcastReceiver.EK_FORMITEM6ATTACHMENTCHANGED,
+																	true);
+													_enterpriseTodoTaskChangedBroadcastIntent
+															.putExtra(
+																	EnterpriseTodoTaskBroadcastReceiver.EK_CHANGEDEDFORMSENDERFAKEID,
+																	_mTaskSenderFakeId);
+													_enterpriseTodoTaskChangedBroadcastIntent
+															.putExtra(
+																	EnterpriseTodoTaskBroadcastReceiver.EK_CHANGEDEDFORMATTACHMENTID,
+																	todoTaskAttachment
+																			.getAttachmentId());
+
+													// send normal broadcast
+													_mContext
+															.sendBroadcast(_enterpriseTodoTaskChangedBroadcastIntent);
 												}
 											}
 
@@ -1182,6 +1234,35 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 																					.getRowId()),
 															_todoTaskAttachmentContentValues,
 															null, null);
+
+													// send enterprise to-do
+													// task changed broadcast
+													// define enterprise to-do
+													// task changed broadcast
+													// intent
+													Intent _enterpriseTodoTaskChangedBroadcastIntent = new Intent(
+															EnterpriseTodoTaskBroadcastReceiver.A_FORMATTACHMENTCHANGE);
+
+													// set enterprise to-do task
+													// form attachment changed
+													// message
+													_enterpriseTodoTaskChangedBroadcastIntent
+															.putExtra(
+																	EnterpriseTodoTaskBroadcastReceiver.EK_FORMITEM6ATTACHMENTCHANGED,
+																	true);
+													_enterpriseTodoTaskChangedBroadcastIntent
+															.putExtra(
+																	EnterpriseTodoTaskBroadcastReceiver.EK_CHANGEDEDFORMSENDERFAKEID,
+																	_mTaskSenderFakeId);
+													_enterpriseTodoTaskChangedBroadcastIntent
+															.putExtra(
+																	EnterpriseTodoTaskBroadcastReceiver.EK_CHANGEDEDFORMATTACHMENTID,
+																	_4updatingTodoTaskAttachment
+																			.getAttachmentId());
+
+													// send normal broadcast
+													_mContext
+															.sendBroadcast(_enterpriseTodoTaskChangedBroadcastIntent);
 												}
 											}
 

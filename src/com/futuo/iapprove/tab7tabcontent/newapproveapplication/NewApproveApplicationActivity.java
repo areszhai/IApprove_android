@@ -15,6 +15,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -75,6 +76,7 @@ import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems.FormI
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.Forms.Form;
 import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyType;
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATasks.GeneratingNAATask;
+import com.futuo.iapprove.receiver.EnterpriseFormItemBroadcastReceiver;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.service.CoreService.LocalBinder;
 import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATaskTextImgAttachmentViewActivity;
@@ -104,6 +106,9 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 	// new approve application submit contact list
 	private List<ABContactBean> _mSubmitContactList;
+
+	// enterprise form item broadcast receiver
+	private NAAEnterpriseFormItemBroadcastReceiver _mEnterpriseFormItemBroadcastReceiver;
 
 	// enterprise form item form linearLayout
 	private LinearLayout _mFormItemFormLinearLayout;
@@ -349,6 +354,12 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 								NAAMorePlusInputListAdapter.MOREPLUS_INPUT_ITEM_LABEL },
 						new int[] { R.id.naampii_icon_imageButton,
 								R.id.naampii_label_textView }));
+
+		// register enterprise form item broadcast receiver
+		registerReceiver(
+				_mEnterpriseFormItemBroadcastReceiver = new NAAEnterpriseFormItemBroadcastReceiver(),
+				new IntentFilter(
+						EnterpriseFormItemBroadcastReceiver.A_FORMITEMCHANGE));
 	}
 
 	@Override
@@ -530,6 +541,13 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 		// unbind core service
 		getApplicationContext().unbindService(_mCoreServiceConnection);
+
+		// release enterprise form item broadcast receiver
+		if (null != _mEnterpriseFormItemBroadcastReceiver) {
+			unregisterReceiver(_mEnterpriseFormItemBroadcastReceiver);
+
+			_mEnterpriseFormItemBroadcastReceiver = null;
+		}
 	}
 
 	@Override
@@ -875,6 +893,23 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		// new approve application take and select photo request code
 		private static final int NAA_TAKEPHOTO_REQCODE = 402;
 		private static final int NAA_SELECTPHOTO_REQCODE = 403;
+
+	}
+
+	// new approve application enterprise form item broadcast receiver
+	class NAAEnterpriseFormItemBroadcastReceiver extends
+			EnterpriseFormItemBroadcastReceiver {
+
+		@Override
+		public void onEnterpriseFormItemChange(Long formTypeId, Long formId) {
+			// check enterprise form type id and form id
+			if (null != formTypeId && null != formId
+					&& _mFormTypeId.longValue() == formTypeId.longValue()
+					&& _mFormId.longValue() == formId.longValue()) {
+				// refresh enterprise form item form
+				refreshFormItemForm();
+			}
+		}
 
 	}
 

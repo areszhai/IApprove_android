@@ -14,6 +14,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -78,6 +79,7 @@ import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.Ap
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskAttachments.TodoTaskAttachment;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskFormItems.TodoTaskFormItem;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
+import com.futuo.iapprove.receiver.EnterpriseTodoTaskBroadcastReceiver;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.service.CoreService.LocalBinder;
 import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATaskTextImgAttachmentViewActivity;
@@ -107,6 +109,9 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 	private String _mTodoTaskTitle;
 	private Long _mTodoTaskSenderFakeId;
 	private TodoTaskStatus _mTodoTaskStatus;
+
+	// to-do list task form broadcast receiver
+	private TodoTaskFormBroadcastReceiver _mFormBroadcastReceiver;
 
 	// to-do list task form item form parent frameLayout and form linearLayout
 	private FrameLayout _mFormItemFormParentFrameLayout;
@@ -320,6 +325,17 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		// bind advice send button on click listener
 		((Button) findViewById(R.id.tdta_advice_send_button))
 				.setOnClickListener(new TodoTaskApproveAdviceSendBtnOnClickListener());
+
+		// define to-do task form broadcast intent filter
+		IntentFilter _todoTaskFormBroadcastIntentFilter = new IntentFilter(
+				TodoTaskFormBroadcastReceiver.A_FORMITEMCHANGE);
+		_todoTaskFormBroadcastIntentFilter
+				.addAction(TodoTaskFormBroadcastReceiver.A_FORMATTACHMENTCHANGE);
+
+		// register to-do task form broadcast receiver
+		registerReceiver(
+				_mFormBroadcastReceiver = new TodoTaskFormBroadcastReceiver(),
+				_todoTaskFormBroadcastIntentFilter);
 	}
 
 	@Override
@@ -368,6 +384,13 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 
 		// unbind core service
 		getApplicationContext().unbindService(_mCoreServiceConnection);
+
+		// release to-do task form broadcast receiver
+		if (null != _mFormBroadcastReceiver) {
+			unregisterReceiver(_mFormBroadcastReceiver);
+
+			_mFormBroadcastReceiver = null;
+		}
 	}
 
 	@Override
@@ -794,6 +817,30 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		public static final String TODOTASK_APPROVE_TASKSENDERFAKEID = "todo_task_approve_tasksenderfakeid";
 		public static final String TODOTASK_APPROVE_TASKSTATUS = "todo_task_approve_taskstatus";
 		public static final String TODOTASK_APPROVE_TASKADVICES = "todo_task_approve_taskadvices";
+
+	}
+
+	// to-do list task form broadcast receiver
+	class TodoTaskFormBroadcastReceiver extends
+			EnterpriseTodoTaskBroadcastReceiver {
+
+		@Override
+		public void onEnterpriseTodoTaskFormItemChange(Long formSenderFakeId) {
+			// check to-do task form sender fake id
+			if (null != formSenderFakeId
+					&& _mTodoTaskSenderFakeId.longValue() == formSenderFakeId
+							.longValue()) {
+				// refresh to-do task form item form
+				refreshFormItemForm();
+			}
+		}
+
+		@Override
+		public void onEnterpriseTodoTaskFormAttachmentChange(
+				Long formSenderFakeId, Long formAttachmentId) {
+			// TODO Auto-generated method stub
+
+		}
 
 	}
 
