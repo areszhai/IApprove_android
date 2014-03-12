@@ -76,7 +76,7 @@ import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems.FormI
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.Forms.Form;
 import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyType;
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATasks.GeneratingNAATask;
-import com.futuo.iapprove.receiver.EnterpriseFormItemBroadcastReceiver;
+import com.futuo.iapprove.receiver.EnterpriseFormBroadcastReceiver;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.service.CoreService.LocalBinder;
 import com.futuo.iapprove.tab7tabcontent.attachmentpresent.NAATaskTextImgAttachmentViewActivity;
@@ -359,7 +359,7 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 		registerReceiver(
 				_mEnterpriseFormItemBroadcastReceiver = new NAAEnterpriseFormItemBroadcastReceiver(),
 				new IntentFilter(
-						EnterpriseFormItemBroadcastReceiver.A_FORMITEMCHANGE));
+						EnterpriseFormBroadcastReceiver.A_FORMITEMCHANGE));
 	}
 
 	@Override
@@ -898,7 +898,12 @@ public class NewApproveApplicationActivity extends IApproveNavigationActivity {
 
 	// new approve application enterprise form item broadcast receiver
 	class NAAEnterpriseFormItemBroadcastReceiver extends
-			EnterpriseFormItemBroadcastReceiver {
+			EnterpriseFormBroadcastReceiver {
+
+		@Override
+		public void onEnterpriseFormTypeChange() {
+			// nothing to do
+		}
 
 		@Override
 		public void onEnterpriseFormItemChange(Long formTypeId, Long formId) {

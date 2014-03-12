@@ -22,7 +22,7 @@ import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormItems.FormI
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.FormTypes.FormType;
 import com.futuo.iapprove.provider.EnterpriseFormContentProvider.Forms.Form;
 import com.futuo.iapprove.provider.LocalStorageDBHelper.LocalStorageDataDirtyType;
-import com.futuo.iapprove.receiver.EnterpriseFormItemBroadcastReceiver;
+import com.futuo.iapprove.receiver.EnterpriseFormBroadcastReceiver;
 import com.futuo.iapprove.utils.HttpRequestParamUtils;
 import com.richitec.commontoolkit.utils.HttpUtils;
 import com.richitec.commontoolkit.utils.HttpUtils.HttpRequestType;
@@ -319,6 +319,18 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 
 		@Override
 		public void onFinished(HttpRequest request, HttpResponse response) {
+			// send enterprise form type changed broadcast
+			// define enterprise form type changed broadcast intent
+			Intent _enterpriseFormTypeChangedBroadcastIntent = new Intent(
+					EnterpriseFormBroadcastReceiver.A_FORMTYPECHANGE);
+
+			// set enterprise form type changed message
+			_enterpriseFormTypeChangedBroadcastIntent.putExtra(
+					EnterpriseFormBroadcastReceiver.EK_FORMTYPECHANGED, true);
+
+			// send normal broadcast
+			_mContext.sendBroadcast(_enterpriseFormTypeChangedBroadcastIntent);
+
 			// get http response entity string
 			String _respEntityString = HttpUtils
 					.getHttpResponseEntityString(response);
@@ -495,6 +507,18 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 
 		@Override
 		public void onFailed(HttpRequest request, HttpResponse response) {
+			// send enterprise form type changed broadcast
+			// define enterprise form type changed broadcast intent
+			Intent _enterpriseFormTypeChangedBroadcastIntent = new Intent(
+					EnterpriseFormBroadcastReceiver.A_FORMTYPECHANGE);
+
+			// set enterprise form type changed message
+			_enterpriseFormTypeChangedBroadcastIntent.putExtra(
+					EnterpriseFormBroadcastReceiver.EK_FORMTYPECHANGED, true);
+
+			// send normal broadcast
+			_mContext.sendBroadcast(_enterpriseFormTypeChangedBroadcastIntent);
+
 			Log.e(LOG_TAG,
 					"Send get enterprise form type post http request failed");
 		}
@@ -888,20 +912,20 @@ public class GetEnterpriseFormTask extends CoreServiceTask {
 							// define enterprise form item changed broadcast
 							// intent
 							Intent _enterpriseFormItemChangedBroadcastIntent = new Intent(
-									EnterpriseFormItemBroadcastReceiver.A_FORMITEMCHANGE);
+									EnterpriseFormBroadcastReceiver.A_FORMITEMCHANGE);
 
 							// set enterprise form item changed message
 							_enterpriseFormItemChangedBroadcastIntent
 									.putExtra(
-											EnterpriseFormItemBroadcastReceiver.EK_FORMITEMCHANGED,
+											EnterpriseFormBroadcastReceiver.EK_FORMITEMCHANGED,
 											true);
 							_enterpriseFormItemChangedBroadcastIntent
 									.putExtra(
-											EnterpriseFormItemBroadcastReceiver.EK_CHANGEDEDFORMTYPEID,
+											EnterpriseFormBroadcastReceiver.EK_CHANGEDEDFORMTYPEID,
 											_mFormTypeId);
 							_enterpriseFormItemChangedBroadcastIntent
 									.putExtra(
-											EnterpriseFormItemBroadcastReceiver.EK_CHANGEDEDFORMID,
+											EnterpriseFormBroadcastReceiver.EK_CHANGEDEDFORMID,
 											_mFormId);
 
 							// send normal broadcast

@@ -7,6 +7,9 @@
     <string name="toast_request_exception">Connect to remote background server exception, please contact with admin soon!</string>
     <string name="toast_requestResp_unrecognized">Remote background server response exception, please contact with admin soon!</string>
 
+    <!-- new approve application generating -->
+    <string name="toast_no_enterpriseForm">There is no enterprise form</string>
+
     <!-- new approve application or to-do task approve submit contact -->
     <string name="toast_select_submitContact">Please select at least one submit contact</string>
     <string name="toast_fill_mustWriteFormItemContent">There is at least one must write form item not fill its content</string>

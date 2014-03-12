@@ -825,6 +825,21 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 			EnterpriseTodoTaskBroadcastReceiver {
 
 		@Override
+		public void onEnterpriseTodoTaskFormDoneRefreshed() {
+			// nothing to do
+		}
+
+		@Override
+		public void onEnterpriseTodoTaskFormBeginFetching() {
+			// nothing to do
+		}
+
+		@Override
+		public void onEnterpriseTodoTaskFormEndFetching() {
+			// nothing to do
+		}
+
+		@Override
 		public void onEnterpriseTodoTaskFormItemChange(Long formSenderFakeId) {
 			// check to-do task form sender fake id
 			if (null != formSenderFakeId
@@ -838,8 +853,13 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		@Override
 		public void onEnterpriseTodoTaskFormAttachmentChange(
 				Long formSenderFakeId, Long formAttachmentId) {
-			// TODO Auto-generated method stub
+			Log.d(LOG_TAG,
+					"@@@, onEnterpriseTodoTaskFormAttachmentChange - formSenderFakeId = "
+							+ formSenderFakeId + " and formAttachmentId = "
+							+ formAttachmentId);
 
+			// test by ares
+			//
 		}
 
 	}

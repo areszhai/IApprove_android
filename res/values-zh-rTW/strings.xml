@@ -26,6 +26,9 @@
 
 
     <!-- iApprove tab activity -->
+    <!-- new approve application generate -->
+    <string name="naaGenerate_loadingEnterpriseForm_progDlg_message">努力加载中，请稍后&#8230;</string>
+
     <!-- enterprise form type list activity -->
     <string name="eft6f_cancel_barButtonItem_title">取消</string>
 
@@ -78,6 +81,7 @@
     <string name="tdl_task_thursdaySubmit_submitTimestamp">周四</string>
     <string name="tdl_task_fridaySubmit_submitTimestamp">周五</string>
     <string name="tdl_task_saturdaySubmit_submitTimestamp">周六</string>
+    <string name="tdl_newIncomingTask_notification_format">您有%d条新的未审批表单</string>
 
     <!-- iApprove alert dialog common -->
     <string name="iApprove_alertDialog_title">审批提醒</string>

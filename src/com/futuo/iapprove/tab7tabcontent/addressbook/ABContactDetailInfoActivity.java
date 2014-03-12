@@ -585,7 +585,7 @@ public class ABContactDetailInfoActivity extends IApproveNavigationActivity {
 		@Override
 		public void onClick(View v) {
 			// generate new approve application
-			new NewApproveApplicationGenerator()
+			new NewApproveApplicationGenerator(ABContactDetailInfoActivity.this)
 					.genNewApproveApplication(_mABContactBean);
 		}
 

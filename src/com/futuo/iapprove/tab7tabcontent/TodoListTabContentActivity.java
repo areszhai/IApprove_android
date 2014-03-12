@@ -10,6 +10,7 @@ import java.util.Map;
 
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -45,12 +46,16 @@ import com.futuo.iapprove.customwidget.IApproveTabContentActivity;
 import com.futuo.iapprove.customwidget.TodoTaskAdvice;
 import com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider.EnterpriseProfiles.EnterpriseProfile;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
+import com.futuo.iapprove.receiver.EnterpriseTodoTaskBroadcastReceiver;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.tab7tabcontent.newapproveapplication.NewApproveApplicationGenerator;
 import com.futuo.iapprove.tab7tabcontent.task.TodoTaskApproveActivity;
 import com.futuo.iapprove.tab7tabcontent.task.TodoTaskApproveActivity.TodoTaskApproveExtraData;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
 import com.futuo.iapprove.task.TodoTaskBean;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.richitec.commontoolkit.customadapter.CTListCursorAdapter;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
@@ -64,8 +69,20 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 	// login user
 	private UserBean _mLoginUser;
 
+	// to-do list tab content task form broadcast receiver
+	private TodoListTabContentTaskFormBroadcastReceiver _mFormBroadcastReceiver;
+
+	// core service
+	private CoreService _mCoreService;
+
 	// to-do list tab content view activity title view
 	private TodoListTabContentViewActivityTitleView _mTitleView;
+
+	// to-do list data fetching flag
+	private Boolean _mDataFetching;
+
+	// to-do list task listView pull to refresh list view
+	private PullToRefreshListView _mTodoListTaskPull2RefreshListView;
 
 	// to-do list task list cursor adapter
 	private TodoListTaskListAdapter _mTodoListTaskListCursorAdapter;
@@ -90,8 +107,10 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 				R.drawable.img_new_approveapplication_barbtnitem,
 				new NewApproveApplicationBarBtnItemOnClickListener()));
 
-		// get to-do list task listView
-		ListView _todoListTaskListView = (ListView) findViewById(R.id.tdl_task_listView);
+		// get to-do list task listView and its pull to refresh list view
+		_mTodoListTaskPull2RefreshListView = (PullToRefreshListView) findViewById(R.id.tdl_task_listView);
+		ListView _todoListTaskListView = _mTodoListTaskPull2RefreshListView
+				.getRefreshableView();
 
 		// set to-do list task list cursor adapter
 		_todoListTaskListView
@@ -116,9 +135,31 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 								R.id.tdli_taskSubmitTimestamp_textView,
 								R.id.tdli_taskAdvice_linearLayout }));
 
+		// set to-do list task list pull to refresh listView on refresh listener
+		_mTodoListTaskPull2RefreshListView
+				.setOnRefreshListener(new TodoListTaskListPull2RefreshListViewOnRefreshListener());
+
 		// set to-do list task listView on item click listener
 		_todoListTaskListView
 				.setOnItemClickListener(new TodoListTaskListViewOnItemClickListener());
+
+		// register to-do list tab content task form broadcast receiver
+		registerReceiver(
+				_mFormBroadcastReceiver = new TodoListTabContentTaskFormBroadcastReceiver(),
+				new IntentFilter(
+						TodoListTabContentTaskFormBroadcastReceiver.A_FORMCHANGE));
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		// release to-do list tab content task form broadcast receiver
+		if (null != _mFormBroadcastReceiver) {
+			unregisterReceiver(_mFormBroadcastReceiver);
+
+			_mFormBroadcastReceiver = null;
+		}
 	}
 
 	@Override
@@ -130,6 +171,9 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 	@Override
 	protected void onCoreServiceConnected(CoreService coreService) {
 		super.onCoreServiceConnected(coreService);
+
+		// save core service
+		_mCoreService = coreService;
 
 		// start get user login enterprise to-do list task
 		coreService.startGetUserEnterpriseTodoListTask();
@@ -174,6 +218,47 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 	}
 
 	// inner class
+	// to-do list tab content task form broadcast receiver
+	class TodoListTabContentTaskFormBroadcastReceiver extends
+			EnterpriseTodoTaskBroadcastReceiver {
+
+		@Override
+		public void onEnterpriseTodoTaskFormDoneRefreshed() {
+			// to-do list task pull to refresh listView refresh complete
+			_mTodoListTaskPull2RefreshListView.onRefreshComplete();
+		}
+
+		@Override
+		public void onEnterpriseTodoTaskFormBeginFetching() {
+			// user enterprise to-do list task data begin fetching
+			_mDataFetching = true;
+
+			// update title
+			_mTitleView.generateTitleView();
+		}
+
+		@Override
+		public void onEnterpriseTodoTaskFormEndFetching() {
+			// user enterprise to-do list task data done fetched
+			_mDataFetching = false;
+
+			// update title
+			_mTitleView.generateTitleView();
+		}
+
+		@Override
+		public void onEnterpriseTodoTaskFormItemChange(Long formSenderFakeId) {
+			// nothing to do
+		}
+
+		@Override
+		public void onEnterpriseTodoTaskFormAttachmentChange(
+				Long formSenderFakeId, Long formAttachmentId) {
+			// nothing to do
+		}
+
+	}
+
 	// to-do list tab content view activity title view
 	class TodoListTabContentViewActivityTitleView extends FrameLayout {
 
@@ -234,10 +319,18 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 		// generate title view
 		public View generateTitleView() {
-			// show title enterprises spinner and hide title data fetching
-			// relativeLayout
-			_mTitleEnterprisesSpinner.setVisibility(View.VISIBLE);
-			_mTitleDataFetchingRelativeLayout.setVisibility(View.GONE);
+			// check to-do list data fetching
+			if (null != _mDataFetching && true == _mDataFetching) {
+				// hide title enterprises spinner and show title data fetching
+				// relativeLayout
+				_mTitleEnterprisesSpinner.setVisibility(View.GONE);
+				_mTitleDataFetchingRelativeLayout.setVisibility(View.VISIBLE);
+			} else {
+				// show title enterprises spinner and hide title data fetching
+				// relativeLayout
+				_mTitleEnterprisesSpinner.setVisibility(View.VISIBLE);
+				_mTitleDataFetchingRelativeLayout.setVisibility(View.GONE);
+			}
 
 			return this;
 		}
@@ -302,9 +395,6 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 									IAUserLocalStorageAttributes.USER_LASTLOGINENTERPRISEID
 											.name(), _selectedEnterpriseId);
 				}
-
-				// // refresh to-do list
-				// refreshTodoList(true);
 			}
 
 			@Override
@@ -323,7 +413,8 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 		@Override
 		public void onClick(View v) {
 			// generate new approve application
-			new NewApproveApplicationGenerator().genNewApproveApplication(null);
+			new NewApproveApplicationGenerator(TodoListTabContentActivity.this)
+					.genNewApproveApplication(null);
 		}
 
 	}
@@ -622,6 +713,17 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 	}
 
+	// to-do list task list pull to refresh listView on refresh listener
+	class TodoListTaskListPull2RefreshListViewOnRefreshListener implements
+			OnRefreshListener<ListView> {
+
+		@Override
+		public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+			// force get user login enterprise to-do list task
+			_mCoreService.forceGetUserEnterpriseTodoListTask();
+		}
+	}
+
 	// to-do list task listView on item click listener
 	class TodoListTaskListViewOnItemClickListener implements
 			OnItemClickListener {
@@ -634,7 +736,7 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 			// get the clicked to-do list task
 			TodoTaskBean _clickedTodoTask = (TodoTaskBean) _mTodoListTaskListCursorAdapter
-					.getDataList().get(position);
+					.getDataList().get(position - 1);
 
 			// put user enterprise to-do list task id, title, sender fake id,
 			// status and advice list to extra data map as param

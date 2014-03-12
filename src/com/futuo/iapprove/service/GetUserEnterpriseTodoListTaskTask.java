@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpRequest;
@@ -15,6 +17,9 @@ import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -29,6 +34,7 @@ import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.Tod
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskFormItems.TodoTaskFormItem;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
 import com.futuo.iapprove.receiver.EnterpriseTodoTaskBroadcastReceiver;
+import com.futuo.iapprove.tab7tabcontent.TodoListTabContentActivity;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentDownloadStatus;
@@ -513,6 +519,19 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 
 		@Override
 		public void onFinished(HttpRequest request, HttpResponse response) {
+			// send enterprise to-do task done refreshed broadcast
+			// define enterprise to-do task done refreshed broadcast intent
+			Intent _enterpriseTodoTaskDoneRefreshedBroadcastIntent = new Intent(
+					EnterpriseTodoTaskBroadcastReceiver.A_FORMCHANGE);
+
+			// set enterprise to-do task done refreshed message
+			_enterpriseTodoTaskDoneRefreshedBroadcastIntent.putExtra(
+					EnterpriseTodoTaskBroadcastReceiver.EK_FORMREFRESHED, true);
+
+			// send normal broadcast
+			_mContext
+					.sendBroadcast(_enterpriseTodoTaskDoneRefreshedBroadcastIntent);
+
 			// get http response entity string
 			String _respEntityString = HttpUtils
 					.getHttpResponseEntityString(response);
@@ -553,6 +572,7 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 						// thread
 						new Thread(new Runnable() {
 
+							@SuppressWarnings("deprecation")
 							@Override
 							public void run() {
 								// get login user name
@@ -570,6 +590,10 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 										null,
 										TodoTask.USER_ENTERPRISETODOLISTTASKS_WITHLOGINNAME_CONDITION,
 										new String[] { _loginUserName }, null));
+
+								// define the new insert user enterprise to-do
+								// list task
+								List<TodoTaskBean> _newInsertTodoTaskList = new ArrayList<TodoTaskBean>();
 
 								// define the to-do task content values
 								ContentValues _todoTaskContentValues = new ContentValues();
@@ -661,6 +685,34 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 											.keySet()
 											.contains(
 													_todoTask.getSenderFakeId())) {
+										// add the to-do task to new insert list
+										_newInsertTodoTaskList.add(_todoTask);
+
+										// check the first
+										if (0 == i) {
+											// send enterprise to-do task begin
+											// fetching broadcast
+											// define enterprise to-do task
+											// begin fetching broadcast intent
+											Intent _enterpriseTodoTaskBeginFetchingBroadcastIntent = new Intent(
+													EnterpriseTodoTaskBroadcastReceiver.A_FORMCHANGE);
+
+											// set enterprise to-do task begin
+											// fetching message
+											_enterpriseTodoTaskBeginFetchingBroadcastIntent
+													.putExtra(
+															EnterpriseTodoTaskBroadcastReceiver.EK_FORMFETCHING,
+															true);
+											_enterpriseTodoTaskBeginFetchingBroadcastIntent
+													.putExtra(
+															EnterpriseTodoTaskBroadcastReceiver.EK_FORM_BEGINFETCHING,
+															true);
+
+											// send normal broadcast
+											_mContext
+													.sendBroadcast(_enterpriseTodoTaskBeginFetchingBroadcastIntent);
+										}
+
 										Log.d(LOG_TAG,
 												"The to-do list task = "
 														+ _todoTask
@@ -700,6 +752,84 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 																			.getRowId()),
 													_todoTaskContentValues,
 													null, null);
+										}
+									}
+
+									// check the last
+									if (_todoListTaskJsonArray.length() - 1 == i) {
+										// send enterprise to-do task end
+										// fetching broadcast
+										// define enterprise to-do task end
+										// fetching broadcast intent
+										Intent _enterpriseTodoTaskEndFetchingBroadcastIntent = new Intent(
+												EnterpriseTodoTaskBroadcastReceiver.A_FORMCHANGE);
+
+										// set enterprise to-do task end
+										// fetching message
+										_enterpriseTodoTaskEndFetchingBroadcastIntent
+												.putExtra(
+														EnterpriseTodoTaskBroadcastReceiver.EK_FORMFETCHING,
+														true);
+										_enterpriseTodoTaskEndFetchingBroadcastIntent
+												.putExtra(
+														EnterpriseTodoTaskBroadcastReceiver.EK_FORM_ENDFETCHING,
+														true);
+
+										// send normal broadcast
+										_mContext
+												.sendBroadcast(_enterpriseTodoTaskEndFetchingBroadcastIntent);
+
+										// check new insert to-do task list
+										if (!_newInsertTodoTaskList.isEmpty()) {
+											// define there is new to-do list
+											// task notification
+											Notification _newTodoTaskNotification = new Notification();
+
+											// set icon, ticker text, timestamp
+											// and default
+											_newTodoTaskNotification.icon = R.drawable.ic_launcher;
+											_newTodoTaskNotification.tickerText = String
+													.format(_mContext
+															.getResources()
+															.getString(
+																	R.string.tdl_newIncomingTask_notification_format),
+															_newInsertTodoTaskList
+																	.size());
+											_newTodoTaskNotification.when = System
+													.currentTimeMillis();
+											_newTodoTaskNotification.defaults = Notification.DEFAULT_ALL;
+
+											// add pending intent
+											PendingIntent _pendingIntent = PendingIntent
+													.getActivity(
+															_mContext,
+															0,
+															new Intent(
+																	_mContext,
+																	TodoListTabContentActivity.class),
+															PendingIntent.FLAG_CANCEL_CURRENT);
+
+											// get the last insert to-do task
+											TodoTaskBean _lastInsertTodoTask = _newInsertTodoTaskList
+													.get(_newInsertTodoTaskList
+															.size() - 1);
+
+											// set latest event info
+											_newTodoTaskNotification
+													.setLatestEventInfo(
+															_mContext,
+															_lastInsertTodoTask
+																	.getTaskTitle(),
+															_lastInsertTodoTask
+																	.getApplicantName(),
+															_pendingIntent);
+
+											// send there is new to-do list task
+											// notification
+											((NotificationManager) _mContext
+													.getSystemService(Context.NOTIFICATION_SERVICE))
+													.notify(R.string.app_name,
+															_newTodoTaskNotification);
 										}
 									}
 								}
@@ -762,6 +892,19 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 
 		@Override
 		public void onFailed(HttpRequest request, HttpResponse response) {
+			// send enterprise to-do task done refreshed broadcast
+			// define enterprise to-do task done refreshed broadcast intent
+			Intent _enterpriseTodoTaskDoneRefreshedBroadcastIntent = new Intent(
+					EnterpriseTodoTaskBroadcastReceiver.A_FORMCHANGE);
+
+			// set enterprise to-do task done refreshed message
+			_enterpriseTodoTaskDoneRefreshedBroadcastIntent.putExtra(
+					EnterpriseTodoTaskBroadcastReceiver.EK_FORMREFRESHED, true);
+
+			// send normal broadcast
+			_mContext
+					.sendBroadcast(_enterpriseTodoTaskDoneRefreshedBroadcastIntent);
+
 			Log.e(LOG_TAG,
 					"Send get user enterprise to-do list task post http request failed");
 		}
@@ -956,26 +1099,27 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 								}
 							}
 
-							// send enterprise to-do task changed broadcast
-							// define enterprise to-do task changed broadcast
-							// intent
-							Intent _enterpriseTodoTaskChangedBroadcastIntent = new Intent(
+							// send enterprise to-do task form item changed
+							// broadcast
+							// define enterprise to-do task form item changed
+							// broadcast intent
+							Intent _enterpriseTodoTaskFormItemChangedBroadcastIntent = new Intent(
 									EnterpriseTodoTaskBroadcastReceiver.A_FORMITEMCHANGE);
 
 							// set enterprise to-do task form item changed
 							// message
-							_enterpriseTodoTaskChangedBroadcastIntent
+							_enterpriseTodoTaskFormItemChangedBroadcastIntent
 									.putExtra(
 											EnterpriseTodoTaskBroadcastReceiver.EK_FORMITEM6ATTACHMENTCHANGED,
 											true);
-							_enterpriseTodoTaskChangedBroadcastIntent
+							_enterpriseTodoTaskFormItemChangedBroadcastIntent
 									.putExtra(
 											EnterpriseTodoTaskBroadcastReceiver.EK_CHANGEDEDFORMSENDERFAKEID,
 											_mTaskSenderFakeId);
 
 							// send normal broadcast
 							_mContext
-									.sendBroadcast(_enterpriseTodoTaskChangedBroadcastIntent);
+									.sendBroadcast(_enterpriseTodoTaskFormItemChangedBroadcastIntent);
 
 							// get local storage user enterprise to-do list task
 							// attachments task attachment id as key and bean as
@@ -1115,25 +1259,26 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 															null, null);
 
 													// send enterprise to-do
-													// task changed broadcast
+													// task form attachment
+													// changed broadcast
 													// define enterprise to-do
-													// task changed broadcast
-													// intent
-													Intent _enterpriseTodoTaskChangedBroadcastIntent = new Intent(
+													// task form attachment
+													// changed broadcast intent
+													Intent _enterpriseTodoTaskFormAttachmentChangedBroadcastIntent = new Intent(
 															EnterpriseTodoTaskBroadcastReceiver.A_FORMATTACHMENTCHANGE);
 
 													// set enterprise to-do task
 													// form attachment changed
 													// message
-													_enterpriseTodoTaskChangedBroadcastIntent
+													_enterpriseTodoTaskFormAttachmentChangedBroadcastIntent
 															.putExtra(
 																	EnterpriseTodoTaskBroadcastReceiver.EK_FORMITEM6ATTACHMENTCHANGED,
 																	true);
-													_enterpriseTodoTaskChangedBroadcastIntent
+													_enterpriseTodoTaskFormAttachmentChangedBroadcastIntent
 															.putExtra(
 																	EnterpriseTodoTaskBroadcastReceiver.EK_CHANGEDEDFORMSENDERFAKEID,
 																	_mTaskSenderFakeId);
-													_enterpriseTodoTaskChangedBroadcastIntent
+													_enterpriseTodoTaskFormAttachmentChangedBroadcastIntent
 															.putExtra(
 																	EnterpriseTodoTaskBroadcastReceiver.EK_CHANGEDEDFORMATTACHMENTID,
 																	todoTaskAttachment
@@ -1141,7 +1286,7 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 
 													// send normal broadcast
 													_mContext
-															.sendBroadcast(_enterpriseTodoTaskChangedBroadcastIntent);
+															.sendBroadcast(_enterpriseTodoTaskFormAttachmentChangedBroadcastIntent);
 												}
 											}
 
@@ -1236,25 +1381,26 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 															null, null);
 
 													// send enterprise to-do
-													// task changed broadcast
+													// task form attachment
+													// changed broadcast
 													// define enterprise to-do
-													// task changed broadcast
-													// intent
-													Intent _enterpriseTodoTaskChangedBroadcastIntent = new Intent(
+													// task form attachment
+													// changed broadcast intent
+													Intent _enterpriseTodoTaskFormAttachmentChangedBroadcastIntent = new Intent(
 															EnterpriseTodoTaskBroadcastReceiver.A_FORMATTACHMENTCHANGE);
 
 													// set enterprise to-do task
 													// form attachment changed
 													// message
-													_enterpriseTodoTaskChangedBroadcastIntent
+													_enterpriseTodoTaskFormAttachmentChangedBroadcastIntent
 															.putExtra(
 																	EnterpriseTodoTaskBroadcastReceiver.EK_FORMITEM6ATTACHMENTCHANGED,
 																	true);
-													_enterpriseTodoTaskChangedBroadcastIntent
+													_enterpriseTodoTaskFormAttachmentChangedBroadcastIntent
 															.putExtra(
 																	EnterpriseTodoTaskBroadcastReceiver.EK_CHANGEDEDFORMSENDERFAKEID,
 																	_mTaskSenderFakeId);
-													_enterpriseTodoTaskChangedBroadcastIntent
+													_enterpriseTodoTaskFormAttachmentChangedBroadcastIntent
 															.putExtra(
 																	EnterpriseTodoTaskBroadcastReceiver.EK_CHANGEDEDFORMATTACHMENTID,
 																	_4updatingTodoTaskAttachment
@@ -1262,7 +1408,7 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 
 													// send normal broadcast
 													_mContext
-															.sendBroadcast(_enterpriseTodoTaskChangedBroadcastIntent);
+															.sendBroadcast(_enterpriseTodoTaskFormAttachmentChangedBroadcastIntent);
 												}
 											}
 

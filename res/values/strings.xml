@@ -31,6 +31,9 @@
     <!-- iApprove tab activity -->
     <string name="title_activity_iapprove_tab" translatable="false">IApproveTabActivity</string>
 
+    <!-- new approve application generate -->
+    <string name="naaGenerate_loadingEnterpriseForm_progDlg_message">Loading, please wait&#8230;</string>
+
     <!-- enterprise form type list activity -->
     <string name="title_activity_enterprise_form_type_list" translatable="false">EnterpriseFormTypeListActivity</string>
     <string name="eft6f_cancel_barButtonItem_title">Cancel</string>
@@ -107,6 +110,7 @@
     <string name="tdl_task_thursdaySubmit_submitTimestamp">Thursday</string>
     <string name="tdl_task_fridaySubmit_submitTimestamp">Friday</string>
     <string name="tdl_task_saturdaySubmit_submitTimestamp">Saturday</string>
+    <string name="tdl_newIncomingTask_notification_format">You have %d new to-do tasks</string>
 
     <!-- iApprove alert dialog common -->
     <string name="iApprove_alertDialog_title">IApprove remind</string>
