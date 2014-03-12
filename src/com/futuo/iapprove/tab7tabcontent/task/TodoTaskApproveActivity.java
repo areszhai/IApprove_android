@@ -273,7 +273,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 		// check to-do list task advices, then generate to-do list task each
 		// others advice and add to form advice form linearLayout
 		for (IApproveTaskAdviceBean todoTaskAdvice : _todoTaskAdvices) {
-			// test by ares
+			// define the others advisor and set its attributes
 			PersonBean _othersAdvisor = new PersonBean();
 			_othersAdvisor.setEmployeeName(todoTaskAdvice.getAdvisorName());
 
@@ -1466,6 +1466,7 @@ public class TodoTaskApproveActivity extends IApproveNavigationActivity {
 					"To-do list task Form advice form item on click listener, view = "
 							+ v);
 
+			// test by ares
 			//
 		}
 

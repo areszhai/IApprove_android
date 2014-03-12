@@ -165,10 +165,9 @@ public class HistoryRecordTaskDetailInfoActivity extends
 		_mAdviceFormLinearLayout = (LinearLayout) findViewById(R.id.hrta_adviceForm_linearLayout);
 
 		// check history record list task advices, then generate to-do list task
-		// each
-		// others advice and add to form advice form linearLayout
+		// each others advice and add to form advice form linearLayout
 		for (IApproveTaskAdviceBean todoTaskAdvice : _historyRecordTaskAdvices) {
-			// test by ares
+			// define the others advisor and set its attributes
 			PersonBean _othersAdvisor = new PersonBean();
 			_othersAdvisor.setEmployeeName(todoTaskAdvice.getAdvisorName());
 
@@ -787,6 +786,7 @@ public class HistoryRecordTaskDetailInfoActivity extends
 					"History record list task Form advice form item on click listener, view = "
 							+ v);
 
+			// test by ares
 			//
 		}
 
