@@ -30,6 +30,7 @@
     <string name="rbgServer_updateAccountLoginInfoReqParam_latitude" translatable="false">googley</string>
     <string name="rbgServer_updateAccountLoginInfoReqParam_deviceName" translatable="false">devicename</string>
     <string name="rbgServer_updateAccountLoginInfoReqParam_devicePlatform" translatable="false">deviceplatform</string>
+    <string name="rbgServer_updateAccountLoginInfoReqParam_androidDevicePlatform" translatable="false">Android</string>
     <string name="rbgServer_updateAccountLoginInfoReqParam_deviceVersion" translatable="false">deviceversion</string>
 
     <!-- iApprove -->
@@ -198,5 +199,20 @@
     <!-- history record task detail info -->
     <string name="rbgServer_getCheckedTaskFormInfoReqParam_action" translatable="false">getInfoDetailByType</string>
     <string name="rbgServer_getMyApplicationTaskFormInfoReqParam_action" translatable="false">getMyInfoDetailByType</string>
+
+    <!-- check for update -->
+    <string name="rbgServer_versionCheck4UpdateReqParam_action" translatable="false">updateVersion</string>
+    <string name="rbgServer_versionCheck4UpdateReqParam_deviceType" translatable="false">devicetype</string>
+    <string name="rbgServer_versionCheck4UpdateReqParam_androidDeviceType" translatable="false">Android</string>
+    <string name="rbgServer_versionCheck4UpdateReqParam_version" translatable="false">version</string>
+    <string name="rbgServer_versionCheck4UpdateReqParam_state" translatable="false">state</string>
+    <string name="rbgServer_versionCheck4UpdateReqParam_currentState" translatable="false">2</string>
+    <string name="rbgServer_versionCheck4UpdateReqResp_latestVersion" translatable="false">version</string>
+    <string name="rbgServer_versionCheck4UpdateReqResp_latestVersionDescription" translatable="false">explains</string>
+    <string name="rbgServer_versionCheck4UpdateReqResp_downloadUrl" translatable="false">path</string>
+    <string name="rbgServer_updateNewVersionDownloadInfoReqParam_action" translatable="false">saveMobileUpdateRecord</string>
+    <string name="rbgServer_updateNewVersionDownloadInfoReqParam_userId" translatable="false">userid</string>
+    <string name="rbgServer_updateNewVersionDownloadInfoReqParam_version" translatable="false">version</string>
+    <string name="rbgServer_updateNewVersionDownloadInfoReqParam_currentVersion" translatable="false">2</string>
 
 </resources>

@@ -31,7 +31,9 @@ import com.futuo.iapprove.customwidget.SettingFormItem;
 import com.futuo.iapprove.provider.UserEnterpriseProfileContentProvider.EnterpriseProfiles.EnterpriseProfile;
 import com.futuo.iapprove.setting.UserProfileSettingActivity;
 import com.futuo.iapprove.setting.UserProfileSettingActivity.UserProfileSettingExtraData;
+import com.futuo.iapprove.utils.AppUpdateUtils;
 import com.richitec.commontoolkit.utils.DataStorageUtils;
+import com.richitec.commontoolkit.utils.VersionUtils.APPUPGRADEMODE;
 
 public class SettingsTabContentActivity extends IApproveTabContentActivity {
 
@@ -233,8 +235,9 @@ public class SettingsTabContentActivity extends IApproveTabContentActivity {
 		public void onClick(View v) {
 			Log.d(LOG_TAG, "IApprove check for update");
 
-			// test by ares
-			//
+			// check for update the iApprove client
+			AppUpdateUtils.upgradeApp(SettingsTabContentActivity.this,
+					APPUPGRADEMODE.MANUAL);
 		}
 
 	}

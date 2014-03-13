@@ -51,4 +51,8 @@
     <!-- support -->
     <string name="support_url" translatable="false">/help</string>
 
+    <!-- check for update -->
+    <string name="check4update_url" translatable="false">/enterpries/versionMobile</string>
+    <string name="updateVersionDownloadInfo" translatable="false">/enterpries/mobileUser</string>
+
 </resources>

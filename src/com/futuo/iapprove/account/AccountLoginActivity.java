@@ -417,7 +417,10 @@ public class AccountLoginActivity extends IApproveNavigationActivity {
 							.put(getResources()
 									.getString(
 											R.string.rbgServer_updateAccountLoginInfoReqParam_devicePlatform),
-									StringUtils.base64Encode("Android"));
+									StringUtils
+											.base64Encode(getResources()
+													.getString(
+															R.string.rbgServer_updateAccountLoginInfoReqParam_androidDevicePlatform)));
 					_updateAccountLoginInfoPostHttpReqParam
 							.put(getResources()
 									.getString(

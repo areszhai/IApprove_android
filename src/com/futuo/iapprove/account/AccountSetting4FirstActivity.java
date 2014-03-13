@@ -14,6 +14,7 @@ import com.futuo.iapprove.R;
 import com.futuo.iapprove.account.AccountLoginActivity.AccountLoginExtraData;
 import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity;
 import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
+import com.futuo.iapprove.utils.AppUpdateUtils;
 import com.richitec.commontoolkit.activityextension.NavigationActivity;
 
 public class AccountSetting4FirstActivity extends NavigationActivity {
@@ -39,6 +40,9 @@ public class AccountSetting4FirstActivity extends NavigationActivity {
 		// bind account login button on click listener
 		((Button) findViewById(R.id.as4f_accountLogin_button))
 				.setOnClickListener(new AccountLoginBtnOnClickListener());
+
+		// check for update the iApprove client
+		AppUpdateUtils.upgradeApp(this);
 	}
 
 	@Override

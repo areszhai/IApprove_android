@@ -24,6 +24,7 @@ import com.futuo.iapprove.account.user.IAUserExtension;
 import com.futuo.iapprove.account.user.UserEnterpriseProfileBean;
 import com.futuo.iapprove.service.CoreService;
 import com.futuo.iapprove.utils.AppDataSaveRestoreUtils;
+import com.futuo.iapprove.utils.AppUpdateUtils;
 import com.richitec.commontoolkit.customcomponent.CTTabSpecIndicator;
 import com.richitec.commontoolkit.user.UserBean;
 import com.richitec.commontoolkit.user.UserManager;
@@ -159,6 +160,9 @@ public class IApproveTabActivity extends TabActivity {
 
 		// start core service
 		startService(new Intent(this, CoreService.class));
+
+		// check for update the iApprove client
+		AppUpdateUtils.upgradeApp(this);
 	}
 
 	@Override
@@ -305,7 +309,10 @@ public class IApproveTabActivity extends TabActivity {
 							.put(getResources()
 									.getString(
 											R.string.rbgServer_updateAccountLoginInfoReqParam_devicePlatform),
-									StringUtils.base64Encode("Android"));
+									StringUtils
+											.base64Encode(getResources()
+													.getString(
+															R.string.rbgServer_updateAccountLoginInfoReqParam_androidDevicePlatform)));
 					_updateAccountLoginInfoPostHttpReqParam
 							.put(getResources()
 									.getString(

@@ -736,7 +736,7 @@ public class TodoListTabContentActivity extends IApproveTabContentActivity {
 
 			// get the clicked to-do list task
 			TodoTaskBean _clickedTodoTask = (TodoTaskBean) _mTodoListTaskListCursorAdapter
-					.getDataList().get(position - 1);
+					.getDataList().get(position - 1/* header view */);
 
 			// put user enterprise to-do list task id, title, sender fake id,
 			// status and advice list to extra data map as param
