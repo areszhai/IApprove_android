@@ -711,6 +711,7 @@ public class UserEnterpriseTaskApprovingContentProvider extends
 			// user enterprise task approving content provider new approve
 			// application generating attachment process data columns
 			public static final String TASK_ID = "taskId";
+			public static final String TASK_TITLE = "taskTitle";
 			public static final String ENTERPRISE_ID = "enterpriseId";
 			public static final String APPROVE_NUMBER = "approveNumber";
 			public static final String ATTACHMENT_PATH = "attachmentPath";

@@ -34,7 +34,7 @@ import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.Tod
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTaskFormItems.TodoTaskFormItem;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
 import com.futuo.iapprove.receiver.EnterpriseTodoTaskBroadcastReceiver;
-import com.futuo.iapprove.tab7tabcontent.TodoListTabContentActivity;
+import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity;
 import com.futuo.iapprove.task.IApproveTaskAdviceBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentBean;
 import com.futuo.iapprove.task.IApproveTaskAttachmentDownloadStatus;
@@ -806,7 +806,7 @@ public class GetUserEnterpriseTodoListTaskTask extends CoreServiceTask {
 															0,
 															new Intent(
 																	_mContext,
-																	TodoListTabContentActivity.class),
+																	IApproveTabActivity.class),
 															PendingIntent.FLAG_CANCEL_CURRENT);
 
 											// get the last insert to-do task

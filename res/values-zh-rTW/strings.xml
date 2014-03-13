@@ -91,6 +91,10 @@
     <string name="todoTask_endAlertDialog_message">确定要结束此表单审批流程吗？</string>
     <string name="todoTask_endAlertDialog_endButton_title">结束</string>
 
+    <!-- to-do task approved or new approve application applicated -->
+    <string name="tdt_approved_notification_format" formatted="false">表单%s - %s已审批完成</string>
+    <string name="naa_applicated_notification_format">您的审批申请 %s 已完成</string>
+
     <!-- to-do task approve activity -->
     <string name="tdta_form_info_label">表单信息</string>
     <string name="tdta_attachment_info_label">附件信息</string>

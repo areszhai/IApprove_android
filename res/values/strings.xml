@@ -141,6 +141,10 @@
     <string name="todoTask_endAlertDialog_message">Are you sure to end the to-do task?</string>
     <string name="todoTask_endAlertDialog_endButton_title">End</string>
 
+    <!-- to-do task approved or new approve application applicated -->
+    <string name="tdt_approved_notification_format" formatted="false">To-do task %s - %s has been approved</string>
+    <string name="naa_applicated_notification_format">Your new approve application %s has been applicated</string>
+
     <!-- task application attachment view activity -->
     <string name="title_activity_task_application_attachment_view" translatable="false">TaskApplicationAttachmentViewActivity</string>
 

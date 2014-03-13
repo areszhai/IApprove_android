@@ -10,8 +10,13 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.json.JSONObject;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 
@@ -21,6 +26,8 @@ import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.Ap
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATaskAttachments.GeneratingNAATaskAttachment;
 import com.futuo.iapprove.provider.UserEnterpriseTaskApprovingContentProvider.GeneratingNAATasks.GeneratingNAATask;
 import com.futuo.iapprove.provider.UserEnterpriseTodoListTaskContentProvider.TodoTasks.TodoTask;
+import com.futuo.iapprove.tab7tabcontent.IApproveTabActivity;
+import com.futuo.iapprove.task.TodoTaskBean;
 import com.futuo.iapprove.utils.HttpRequestParamUtils;
 import com.futuo.iapprove.utils.UploadFileUtils;
 import com.futuo.iapprove.utils.UploadFileUtils.UploadFileHttpRequestListener;
@@ -297,7 +304,8 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 										null,
 										HttpRequestType.ASYNCHRONOUS,
 										new GenerateUserEnterpriseNAAPostHttpRequestListener(
-												_naaLSRowId, _naaAttachmentPath));
+												_naaLSRowId, _naaFormName,
+												_naaAttachmentPath));
 					}
 
 					// close cursor
@@ -325,6 +333,8 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 						// path
 						Long _naaAttachmentTaskId = _cursor.getLong(_cursor
 								.getColumnIndex(GeneratingNAATaskAttachment.TASK_ID));
+						String _naaAttachmentTaskTitle = _cursor.getString(_cursor
+								.getColumnIndex(GeneratingNAATaskAttachment.TASK_TITLE));
 						Long _naaAttachmentEnterpriseId = _cursor.getLong(_cursor
 								.getColumnIndex(GeneratingNAATaskAttachment.ENTERPRISE_ID));
 						Long _naaAttachmentApproveNumber = _cursor.getLong(_cursor
@@ -425,7 +435,8 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 												_uploadNAAAttachmentRequestFileParam,
 												new UploadUserEnterpriseNAAAttachmentPostHttpRequestListener(
 														_naaAttachmentLSRowId,
-														_naaAttachmentTaskId));
+														_naaAttachmentTaskId,
+														_naaAttachmentTaskTitle));
 							} catch (IOException e) {
 								Log.e(LOG_TAG,
 										"Upload new approve application attachment error, exception message = "
@@ -464,8 +475,32 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 			_mTodoTaskSenderFakeId = todoTaskSenderFakeId;
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public void onFinished(HttpRequest request, HttpResponse response) {
+			// get the approved to-do task
+			TodoTaskBean _approvedTodoTask = null;
+			Cursor _cursor = _mContentResolver
+					.query(ContentUris.withAppendedId(
+							TodoTask.ENTERPRISE_CONTENT_URI, IAUserExtension
+									.getUserLoginEnterpriseId(UserManager
+											.getInstance().getUser())),
+							null,
+							TodoTask.APPROVE_USER_ENTERPRISETODOLISTTASK_WITHSENDERFAKEID_CONDITION,
+							new String[] { _mTodoTaskSenderFakeId.toString() },
+							null);
+			// check cursor
+			if (null != _cursor) {
+				// get and check user enterprise to-do tasks for approving
+				while (_cursor.moveToNext()) {
+					// get the approved to-do task
+					_approvedTodoTask = new TodoTaskBean(_cursor);
+				}
+
+				// close cursor
+				_cursor.close();
+			}
+
 			// delete the to-do task for approving local storage data
 			_mContentResolver
 					.delete(ContentUris.withAppendedId(
@@ -497,6 +532,34 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 					PostRequestFormat.URLENCODED,
 					_synchronizedEnterpriseServerDataPostHttpReqParam, null,
 					HttpRequestType.ASYNCHRONOUS, null);
+
+			// define to-do task approved notification
+			Notification _todoTaskApprovedNotification = new Notification();
+
+			// set icon, ticker text, timestamp and default
+			_todoTaskApprovedNotification.icon = R.drawable.ic_launcher;
+			_todoTaskApprovedNotification.tickerText = String.format(
+					_mContext.getResources().getString(
+							R.string.tdt_approved_notification_format),
+					_approvedTodoTask.getApplicantName(),
+					_approvedTodoTask.getTaskTitle());
+			_todoTaskApprovedNotification.when = System.currentTimeMillis();
+			_todoTaskApprovedNotification.defaults = Notification.DEFAULT_ALL;
+
+			// add pending intent
+			PendingIntent _pendingIntent = PendingIntent.getActivity(_mContext,
+					0, new Intent(_mContext, IApproveTabActivity.class),
+					PendingIntent.FLAG_CANCEL_CURRENT);
+
+			// set latest event info
+			_todoTaskApprovedNotification.setLatestEventInfo(_mContext,
+					_approvedTodoTask.getTaskTitle(),
+					_approvedTodoTask.getApplicantName(), _pendingIntent);
+
+			// send to-do task approved notification
+			((NotificationManager) _mContext
+					.getSystemService(Context.NOTIFICATION_SERVICE)).notify(
+					R.string.app_name, _todoTaskApprovedNotification);
 		}
 
 		@Override
@@ -514,18 +577,21 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 		// new approve application generating local storage row id and
 		// attachment path
 		private Long _mNAALocalStorageRowId;
+		private String _mNAAFormName;
 		private String _mNAALocalStorageAttachmentPath;
 
 		// new approve application task id
 		private Long _mNAATaskId;
 
 		public GenerateUserEnterpriseNAAPostHttpRequestListener(
-				Long naaLocalStorageRowId, String naaLocalStorageAttachmentPath) {
+				Long naaLocalStorageRowId, String naaFormName,
+				String naaLocalStorageAttachmentPath) {
 			super();
 
 			// save new approve application generating local storage row id and
 			// attachment path
 			_mNAALocalStorageRowId = naaLocalStorageRowId;
+			_mNAAFormName = naaFormName;
 			_mNAALocalStorageAttachmentPath = naaLocalStorageAttachmentPath;
 		}
 
@@ -589,12 +655,15 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 								_synchronizedEnterpriseNAAAttachmentPostHttpReqParam,
 								null,
 								HttpRequestType.ASYNCHRONOUS,
-								new SynchronizedEnterpriseNAAAttachmentPostHttpRequestListener());
+								new SynchronizedEnterpriseNAAAttachmentPostHttpRequestListener(
+										_mNAAFormName));
 			} else {
 				// insert new approve application attachment to local storage
 				ContentValues _insertContentValues = new ContentValues();
 				_insertContentValues.put(GeneratingNAATaskAttachment.TASK_ID,
 						_mNAATaskId.toString());
+				_insertContentValues.put(
+						GeneratingNAATaskAttachment.TASK_TITLE, _mNAAFormName);
 				_insertContentValues.put(
 						GeneratingNAATaskAttachment.ENTERPRISE_ID,
 						_mEnterpriseId.toString());
@@ -630,16 +699,19 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 		// and task id
 		private Long _mNAAAttachmentLocalStorageRowId;
 		private Long _mNAAAttachmentLocalStorageTaskId;
+		private String _mNAAAttachmentLocalStorageTaskTitle;
 
 		public UploadUserEnterpriseNAAAttachmentPostHttpRequestListener(
 				Long naaAttachmentLocalStorageRowId,
-				Long naaAttachmentLocalStorageTaskId) {
+				Long naaAttachmentLocalStorageTaskId,
+				String naaAttachmentLocalStorageTaskTitle) {
 			super();
 
 			// save new approve application attachment generating local storage
 			// row id and task id
 			_mNAAAttachmentLocalStorageRowId = naaAttachmentLocalStorageRowId;
 			_mNAAAttachmentLocalStorageTaskId = naaAttachmentLocalStorageTaskId;
+			_mNAAAttachmentLocalStorageTaskTitle = naaAttachmentLocalStorageTaskTitle;
 		}
 
 		@Override
@@ -706,7 +778,8 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 										_synchronizedEnterpriseNAAAttachmentPostHttpReqParam,
 										null,
 										HttpRequestType.ASYNCHRONOUS,
-										new SynchronizedEnterpriseNAAAttachmentPostHttpRequestListener());
+										new SynchronizedEnterpriseNAAAttachmentPostHttpRequestListener(
+												_mNAAAttachmentLocalStorageTaskTitle));
 					}
 				}
 
@@ -741,6 +814,18 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 	class SynchronizedEnterpriseNAAAttachmentPostHttpRequestListener extends
 			OnHttpRequestListener {
 
+		// new approve application task title
+		private String _mNAATaskTitle;
+
+		public SynchronizedEnterpriseNAAAttachmentPostHttpRequestListener(
+				String naaTaskTitle) {
+			super();
+
+			// save new approve application task title
+			_mNAATaskTitle = naaTaskTitle;
+		}
+
+		@SuppressWarnings("deprecation")
 		@Override
 		public void onFinished(HttpRequest request, HttpResponse response) {
 			// get http response entity string
@@ -791,6 +876,32 @@ public class ApproveEnterpriseTaskTask extends CoreServiceTask {
 					PostRequestFormat.URLENCODED,
 					_synchronizedEnterpriseServerDataPostHttpReqParam, null,
 					HttpRequestType.ASYNCHRONOUS, null);
+
+			// define new approve application task applicated notification
+			Notification _naaTaskApplicatedNotification = new Notification();
+
+			// set icon, ticker text, timestamp and default
+			_naaTaskApplicatedNotification.icon = R.drawable.ic_launcher;
+			_naaTaskApplicatedNotification.tickerText = String.format(
+					_mContext.getResources().getString(
+							R.string.naa_applicated_notification_format),
+					_mNAATaskTitle);
+			_naaTaskApplicatedNotification.when = System.currentTimeMillis();
+			_naaTaskApplicatedNotification.defaults = Notification.DEFAULT_ALL;
+
+			// add pending intent
+			PendingIntent _pendingIntent = PendingIntent.getActivity(_mContext,
+					0, new Intent(_mContext, IApproveTabActivity.class),
+					PendingIntent.FLAG_CANCEL_CURRENT);
+
+			// set latest event info
+			_naaTaskApplicatedNotification.setLatestEventInfo(_mContext,
+					_mNAATaskTitle, "", _pendingIntent);
+
+			// send new approve application task applicated notification
+			((NotificationManager) _mContext
+					.getSystemService(Context.NOTIFICATION_SERVICE)).notify(
+					R.string.app_name, _naaTaskApplicatedNotification);
 		}
 
 		@Override
