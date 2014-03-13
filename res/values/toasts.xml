@@ -19,4 +19,7 @@
     <string name="toast_taskImageAttachment_image_saveSuccessful">Task image attachment image has been saved to album</string>
     <string name="toast_taskImageAttachment_image_saveFailed">Task image attachment image saved to album failed</string>
 
+    <!-- check for update -->
+    <string name="toast_latestApplication">This is the latest version</string>
+
 </resources>

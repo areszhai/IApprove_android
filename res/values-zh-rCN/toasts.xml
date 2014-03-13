@@ -19,4 +19,7 @@
     <string name="toast_taskImageAttachment_image_saveSuccessful">表单图片附件图片已保存到系统相册</string>
     <string name="toast_taskImageAttachment_image_saveFailed">表单图片附件图片保存到系统相册失败</string>
 
+    <!-- check for update -->
+    <string name="toast_latestApplication">当前已是最新版本</string>
+
 </resources>

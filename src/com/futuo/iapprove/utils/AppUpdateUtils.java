@@ -167,15 +167,20 @@ public class AppUpdateUtils {
 										.getString(
 												R.string.rbgServer_versionCheck4UpdateReqResp_latestVersion));
 				try {
-					if (0 <= VersionUtils.compareVersionName(_latestVersion,
+					if (0 == VersionUtils.compareVersionName(_latestVersion,
 							_currentVersion)) {
 						// check the application upgrade mode
 						if (APPUPGRADEMODE.MANUAL == _mUpgradeMode) {
 							// show your application version is the latest toast
 							// center
-							Toast _latestVersionToast = Toast.makeText(
-									_mDependentActivityContext, "当前已是最新版本",
-									Toast.LENGTH_LONG);
+							Toast _latestVersionToast = Toast
+									.makeText(
+											_mDependentActivityContext,
+											_mDependentActivityContext
+													.getResources()
+													.getString(
+															R.string.toast_latestApplication),
+											Toast.LENGTH_LONG);
 							_latestVersionToast
 									.setGravity(Gravity.CENTER, 0, 0);
 							_latestVersionToast.show();
